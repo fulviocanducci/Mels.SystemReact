@@ -1,8 +1,13 @@
 import React from "react";
 import Login from "../Login";
+import Menu from "../Menu";
 
 function App() {
-  return <Login />;
+  const status = false;
+  if (status) {
+    return <Login />;
+  }
+  return <Menu />;
 }
 
 export default App;
