@@ -1,5 +1,4 @@
 function isCpf(cpf) {
-  console.log(cpf);
   var cpfRegex = /^(?:(\d{3}).(\d{3}).(\d{3})-(\d{2}))$/;
   if (!cpfRegex.test(cpf)) {
     return false;

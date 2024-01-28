@@ -1,0 +1,13 @@
+.containerFormLogin {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100vh;    
+    background-color:#CCF4CC;
+  }
+
+  .containerFormLogin > form {
+    width: 92%;
+    margin-top: 2px;
+  }
