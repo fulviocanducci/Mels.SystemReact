@@ -8,7 +8,7 @@ networks:
 services:
   mobile:
     container_name: mobile
-    image: cristianmels/api
+    image: cristianmelsmobile/mobile
     restart: always    
     networks:
       - netapiweb
