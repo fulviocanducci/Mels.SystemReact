@@ -1,0 +1,14 @@
+version: '3.4'
+
+networks:
+  netapiweb:
+    name: netapiweb
+    external: true
+
+services:
+  mobile:
+    container_name: mobile
+    image: cristianmels/api
+    restart: always    
+    networks:
+      - netapiweb
