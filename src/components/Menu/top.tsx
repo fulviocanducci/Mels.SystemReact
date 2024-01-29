@@ -23,8 +23,8 @@ export function Top() {
             <Link to="/" className="nav-link" onClick={setExpandedFalse}>
               Home
             </Link>
-            <Link to="/nomatch" className="nav-link" onClick={setExpandedFalse}>
-              Home
+            <Link to="/logout" className="nav-link" onClick={setExpandedFalse}>
+              Sair
             </Link>
           </Nav>
         </Navbar.Collapse>

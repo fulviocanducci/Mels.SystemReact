@@ -1,13 +1,13 @@
-import React from "react";
+import { useLoginStatus } from "../../@hooks";
 import Login from "../Login";
 import Menu from "../Menu";
 
 function App() {
-  const status = false;
-  if (status) {
-    return <Login />;
+  const isStatus = useLoginStatus();
+  if (isStatus()) {
+    return <Menu />;
   }
-  return <Menu />;
+  return <Login />;
 }
 
 export default App;

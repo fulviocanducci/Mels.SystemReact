@@ -1,8 +1,12 @@
 import { Container } from "react-bootstrap";
 import { Routes, Route } from "react-router-dom";
+
 import ProtectedRouter from "../ProtectedRouter";
+
 import Home from "../../Pages/Home";
 import NoMatch from "../../Pages/NoMatch";
+import Login from "../Login";
+import Logout from "../../Pages/Logout";
 
 export function RoutesMenu() {
   return (
@@ -11,13 +15,21 @@ export function RoutesMenu() {
         <Route
           path="/"
           element={
-            // <ProtectedRouter>
-            <Home />
-            // </ProtectedRouter>
+            <ProtectedRouter>
+              <Home />
+            </ProtectedRouter>
           }
         />
-        {/*<Route path="/login" element={<Login />} />
-        
+        <Route
+          path="/home"
+          element={
+            <ProtectedRouter>
+              <Home />
+            </ProtectedRouter>
+          }
+        />
+        <Route path="/login" element={<Login />} />
+
         <Route
           path="/logout"
           element={
@@ -26,6 +38,7 @@ export function RoutesMenu() {
             </ProtectedRouter>
           }
         />
+        {/*
         <Route
           path="/schedule"
           element={

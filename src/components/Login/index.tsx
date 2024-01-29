@@ -7,30 +7,44 @@ import * as yup from "yup";
 
 import FormControlCustom from "../HtmlElements";
 import Block from "../Block";
-
-import { validation } from "../../utils";
-import { IFormValues } from "./types";
+import { redirectTo, validation } from "../../utils";
+import { IFormValues } from "../../@types";
 
 import logo from "../../images/logo.png";
 import "./styles.css";
+import { request } from "../../@requests";
+import { useSetClient, useSetCpf, useSetExpiration, useSetToken } from "../../@hooks";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const { Formik } = formik;
-
+  const { setClientStorage } = useSetClient();
+  const { setTokenStorage } = useSetToken();
+  const { setCpfStorage } = useSetCpf();
+  const { setExpirationStorage } = useSetExpiration();
+  //const navigate = useNavigate();
   const schema = yup.object().shape({
     cpf: yup
       .string()
       .required()
-      .test("test-invalid-cpf", "CPF inválido", (cpf) => validation.cpf(cpf))
-      .test("test-cpf-exists", "CPF não existe", (cpf) => {
-        return new Promise((resolve, reject) => {
-          resolve(false);
-        });
-      }),
+      .test("test-invalid-cpf", "CPF inválido", (cpf) => validation.cpf(cpf)),
   });
 
   function formikOnSubmit(values: IFormValues) {
-    console.log(values);
+    if (values) {
+      request.authentication(values.cpf).then(
+        (result) => {
+          if (result.status === 200) {
+            setTokenStorage(result.data.token);
+            setExpirationStorage(result.data.expiration);
+            setClientStorage(result.data.clientRecord);
+            setCpfStorage(values.cpf);
+            redirectTo.host();
+          }
+        },
+        (error) => console.log(error)
+      );
+    }
   }
 
   return (

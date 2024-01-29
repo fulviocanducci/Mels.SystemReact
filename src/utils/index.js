@@ -1,3 +1,7 @@
+function onlyNumbers(value) {
+  return value.replace(/\D/g, "");
+}
+
 function isCpf(cpf) {
   var cpfRegex = /^(?:(\d{3}).(\d{3}).(\d{3})-(\d{2}))$/;
   if (!cpfRegex.test(cpf)) {
@@ -42,8 +46,20 @@ function isCpf(cpf) {
   return true;
 }
 
+function redirectHost() {
+  window.location.href = window.location.protocol + "//" + window.location.host;
+}
+
 const validation = {
   cpf: isCpf,
 };
 
-export { validation };
+const numbers = {
+  onlyNumbers: onlyNumbers,
+};
+
+const redirectTo = {
+  host: redirectHost,
+};
+
+export { validation, numbers, redirectTo };

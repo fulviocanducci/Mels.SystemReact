@@ -1,21 +1,15 @@
-import { Navigate } from "react-router-dom";
-
-interface IProtectedRouter {
-  children: JSX.Element;
-  redirectPath?: string;
-}
-
-const LS_NAME_TOKEN = "@token";
+import { LS_NAME_TOKEN } from "../../@const";
+import { IProtectedRouter } from "../../@types";
+import { redirectTo } from "../../utils";
 
 const ProtectedRouter = ({ children, redirectPath = "/login" }: IProtectedRouter) => {
   const json = window.localStorage.getItem(LS_NAME_TOKEN);
-  if (json) {
-    const value = JSON.parse(json);
-    if (value && value.token && value.token.length > 0) {
-      return children;
-    }
+  if (json && json.length > 0) {
+    return children;
+  } else {
+    redirectTo.host();
   }
-  return <Navigate to={redirectPath} replace />;
+  return <></>;
 };
 
 export default ProtectedRouter;
