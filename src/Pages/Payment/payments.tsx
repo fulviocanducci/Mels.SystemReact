@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useGetCpf } from "../../@hooks";
 import { request } from "../../@requests";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { IMovementReceiptYearRecord } from "../../@types";
 import Loading from "../../components/Loading";
 import Title from "../../components/Title";
@@ -15,6 +15,7 @@ import * as Icon from "react-bootstrap-icons";
 export default function Payments() {
   const cpf = useGetCpf();
   const { year } = useParams();
+  const navigate = useNavigate();
   const [items, setItems] = useState<IMovementReceiptYearRecord[] | null>(null);
   useEffect(() => {
     if (cpf && year) {
@@ -70,9 +71,15 @@ export default function Payments() {
             );
           })}
         <div className="col-md-12">
-          <Button variant="success" size="sm" onClick={() => {}}>
-            <Icon.Folder2Open /> Voltar
-          </Button>
+          <div className="d-grid gap-2 mt-0">
+            <Button
+              variant="success"
+              size="sm"
+              onClick={() => navigate("/payments")}
+            >
+              <Icon.Backspace /> Voltar
+            </Button>
+          </div>
         </div>
       </div>
     </div>
