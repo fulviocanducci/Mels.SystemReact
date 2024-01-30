@@ -1,12 +1,13 @@
 import { Button } from "react-bootstrap";
 import { useLogout } from "../../@hooks";
-import { redirectTo } from "../../utils";
+import { useNavigate } from "react-router-dom";
 
 export default function Logout() {
   const logout = useLogout();
+  const navigate = useNavigate();
   const logoutWithRedirect = () => {
     logout();
-    redirectTo.host();
+    navigate("/", {replace: true});
   };
   return (
     <div>

@@ -50,6 +50,26 @@ function redirectHost() {
   window.location.href = window.location.protocol + "//" + window.location.host;
 }
 
+const optionsNumberPTBR = {
+  style: "currency",
+  currency: "BRL",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 3,
+};
+
+const intlNumberFormatPTBR = new Intl.NumberFormat("pt-BR", optionsNumberPTBR);
+const formatMoneyPTBR = (value) => {
+  return intlNumberFormatPTBR.format(value);
+};
+
+const formatDateTimePTBR = (value) => {
+  const date = new Date(value);
+  if (date) {
+    return date.toLocaleDateString("pt-BR");
+  }
+  return "";
+};
+
 const validation = {
   cpf: isCpf,
 };
@@ -58,8 +78,13 @@ const numbers = {
   onlyNumbers: onlyNumbers,
 };
 
+const formats = {
+  money: formatMoneyPTBR,
+  date: formatDateTimePTBR,
+};
+
 const redirectTo = {
   host: redirectHost,
 };
 
-export { validation, numbers, redirectTo };
+export { validation, numbers, redirectTo, formats };

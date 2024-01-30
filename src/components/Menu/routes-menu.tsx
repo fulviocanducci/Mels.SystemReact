@@ -7,6 +7,8 @@ import Home from "../../Pages/Home";
 import NoMatch from "../../Pages/NoMatch";
 import Login from "../Login";
 import Logout from "../../Pages/Logout";
+import Payment from "../../Pages/Payment";
+import Payments from "../../Pages/Payment/payments";
 
 export function RoutesMenu() {
   return (
@@ -38,23 +40,24 @@ export function RoutesMenu() {
             </ProtectedRouter>
           }
         />
+
+        <Route
+          path="/payments"
+          element={
+            <ProtectedRouter>
+              <Payment />
+            </ProtectedRouter>
+          }
+        />
+        <Route
+          path="/payments/by/:year/all"
+          element={
+            <ProtectedRouter>
+              <Payments />
+            </ProtectedRouter>
+          }
+        />
         {/*
-        <Route
-          path="/schedule"
-          element={
-            <ProtectedRouter>
-              <Schedule />
-            </ProtectedRouter>
-          }
-        />
-        <Route
-          path="/patient"
-          element={
-            <ProtectedRouter>
-              <Patient />
-            </ProtectedRouter>
-          }
-        />
         <Route
           path="/schedule/create"
           element={

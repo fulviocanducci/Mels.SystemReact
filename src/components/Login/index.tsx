@@ -13,16 +13,20 @@ import { IFormValues } from "../../@types";
 import logo from "../../images/logo.png";
 import "./styles.css";
 import { request } from "../../@requests";
-import { useSetClient, useSetCpf, useSetExpiration, useSetToken } from "../../@hooks";
-import { useNavigate } from "react-router-dom";
+import {
+  useSetClient,
+  useSetCpf,
+  useSetExpiration,
+  useSetToken,
+} from "../../@hooks";
 
 function Login() {
+  //const navigate = useNavigate();
   const { Formik } = formik;
   const { setClientStorage } = useSetClient();
   const { setTokenStorage } = useSetToken();
   const { setCpfStorage } = useSetCpf();
   const { setExpirationStorage } = useSetExpiration();
-  //const navigate = useNavigate();
   const schema = yup.object().shape({
     cpf: yup
       .string()
@@ -39,7 +43,6 @@ function Login() {
             setExpirationStorage(result.data.expiration);
             setClientStorage(result.data.clientRecord);
             setCpfStorage(values.cpf);
-            redirectTo.host();
           }
         },
         (error) => console.log(error)
@@ -61,12 +64,36 @@ function Login() {
         {({ handleSubmit, handleChange, values, touched, errors }) => (
           <Form noValidate onSubmit={handleSubmit}>
             <Form.Group className="mb-1" controlId="exampleForm.ControlInput1">
-              <FloatingLabel controlId="floatingInput" label="CPF" className="mb-1">
-                <FormControlCustom.Control.Cpf name="cpf" value={values.cpf} onChange={handleChange} isValid={touched.cpf && !errors.cpf} isInvalid={!!errors.cpf}></FormControlCustom.Control.Cpf>
+              <FloatingLabel
+                controlId="floatingInput"
+                label="CPF"
+                className="mb-1"
+              >
+                <FormControlCustom.Control.Cpf
+                  name="cpf"
+                  value={values.cpf}
+                  onChange={handleChange}
+                  isValid={touched.cpf && !errors.cpf}
+                  isInvalid={!!errors.cpf}
+                ></FormControlCustom.Control.Cpf>
               </FloatingLabel>
               <Block>
-                <Button disabled={Array.isArray(errors) || Object.values(errors).toString() !== ""} variant="success" type="submit" className="mt-2 mb-2">
-                  {Array.isArray(errors) || Object.values(errors).toString() !== "" ? <Icon.DoorClosed /> : <Icon.DoorOpen />} Entrar
+                <Button
+                  disabled={
+                    Array.isArray(errors) ||
+                    Object.values(errors).toString() !== ""
+                  }
+                  variant="success"
+                  type="submit"
+                  className="mt-2 mb-2"
+                >
+                  {Array.isArray(errors) ||
+                  Object.values(errors).toString() !== "" ? (
+                    <Icon.DoorClosed />
+                  ) : (
+                    <Icon.DoorOpen />
+                  )}{" "}
+                  Entrar
                 </Button>
               </Block>
             </Form.Group>

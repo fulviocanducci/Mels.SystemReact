@@ -6,10 +6,9 @@ const ProtectedRouter = ({ children, redirectPath = "/login" }: IProtectedRouter
   const json = window.localStorage.getItem(LS_NAME_TOKEN);
   if (json && json.length > 0) {
     return children;
-  } else {
-    redirectTo.host();
   }
-  return <></>;
+  redirectTo.host();
+  return <></>
 };
 
 export default ProtectedRouter;

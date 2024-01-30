@@ -1,10 +1,10 @@
-import { useLoginStatus } from "../../@hooks";
-import Login from "../Login";
 import Menu from "../Menu";
+import Login from "../Login";
+import { useLoginStatusState } from "../../@hooks";
 
 function App() {
-  const isStatus = useLoginStatus();
-  if (isStatus()) {
+  const isStatus = useLoginStatusState();
+  if (isStatus()){
     return <Menu />;
   }
   return <Login />;

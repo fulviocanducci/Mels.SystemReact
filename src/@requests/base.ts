@@ -1,5 +1,6 @@
 import axios from "axios";
 import { LS_NAME_TOKEN } from "../@const";
+import { redirectTo } from "../utils";
 
 export const api = axios.create({
   baseURL: "https://api.melfitness.com.br",
@@ -16,7 +17,7 @@ api.interceptors.request.use(
   async (error) => {
     const originalRequest = error.config;
     if (error?.response?.status === 401 && !originalRequest?.__isRetryRequest) {
-      window.location.href = "https://mobile.melfitness.com.br/";
+      redirectTo.host();
     }
     return Promise.reject(error);
   }
