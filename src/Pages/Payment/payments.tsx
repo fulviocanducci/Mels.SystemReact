@@ -30,9 +30,15 @@ export default function Payments() {
       );
     }
   }, [cpf, year]);
+
+  function handleGoBack() {
+    navigate("/payments");
+  }
+
   if (items === null) {
     return <Loading />;
   }
+
   return (
     <div>
       <Title description={`Pagamentos: ${year}`} />
@@ -72,11 +78,7 @@ export default function Payments() {
           })}
         <div className="col-md-12">
           <div className="d-grid gap-2 mt-0">
-            <Button
-              variant="success"
-              size="sm"
-              onClick={() => navigate("/payments")}
-            >
+            <Button variant="success" size="sm" onClick={handleGoBack}>
               <Icon.Backspace /> Voltar
             </Button>
           </div>
