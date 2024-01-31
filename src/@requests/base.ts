@@ -2,8 +2,12 @@ import axios from "axios";
 import { LS_NAME_TOKEN } from "../@const";
 import { redirectTo } from "../utils";
 
+// export const api = axios.create({
+//   baseURL: "https://api.melfitness.com.br",
+// });
+
 export const api = axios.create({
-  baseURL: "https://api.melfitness.com.br",
+  baseURL: "https://localhost:44324",
 });
 
 api.interceptors.request.use(

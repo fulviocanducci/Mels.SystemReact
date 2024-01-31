@@ -1,4 +1,3 @@
-import React from "react";
 import Form from "react-bootstrap/Form";
 import { Button, FloatingLabel, Image } from "react-bootstrap";
 import * as formik from "formik";
@@ -7,7 +6,7 @@ import * as yup from "yup";
 
 import FormControlCustom from "../HtmlElements";
 import Block from "../Block";
-import { redirectTo, validation } from "../../utils";
+import { validation } from "../../utils";
 import { IFormValues } from "../../@types";
 
 import logo from "../../images/logo.png";

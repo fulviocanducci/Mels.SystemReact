@@ -5,17 +5,31 @@ import Navbar from "react-bootstrap/Navbar";
 import logo from "../../images/logo.png";
 import { Link } from "react-router-dom";
 
-export function Top() {  
-  const [expanded, setExpanded] = useState<string | undefined | boolean | any>(false);
+export function Top() {
+  const [expanded, setExpanded] = useState<string | undefined | boolean | any>(
+    false
+  );
   const toggle = () => {
     setExpanded(expanded ? false : "lg");
   };
   const setExpandedFalse = () => setExpanded(false);
   return (
-    <Navbar  bg="success" data-bs-theme="dark" expand="lg" expanded={expanded} fixed="top">
+    <Navbar
+      bg="success"
+      data-bs-theme="dark"
+      expand="lg"
+      expanded={expanded}
+      fixed="top"
+    >
       <Container>
         <Navbar.Brand href="#home">
-          <img src={logo} width="30" height="30" className="d-inline-block align-top" alt="Mels Fitness Academias" />
+          <img
+            src={logo}
+            width="30"
+            height="30"
+            className="d-inline-block align-top"
+            alt="Mels Fitness Academias"
+          />
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={toggle} />
         <Navbar.Collapse id="basic-navbar-nav">
@@ -23,8 +37,19 @@ export function Top() {
             <Link to="/" className="nav-link" onClick={setExpandedFalse}>
               Home
             </Link>
-            <Link to="/payments" className="nav-link" onClick={setExpandedFalse}>
+            <Link
+              to="/payments"
+              className="nav-link"
+              onClick={setExpandedFalse}
+            >
               Pagamentos
+            </Link>
+            <Link
+              to="/updateregistration"
+              className="nav-link"
+              onClick={setExpandedFalse}
+            >
+              Atualizar cadastro
             </Link>
             <Link to="/logout" className="nav-link" onClick={setExpandedFalse}>
               Sair

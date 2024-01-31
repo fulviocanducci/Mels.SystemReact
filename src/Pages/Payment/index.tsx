@@ -43,7 +43,7 @@ export default function Payment() {
           items.length > 0 &&
           items.map((data, index) => {
             return (
-              <div className="col-md-6">
+              <div className="col-md-6" key={index}>
                 <Alert key={index} variant={"success"}>
                   <Alert.Heading className="mb-0 text-success">
                     {data.year}

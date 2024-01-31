@@ -1,12 +1,32 @@
+import moment from "moment";
+
+function setMomentLocale() {
+  moment.locale("pt-br");
+}
+
 function onlyNumbers(value) {
-  return value.replace(/\D/g, "");
+  if (value) {
+    return value.replace(/\D/g, "");
+  }
+  return null;
+}
+
+function isDate(value) {
+  setMomentLocale();
+  return moment(value, "DD/MM/YYYY", true).isValid();
+}
+
+function isDateOrEmpty(value) {
+  setMomentLocale();
+  if (!value) return true;
+  return moment(value, "DD/MM/YYYY", true).isValid();
 }
 
 function isCpf(cpf) {
-  var cpfRegex = /^(?:(\d{3}).(\d{3}).(\d{3})-(\d{2}))$/;
-  if (!cpfRegex.test(cpf)) {
-    return false;
-  }
+  // var cpfRegex = /^(?:(\d{3}).(\d{3}).(\d{3})-(\d{2}))$/;
+  // if (!cpfRegex.test(cpf)) {
+  //   return false;
+  // }
 
   var numeros = cpf.match(/\d/g).map(Number);
   var soma = numeros.reduce((acc, cur, idx) => {
@@ -70,8 +90,31 @@ const formatDateTimePTBR = (value) => {
   return "";
 };
 
+const formatDateEn = (value) => {
+  return moment(value, "DD/MM/YYYY").format("YYYY-MM-DD");
+};
+
+const formatClient = (client) => {
+  const data = {
+    cpf: client?.cpf,
+    name: client?.name,
+    sex: client?.sex,
+    dateBirthday: isDate(client?.dateBirthday)
+      ? formatDateEn(client?.dateBirthday)
+      : null,
+    email: client?.email,
+    address: client?.address,
+    cityId: client?.cityId,
+    phoneOne: onlyNumbers(client?.phoneOne),
+    phoneTwo: onlyNumbers(client?.phoneTwo),
+  };
+  return data;
+};
+
 const validation = {
   cpf: isCpf,
+  date: isDate,
+  dateOrEmpty: isDateOrEmpty,
 };
 
 const numbers = {
@@ -81,6 +124,7 @@ const numbers = {
 const formats = {
   money: formatMoneyPTBR,
   date: formatDateTimePTBR,
+  client: formatClient,
 };
 
 const redirectTo = {

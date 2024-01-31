@@ -9,6 +9,7 @@ import Login from "../Login";
 import Logout from "../../Pages/Logout";
 import Payment from "../../Pages/Payment";
 import Payments from "../../Pages/Payment/payments";
+import UpdateRegistration from "../../Pages/UpdateRegistration";
 
 export function RoutesMenu() {
   return (
@@ -57,15 +58,15 @@ export function RoutesMenu() {
             </ProtectedRouter>
           }
         />
-        {/*
+
         <Route
-          path="/schedule/create"
+          path="/updateregistration"
           element={
             <ProtectedRouter>
-              <ScheduleCreate />
+              <UpdateRegistration />
             </ProtectedRouter>
-          }        
-        />*/}
+          }
+        />
         <Route path="/nomatch" element={<NoMatch />} />
         <Route path="*" element={<NoMatch />} />
       </Routes>

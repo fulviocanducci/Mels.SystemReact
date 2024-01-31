@@ -21,7 +21,6 @@ export default function Payments() {
     if (cpf && year) {
       request.paymentsByYear(cpf, +year).then(
         (result) => {
-          console.log(result);
           if (result.status === 200) {
             setItems(result.data);
           }
@@ -47,7 +46,7 @@ export default function Payments() {
           items.length > 0 &&
           items.map((data, index) => {
             return (
-              <div className="col-md-6">
+              <div className="col-md-6" key={index}>
                 <Alert key={index} variant={"success"}>
                   <div className="mt-0 mb-0 d-flex justify-content-between text-success">
                     <div>{data.activityPaid}</div>
@@ -55,7 +54,7 @@ export default function Payments() {
                       <b>{formats.money(data.valuePaid)}</b>
                     </div>
                   </div>
-                  <p className="mt-0 mb-0 d-flex justify-content-between">
+                  <div className="mt-0 mb-0 d-flex justify-content-between">
                     <div>
                       <small className="text-success">
                         {data.formOfPayment === "PIX" ? (
@@ -71,7 +70,7 @@ export default function Payments() {
                         {formats.date(data.dateAt)}
                       </small>
                     </div>
-                  </p>
+                  </div>
                 </Alert>
               </div>
             );

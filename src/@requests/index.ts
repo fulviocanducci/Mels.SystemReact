@@ -1,4 +1,5 @@
 import {
+  ClientRecord,
   ILoginRecord,
   IMovementReceiptGroupYearRecord,
   IMovementReceiptYearRecord,
@@ -25,10 +26,15 @@ const paymentsByYear = (cpf: string, year: number) => {
   );
 };
 
+const clientUpdate = (clientRecord: ClientRecord) => {
+  return api.post<ClientRecord>("/api/client", clientRecord);
+};
+
 const request = {
   authentication,
   paymentsGroupByYear,
   paymentsByYear,
+  clientUpdate,
 };
 
 export { request };

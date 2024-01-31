@@ -6,6 +6,22 @@ export interface IFormControlCpf {
   onChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 }
 
+export interface IFormControlDate {
+  name: string;
+  value: string;
+  isValid?: boolean | undefined;
+  isInvalid?: boolean | undefined;
+  onChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+}
+
+export interface IFormControlPhone {
+  name: string;
+  value: string;
+  isValid?: boolean | undefined;
+  isInvalid?: boolean | undefined;
+  onChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+}
+
 export interface IRedirectPath {
   redirectPath: string | null | undefined;
 }
@@ -18,11 +34,14 @@ export interface IProtectedRouter {
 export interface IFormValues {
   cpf: string;
 }
-
+export interface IToast {
+  show: boolean;
+  change: React.Dispatch<React.SetStateAction<boolean>>;
+}
 export interface ILoginRecord {
-  token?: string;
-  expiration?: Date;
-  clientRecord?: ClientRecord;
+  token: string;
+  expiration: Date;
+  clientRecord: ClientRecord;
 }
 
 export interface IMovementReceiptGroupYearRecord {
@@ -33,7 +52,7 @@ export interface IMovementReceiptGroupYearRecord {
 export interface ClientRecord {
   cpf: string;
   name: string;
-  sexo: number;
+  sex: number;
   dateBirthday: string;
   email: string;
   address: string;

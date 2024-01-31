@@ -1,7 +1,12 @@
 import { useContext } from "react";
 import { LoginContext } from "../context/base";
 import { ClientRecord } from "../@types";
-import { LS_NAME_CLIENT, LS_NAME_CPF, LS_NAME_EXPIRATION, LS_NAME_TOKEN } from "../@const";
+import {
+  LS_NAME_CLIENT,
+  LS_NAME_CPF,
+  LS_NAME_EXPIRATION,
+  LS_NAME_TOKEN,
+} from "../@const";
 
 export const useGetToken = (): string | null | undefined => {
   const context = useContext(LoginContext);
@@ -44,7 +49,7 @@ export const useGetClient = (): ClientRecord | null | undefined => {
 export const useSetClient = () => {
   const context = useContext(LoginContext);
   const { setClient } = context;
-  const setClientStorage = (clientRecord: ClientRecord | null | undefined) => {
+  const setClientStorage = (clientRecord: ClientRecord) => {
     localStorage.setItem(LS_NAME_CLIENT, JSON.stringify(clientRecord));
     setClient(clientRecord);
   };
@@ -60,7 +65,9 @@ export const useGetExpiration = (): Date | null | undefined | string => {
 export const useSetExpiration = () => {
   const context = useContext(LoginContext);
   const { setExpiration } = context;
-  const setExpirationStorage = (expiration: Date | null | undefined | string) => {
+  const setExpirationStorage = (
+    expiration: Date | null | undefined | string
+  ) => {
     localStorage.setItem(LS_NAME_EXPIRATION, "" + expiration);
     setExpiration(expiration);
   };
@@ -72,7 +79,7 @@ const removeLocalStorage = () => {
   localStorage.removeItem(LS_NAME_CPF);
   localStorage.removeItem(LS_NAME_CLIENT);
   localStorage.removeItem(LS_NAME_EXPIRATION);
-}
+};
 
 export const useLogout = () => {
   const context = useContext(LoginContext);
@@ -89,11 +96,13 @@ export const useLogout = () => {
 export function useLoginStatusState() {
   const context = useContext(LoginContext);
   const isStatus = () => {
-    if (!(context.client && context.token && context.cpf && context.expiration)) {
+    if (
+      !(context.client && context.token && context.cpf && context.expiration)
+    ) {
       removeLocalStorage();
     }
-    return context.client && context.token && context.cpf && context.expiration
-  };  
+    return context.client && context.token && context.cpf && context.expiration;
+  };
   return isStatus;
 }
 export function useLoginStatusStorage() {
@@ -103,8 +112,9 @@ export function useLoginStatusStorage() {
     const cpf = localStorage.getItem(LS_NAME_CPF);
     const client = localStorage.getItem(LS_NAME_CLIENT);
     const expiration = localStorage.getItem(LS_NAME_EXPIRATION);
-    const status = token !== null && cpf !== null && client !== null && expiration !== null;
-    if (status){
+    const status =
+      token !== null && cpf !== null && client !== null && expiration !== null;
+    if (status) {
       const { setCpf, setToken, setClient, setExpiration } = context;
       setCpf(cpf);
       setToken(token);
