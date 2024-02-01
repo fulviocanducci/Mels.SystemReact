@@ -18,7 +18,8 @@ function isDate(value) {
 
 function isDateOrEmpty(value) {
   setMomentLocale();
-  if (!value) return true;
+  console.log(value);
+  if (!value || value.length === 0) return true;
   return moment(value, "DD/MM/YYYY", true).isValid();
 }
 

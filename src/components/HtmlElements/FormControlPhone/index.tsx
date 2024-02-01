@@ -8,6 +8,7 @@ export function FormControlPhone({
   onChange,
   isValid,
   isInvalid,
+  placeholder,
 }: IFormControlPhone) {
   return (
     <FormControl
@@ -18,7 +19,7 @@ export function FormControlPhone({
       size="sm"
       value={value}
       onChange={onChange}
-      placeholder="Telefone"
+      placeholder={placeholder}
       ref={withMask(["(99)9999-9999", "(99)99999-9999"])}
     />
   );

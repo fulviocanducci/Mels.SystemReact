@@ -6,7 +6,18 @@ import {
   LS_NAME_CPF,
   LS_NAME_EXPIRATION,
   LS_NAME_TOKEN,
+  LS_NAME_LOGIN_CPF,
 } from "../@const";
+
+export const useLocalStorageLoginCpf = () => {
+  const setLocalStorageCpf = (cpf: string): void =>
+    window.localStorage.setItem(LS_NAME_LOGIN_CPF, cpf);
+  const getLocalStorageCpf = (): string => {
+    const cpf = window.localStorage.getItem(LS_NAME_LOGIN_CPF);
+    return cpf ?? "";
+  };
+  return { setLocalStorageCpf, getLocalStorageCpf };
+};
 
 export const useGetToken = (): string | null | undefined => {
   const context = useContext(LoginContext);

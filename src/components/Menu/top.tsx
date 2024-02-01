@@ -4,6 +4,7 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import logo from "../../images/logo.png";
 import { Link } from "react-router-dom";
+import * as Icon from "react-bootstrap-icons";
 
 export function Top() {
   const [expanded, setExpanded] = useState<string | undefined | boolean | any>(
@@ -35,24 +36,24 @@ export function Top() {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
             <Link to="/" className="nav-link" onClick={setExpandedFalse}>
-              Home
+              <Icon.WindowDesktop /> Home
             </Link>
             <Link
               to="/payments"
               className="nav-link"
               onClick={setExpandedFalse}
             >
-              Pagamentos
+              <Icon.TagFill /> Pagamentos
             </Link>
             <Link
               to="/updateregistration"
               className="nav-link"
               onClick={setExpandedFalse}
             >
-              Atualizar cadastro
+              <Icon.PencilFill /> Atualizar cadastro
             </Link>
             <Link to="/logout" className="nav-link" onClick={setExpandedFalse}>
-              Sair
+              <Icon.DoorClosedFill /> Sair
             </Link>
           </Nav>
         </Navbar.Collapse>

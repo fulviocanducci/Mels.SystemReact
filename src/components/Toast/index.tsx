@@ -6,7 +6,7 @@ import { IToast } from "../../@types";
 export default function Toast({ show, change }: IToast) {
   const notify = () =>
     toast.success("Dados foram alterados com êxito", {
-      position: "top-center",
+      position: "bottom-center",
       autoClose: 3000,
       hideProgressBar: true,
       closeOnClick: true,

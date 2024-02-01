@@ -8,6 +8,7 @@ export function FormControlDate({
   onChange,
   isValid,
   isInvalid,
+  placeholder,
 }: IFormControlDate) {
   return (
     <FormControl
@@ -18,7 +19,7 @@ export function FormControlDate({
       size="sm"
       value={value}
       onChange={onChange}
-      placeholder="Data"
+      placeholder={placeholder}
       ref={withMask("99/99/9999")}
     />
   );

@@ -39,6 +39,14 @@ export default function Payment() {
     <div>
       <Title description="Pagamentos" />
       <div className="row">
+        {items && items.length === 0 && (
+          <div>
+            <Alert key={"success"} variant={"light"}>
+              <Alert.Heading>Sem pagamentos.</Alert.Heading>
+              Não foi encontrado nenhum pagamento
+            </Alert>
+          </div>
+        )}
         {items &&
           items.length > 0 &&
           items.map((data, index) => {

@@ -13,14 +13,18 @@ import logo from "../../images/logo.png";
 import "./styles.css";
 import { request } from "../../@requests";
 import {
+  useLocalStorageLoginCpf,
   useSetClient,
   useSetCpf,
   useSetExpiration,
   useSetToken,
 } from "../../@hooks";
+import ButtonLoading from "../ButtonLoading";
+import { useEffect, useState } from "react";
 
 function Login() {
-  //const navigate = useNavigate();
+  const [stateForm, setStateForm] = useState<boolean>(false);
+  const { setLocalStorageCpf, getLocalStorageCpf } = useLocalStorageLoginCpf();
   const { Formik } = formik;
   const { setClientStorage } = useSetClient();
   const { setTokenStorage } = useSetToken();
@@ -35,17 +39,24 @@ function Login() {
 
   function formikOnSubmit(values: IFormValues) {
     if (values) {
-      request.authentication(values.cpf).then(
-        (result) => {
-          if (result.status === 200) {
-            setTokenStorage(result.data.token);
-            setExpirationStorage(result.data.expiration);
-            setClientStorage(result.data.clientRecord);
-            setCpfStorage(values.cpf);
-          }
-        },
-        (error) => console.log(error)
-      );
+      setStateForm(true);
+      request
+        .authentication(values.cpf)
+        .then(
+          (result) => {
+            if (result.status === 200) {
+              setTokenStorage(result.data.token);
+              setExpirationStorage(result.data.expiration);
+              setClientStorage(result.data.clientRecord);
+              setCpfStorage(values.cpf);
+              setLocalStorageCpf(values.cpf);
+            }
+          },
+          (error) => console.log(error)
+        )
+        .finally(() => {
+          setStateForm(false);
+        });
     }
   }
 
@@ -57,7 +68,7 @@ function Login() {
         validationSchema={schema}
         onSubmit={formikOnSubmit}
         initialValues={{
-          cpf: "",
+          cpf: getLocalStorageCpf(),
         }}
       >
         {({ handleSubmit, handleChange, values, touched, errors }) => (
@@ -84,15 +95,18 @@ function Login() {
                   }
                   variant="success"
                   type="submit"
+                  size="sm"
                   className="mt-2 mb-2"
                 >
-                  {Array.isArray(errors) ||
-                  Object.values(errors).toString() !== "" ? (
-                    <Icon.DoorClosed />
+                  {stateForm ? (
+                    <>
+                      <ButtonLoading /> Entrando ...
+                    </>
                   ) : (
-                    <Icon.DoorOpen />
-                  )}{" "}
-                  Entrar
+                    <>
+                      <Icon.DoorClosedFill /> Entrar
+                    </>
+                  )}
                 </Button>
               </Block>
             </Form.Group>

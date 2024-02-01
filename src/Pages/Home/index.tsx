@@ -1,5 +1,10 @@
 import React from "react";
+import Title from "../../components/Title";
 
 export default function Home() {
-  return <div>Home</div>;
+  return (
+    <div>
+      <Title description="Home" />
+    </div>
+  );
 }

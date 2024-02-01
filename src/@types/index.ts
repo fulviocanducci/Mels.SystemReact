@@ -7,6 +7,7 @@ export interface IFormControlCpf {
   value: string;
   isValid?: boolean | undefined;
   isInvalid?: boolean | undefined;
+  placeholder?: string | undefined;
   onChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 }
 
@@ -15,6 +16,7 @@ export interface IFormControlDate {
   value: string;
   isValid?: boolean | undefined;
   isInvalid?: boolean | undefined;
+  placeholder?: string | undefined;
   onChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 }
 
@@ -23,6 +25,7 @@ export interface IFormControlPhone {
   value: string;
   isValid?: boolean | undefined;
   isInvalid?: boolean | undefined;
+  placeholder?: string | undefined;
   onChange: React.ChangeEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 }
 
