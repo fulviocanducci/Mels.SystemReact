@@ -17,7 +17,6 @@ export default function Toast({ show, change }: IToast) {
       transition: Bounce,
     });
   useEffect(() => {
-    console.log(show);
     if (show) {
       notify();
       change(false);

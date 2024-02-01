@@ -1,6 +1,7 @@
 import Form from "react-bootstrap/Form";
 import FloatingLabel from "react-bootstrap/FloatingLabel";
 import Button from "react-bootstrap/Button";
+import AsyncSelect from "react-select/async";
 
 import * as formik from "formik";
 import * as Icon from "react-bootstrap-icons";
@@ -11,13 +12,17 @@ import Block from "../../components/Block";
 import FormControlCustom from "../../components/HtmlElements";
 import { useGetClient, useSetClient } from "../../@hooks";
 import { request } from "../../@requests";
-import { ClientRecord } from "../../@types";
+import { ClientRecord, ISelect2 } from "../../@types";
 import Title from "../../components/Title";
 import Toast from "../../components/Toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function UpdateRegistration() {
   const client = useGetClient();
+  const [optionsSelect2, setOptionsSelect2] = useState<ISelect2>({
+    value: 1,
+    label: "",
+  });
   const { setClientStorage } = useSetClient();
   const { Formik } = formik;
   const [show, setShow] = useState<boolean>(false);
@@ -41,6 +46,20 @@ export default function UpdateRegistration() {
     phoneTwo: yup.string(),
   });
 
+  function setOptionsSelect2Handle(e: any, callBack: any) {
+    setOptionsSelect2({ ...e });
+    callBack("cityId", e.value);
+  }
+
+  function loadOptionsCitySelect2(
+    inputValue: string,
+    callback: (options: ISelect2[]) => void
+  ) {
+    request.citySelect2(inputValue).then((result) => {
+      callback(result);
+    });
+  }
+
   function formikOnSubmit(values: ClientRecord | null | undefined | any) {
     if (values) {
       const data = formats.client(values) as ClientRecord;
@@ -58,6 +77,23 @@ export default function UpdateRegistration() {
     }
   }
 
+  useEffect(() => {
+    console.log(client);
+    if (
+      client &&
+      client.cityRecord &&
+      client.cityRecord.id &&
+      client.cityRecord.name &&
+      client.cityRecord.uf
+    ) {
+      const data = {
+        value: client.cityRecord.id,
+        label: client.cityRecord.name + "-" + client.cityRecord.uf,
+      };
+      setOptionsSelect2({ ...data });
+    }
+  }, [client]);
+
   return (
     <div>
       <Title description="Dados cadastrais" />
@@ -73,19 +109,27 @@ export default function UpdateRegistration() {
           email: client?.email,
           address: client?.address,
           cityId: client?.cityId,
+          cityRecord: client?.cityRecord,
           phoneOne: client?.phoneOne,
           phoneTwo: client?.phoneTwo,
         }}
       >
-        {({ handleSubmit, handleChange, values, touched, errors }) => (
+        {({
+          handleSubmit,
+          handleChange,
+          values,
+          touched,
+          errors,
+          setFieldValue,
+        }) => (
           <>
             <Form noValidate onSubmit={handleSubmit}>
               <Form.Group
                 className="mb-1"
-                controlId="exampleForm.ControlInput1"
+                controlId="exampleForm.ControlInputAll"
               >
                 <FloatingLabel
-                  controlId="floatingInput"
+                  controlId="floatingInputName"
                   label="Nome Completo"
                   className="mb-1"
                 >
@@ -98,31 +142,22 @@ export default function UpdateRegistration() {
                     isInvalid={!!errors.name}
                   />
                 </FloatingLabel>
-                <Form.Label>Escolha o sexo</Form.Label>
-                <div className="d-flex justify-content-around mt-1 mb-3">
-                  <Form.Check
-                    inline
-                    label="Masculino"
+                <FloatingLabel controlId="floatingSelectSexo" label="Sexo">
+                  <Form.Select
                     name="sex"
-                    type={"radio"}
-                    value="1"
-                    id={`inline-${"radio"}-1`}
+                    className="mb-1"
+                    value={values.sex}
                     onChange={handleChange}
-                    checked={values.sex == 1}
-                  />
-                  <Form.Check
-                    inline
-                    label="Feminino"
-                    name="sex"
-                    type={"radio"}
-                    value="2"
-                    id={`inline-${"radio"}-2`}
-                    onChange={handleChange}
-                    checked={values.sex == 2}
-                  />
-                </div>
+                    isValid={touched.sex && !errors.sex}
+                    isInvalid={!!errors.sex}
+                    aria-label="Floating label select example"
+                  >
+                    <option value="1">Masculino</option>
+                    <option value="2">Feminino</option>
+                  </Form.Select>
+                </FloatingLabel>
                 <FloatingLabel
-                  controlId="floatingInput"
+                  controlId="floatingInputDateBirthday"
                   label="Data de nascimento"
                   className="mb-1"
                 >
@@ -135,7 +170,23 @@ export default function UpdateRegistration() {
                   />
                 </FloatingLabel>
                 <FloatingLabel
-                  controlId="floatingInput"
+                  controlId="floatingInputCity"
+                  label="Cidade"
+                  className="mb-1"
+                >
+                  <AsyncSelect
+                    cacheOptions
+                    loadOptions={loadOptionsCitySelect2}
+                    defaultOptions={false}
+                    value={optionsSelect2}
+                    onChange={(e) => setOptionsSelect2Handle(e, setFieldValue)}
+                    name="cityId"
+                    id="cityId"
+                    isSearchable={true}
+                  />
+                </FloatingLabel>
+                <FloatingLabel
+                  controlId="floatingInputEmail"
                   label="E-mail"
                   className="mb-1"
                 >
@@ -149,7 +200,7 @@ export default function UpdateRegistration() {
                   />
                 </FloatingLabel>
                 <FloatingLabel
-                  controlId="floatingInput"
+                  controlId="floatingInputAddress"
                   label="Endereço"
                   className="mb-1"
                 >
@@ -163,7 +214,7 @@ export default function UpdateRegistration() {
                   />
                 </FloatingLabel>
                 <FloatingLabel
-                  controlId="floatingInput"
+                  controlId="floatingInputPhoneOne"
                   label="Telefone"
                   className="mb-1"
                 >
@@ -176,7 +227,7 @@ export default function UpdateRegistration() {
                   />
                 </FloatingLabel>
                 <FloatingLabel
-                  controlId="floatingInput"
+                  controlId="floatingInputPhoneTwo"
                   label="Celular"
                   className="mb-1"
                 >
@@ -209,6 +260,7 @@ export default function UpdateRegistration() {
                 </Block>
               </Form.Group>
             </Form>
+            <pre>{JSON.stringify(values)}</pre>
           </>
         )}
       </Formik>

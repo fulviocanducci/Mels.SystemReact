@@ -3,6 +3,7 @@ import {
   ILoginRecord,
   IMovementReceiptGroupYearRecord,
   IMovementReceiptYearRecord,
+  ISelect2,
 } from "../@types";
 import { api } from "./base";
 import { numbers } from "../utils";
@@ -30,11 +31,22 @@ const clientUpdate = (clientRecord: ClientRecord) => {
   return api.post<ClientRecord>("/api/client", clientRecord);
 };
 
+const citySelect2 = async (name: string) => {
+  const result = await api.get<ISelect2[]>("/api/city/select2", {
+    params: { name },
+  });
+  if (result.status === 200) {
+    return result.data;
+  }
+  return [];
+};
+
 const request = {
   authentication,
   paymentsGroupByYear,
   paymentsByYear,
   clientUpdate,
+  citySelect2,
 };
 
 export { request };

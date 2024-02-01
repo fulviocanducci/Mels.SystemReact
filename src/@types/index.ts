@@ -1,3 +1,7 @@
+export interface ISelect2 {
+  label: string;
+  value: number | undefined;
+}
 export interface IFormControlCpf {
   name: string;
   value: string;

@@ -25,6 +25,7 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.21.3",
     "react-scripts": "5.0.1",
+    "react-select": "^5.8.0",
     "react-toastify": "^10.0.4",
     "typescript": "^4.9.5",
     "use-mask-input": "^3.3.7",
@@ -58,6 +59,7 @@
   "devDependencies": {
     "@types/axios": "^0.14.0",
     "@types/react-bootstrap": "^0.32.35",
-    "@types/react-router-dom": "^5.3.3"
+    "@types/react-router-dom": "^5.3.3",
+    "@types/react-select": "^5.0.1"
   }
 }
