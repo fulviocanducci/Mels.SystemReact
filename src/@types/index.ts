@@ -34,10 +34,12 @@ export interface IProtectedRouter {
 export interface IFormValues {
   cpf: string;
 }
+
 export interface IToast {
   show: boolean;
   change: React.Dispatch<React.SetStateAction<boolean>>;
 }
+
 export interface ILoginRecord {
   token: string;
   expiration: Date;
