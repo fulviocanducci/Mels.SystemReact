@@ -85,7 +85,6 @@ export default function UpdateRegistration() {
   }
 
   useEffect(() => {
-    console.log(client);
     if (
       client &&
       client.cityRecord &&
