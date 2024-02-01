@@ -30,7 +30,8 @@ export function Top() {
             height="30"
             className="d-inline-block align-top"
             alt="Mels Fitness Academias"
-          />
+          />{" "}
+          MELS FITNESS
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={toggle} />
         <Navbar.Collapse id="basic-navbar-nav">
