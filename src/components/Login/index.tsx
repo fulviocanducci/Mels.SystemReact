@@ -20,6 +20,7 @@ import {
   useClient,
   useCpf,
   useExpiration,
+  useLoginLocalStorage,
   useToken,
 } from "../../@hooks";
 
@@ -30,6 +31,7 @@ function Login() {
   const { setToken } = useToken();
   const { cpf: source, setCpf } = useCpf();
   const { setExpiration } = useExpiration();
+  const { setLoginStorage, getLoginStorage } = useLoginLocalStorage();
   const schema = yup.object().shape({
     cpf: yup
       .string()
@@ -55,6 +57,7 @@ function Login() {
                 result.data.expiration,
                 result.data.clientRecord
               );
+              setLoginStorage(values.cpf);
             }
           },
           (error) => console.log(error)
@@ -73,7 +76,7 @@ function Login() {
         validationSchema={schema}
         onSubmit={formikOnSubmit}
         initialValues={{
-          cpf: source ?? "",
+          cpf: getLoginStorage() ?? "",
         }}
       >
         {({ handleSubmit, handleChange, values, touched, errors }) => (

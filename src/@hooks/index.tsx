@@ -4,6 +4,7 @@ import {
   LS_NAME_CLIENT,
   LS_NAME_CPF,
   LS_NAME_EXPIRATION,
+  LS_NAME_LOGIN_CPF,
   LS_NAME_TOKEN,
 } from "../@const";
 import { ClientRecord } from "../@types";
@@ -33,6 +34,14 @@ const removeLocalStorage = () => {
   localStorage.removeItem(LS_NAME_CPF);
   localStorage.removeItem(LS_NAME_CLIENT);
   localStorage.removeItem(LS_NAME_EXPIRATION);
+};
+
+export const useLoginLocalStorage = () => {
+  const setLoginStorage = (cpf: string) =>
+    localStorage.setItem(LS_NAME_LOGIN_CPF, cpf);
+  const getLoginStorage = (): string | null =>
+    localStorage.getItem(LS_NAME_LOGIN_CPF);
+  return { setLoginStorage, getLoginStorage };
 };
 
 export const setClientLocalStorage = (client: ClientRecord) => {

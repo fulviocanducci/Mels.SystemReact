@@ -176,6 +176,7 @@ export default function UpdateRegistration() {
               <Form.Group className="mb-2" controlId="exampleForm.cityId">
                 <Form.Label className="mb-0">Cidade / Uf:</Form.Label>
                 <AsyncSelect
+                  noOptionsMessage={() => "Digite o nome da cidade"}
                   styles={{
                     container: (provider, state) => ({
                       ...provider,
