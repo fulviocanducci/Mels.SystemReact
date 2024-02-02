@@ -75,7 +75,7 @@ export default function Payments() {
               </div>
             );
           })}
-        <div className="col-md-12">
+        <div className="col-md-12 mb-3">
           <div className="d-grid gap-2 mt-0">
             <Button variant="success" size="sm" onClick={handleGoBack}>
               <Icon.Backspace /> Voltar
