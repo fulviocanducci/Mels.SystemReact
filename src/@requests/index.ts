@@ -4,6 +4,8 @@ import {
   IMovementReceiptGroupYearRecord,
   IMovementReceiptYearRecord,
   ISelect2,
+  TrainingGroupRecord,
+  TrainingRecord,
 } from "../@types";
 import { api } from "./base";
 import { numbers } from "../utils";
@@ -36,9 +38,24 @@ const citySelect2 = async (name: string) => {
     params: { name },
   });
   if (result.status === 200) {
+    console.log(result);
     return result.data;
   }
   return [];
+};
+
+const trainingGroupRecord = (cpf: string) => {
+  const value = numbers.onlyNumbers(cpf);
+  return api.get<TrainingGroupRecord[]>(`/api/exercices/${value}`);
+};
+
+const trainingByCpfAndDayTypeRecord = (cpf: string, dayType: string) => {
+  const value = numbers.onlyNumbers(cpf);
+  return api.get<TrainingRecord[]>(`/api/exercices/${value}/type/${dayType}`);
+};
+
+const trainingUpdateRecord = (model: TrainingRecord) => {
+  return api.post("/api/exercices", model);
 };
 
 const request = {
@@ -47,6 +64,9 @@ const request = {
   paymentsByYear,
   clientUpdate,
   citySelect2,
+  trainingGroupRecord,
+  trainingByCpfAndDayTypeRecord,
+  trainingUpdateRecord,
 };
 
 export { request };

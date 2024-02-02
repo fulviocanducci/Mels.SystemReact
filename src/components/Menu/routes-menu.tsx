@@ -10,6 +10,8 @@ import Logout from "../../Pages/Logout";
 import Payment from "../../Pages/Payment";
 import Payments from "../../Pages/Payment/payments";
 import UpdateRegistration from "../../Pages/UpdateRegistration";
+import Training from "../../Pages/Training";
+import TrainingDetails from "../../Pages/Training/details";
 
 export function RoutesMenu() {
   return (
@@ -58,7 +60,22 @@ export function RoutesMenu() {
             </ProtectedRouter>
           }
         />
-
+        <Route
+          path="/training"
+          element={
+            <ProtectedRouter>
+              <Training />
+            </ProtectedRouter>
+          }
+        />
+        <Route
+          path="/training-details/:dayType/all"
+          element={
+            <ProtectedRouter>
+              <TrainingDetails />
+            </ProtectedRouter>
+          }
+        />
         <Route
           path="/updateregistration"
           element={

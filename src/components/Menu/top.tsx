@@ -40,6 +40,13 @@ export function Top() {
               <Icon.WindowDesktop /> Home
             </Link>
             <Link
+              to="/training"
+              className="nav-link"
+              onClick={setExpandedFalse}
+            >
+              <Icon.FolderCheck /> Treinos
+            </Link>
+            <Link
               to="/payments"
               className="nav-link"
               onClick={setExpandedFalse}

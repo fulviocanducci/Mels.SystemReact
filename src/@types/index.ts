@@ -1,3 +1,17 @@
+export interface TrainingGroupRecord {
+  count: number;
+  dayType: string;
+  lastTimeAt: string;
+}
+
+export interface TrainingRecord {
+  cpf: string;
+  name: string;
+  dayType: string;
+  linkOfVideo: string;
+  execute: boolean;
+}
+
 export interface ISelect2 {
   label: string;
   value: number | undefined;
