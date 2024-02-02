@@ -9,22 +9,22 @@ import * as yup from "yup";
 import { formats, validation } from "../../utils";
 import Block from "../../components/Block";
 import FormControlCustom from "../../components/HtmlElements";
-import { useGetClient, useSetClient } from "../../@hooks";
+import { setClientLocalStorage, useClient } from "../../@hooks";
 import { request } from "../../@requests";
 import { ClientRecord, ISelect2 } from "../../@types";
 import Title from "../../components/Title";
 import Toast from "../../components/Toast";
 import { useEffect, useState } from "react";
 import ButtonLoading from "../../components/ButtonLoading";
+import Loading from "../../components/Loading";
 
 export default function UpdateRegistration() {
-  const client = useGetClient();
+  const { client, setClient } = useClient();
   const [stateForm, setStateForm] = useState<boolean>(false);
   const [optionsSelect2, setOptionsSelect2] = useState<ISelect2>({
     value: 1,
     label: "",
   });
-  const { setClientStorage } = useSetClient();
   const { Formik } = formik;
   const [show, setShow] = useState<boolean>(false);
 
@@ -72,7 +72,8 @@ export default function UpdateRegistration() {
             if (result.status === 200) {
               const clientRecord: ClientRecord = result.data;
               if (clientRecord !== null) {
-                setClientStorage(clientRecord);
+                setClient(clientRecord);
+                setClientLocalStorage(clientRecord);
                 setShow(() => true);
               }
             }
@@ -98,7 +99,11 @@ export default function UpdateRegistration() {
       };
       setOptionsSelect2(data);
     }
-  }, [client]);
+  }, []);
+
+  if (!client) {
+    return <Loading />;
+  }
 
   return (
     <div>

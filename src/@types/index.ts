@@ -78,9 +78,9 @@ export interface CityRecord {
 }
 
 export interface ILoginContext {
-  token?: string | null | undefined;
-  cpf?: string | null | undefined;
-  client?: ClientRecord | null | undefined;
+  token?: string | null;
+  cpf?: string | null;
+  client?: ClientRecord | null;
   expiration?: Date | null | string;
   setToken: React.Dispatch<React.SetStateAction<string | null | undefined>>;
   setCpf: React.Dispatch<React.SetStateAction<string | null | undefined>>;
@@ -88,7 +88,7 @@ export interface ILoginContext {
     React.SetStateAction<ClientRecord | null | undefined>
   >;
   setExpiration: React.Dispatch<
-    React.SetStateAction<Date | null | undefined | string>
+    React.SetStateAction<Date | null | string | undefined>
   >;
 }
 

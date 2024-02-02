@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { request } from "../../@requests";
 import { IMovementReceiptGroupYearRecord } from "../../@types";
 import { Alert, Button } from "react-bootstrap";
-import { useGetCpf } from "../../@hooks";
+import { useCpf } from "../../@hooks";
 import * as Icon from "react-bootstrap-icons";
 import Title from "../../components/Title";
 import Loading from "../../components/Loading";
 import { useNavigate } from "react-router-dom";
 
 export default function Payment() {
-  const cpf = useGetCpf();
+  const { cpf } = useCpf();
   const navigate = useNavigate();
   const [items, setItems] = useState<IMovementReceiptGroupYearRecord[] | null>(
     null

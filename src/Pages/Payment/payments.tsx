@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useGetCpf } from "../../@hooks";
+import { useCpf } from "../../@hooks";
 import { request } from "../../@requests";
 import { useNavigate, useParams } from "react-router-dom";
 import { IMovementReceiptYearRecord } from "../../@types";
@@ -13,7 +13,7 @@ import { faCreditCard } from "@fortawesome/free-solid-svg-icons/faCreditCard";
 import * as Icon from "react-bootstrap-icons";
 
 export default function Payments() {
-  const cpf = useGetCpf();
+  const { cpf } = useCpf();
   const { year } = useParams();
   const navigate = useNavigate();
   const [items, setItems] = useState<IMovementReceiptYearRecord[] | null>(null);

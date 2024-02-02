@@ -5,7 +5,10 @@ import reportWebVitals from "./reportWebVitals";
 import "bootstrap/dist/css/bootstrap.min.css";
 import LoginProvider from "./context";
 
-const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
+const root = ReactDOM.createRoot(
+  document.getElementById("root") as HTMLElement
+);
+
 root.render(
   <React.StrictMode>
     <LoginProvider>
@@ -13,4 +16,5 @@ root.render(
     </LoginProvider>
   </React.StrictMode>
 );
+
 reportWebVitals();

@@ -12,24 +12,24 @@ import { IFormValues } from "../../@types";
 import logo from "../../images/logo.png";
 import "./styles.css";
 import { request } from "../../@requests";
-import {
-  useLocalStorageLoginCpf,
-  useSetClient,
-  useSetCpf,
-  useSetExpiration,
-  useSetToken,
-} from "../../@hooks";
+
 import ButtonLoading from "../ButtonLoading";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import {
+  setLocalStorage,
+  useClient,
+  useCpf,
+  useExpiration,
+  useToken,
+} from "../../@hooks";
 
 function Login() {
-  const [stateForm, setStateForm] = useState<boolean>(false);
-  const { setLocalStorageCpf, getLocalStorageCpf } = useLocalStorageLoginCpf();
   const { Formik } = formik;
-  const { setClientStorage } = useSetClient();
-  const { setTokenStorage } = useSetToken();
-  const { setCpfStorage } = useSetCpf();
-  const { setExpirationStorage } = useSetExpiration();
+  const [stateForm, setStateForm] = useState<boolean>(false);
+  const { setClient } = useClient();
+  const { setToken } = useToken();
+  const { cpf: source, setCpf } = useCpf();
+  const { setExpiration } = useExpiration();
   const schema = yup.object().shape({
     cpf: yup
       .string()
@@ -45,11 +45,16 @@ function Login() {
         .then(
           (result) => {
             if (result.status === 200) {
-              setTokenStorage(result.data.token);
-              setExpirationStorage(result.data.expiration);
-              setClientStorage(result.data.clientRecord);
-              setCpfStorage(values.cpf);
-              setLocalStorageCpf(values.cpf);
+              setToken(result.data.token);
+              setExpiration(result.data.expiration);
+              setClient(result.data.clientRecord);
+              setCpf(values.cpf);
+              setLocalStorage(
+                values.cpf,
+                result.data.token,
+                result.data.expiration,
+                result.data.clientRecord
+              );
             }
           },
           (error) => console.log(error)
@@ -68,7 +73,7 @@ function Login() {
         validationSchema={schema}
         onSubmit={formikOnSubmit}
         initialValues={{
-          cpf: getLocalStorageCpf(),
+          cpf: source ?? "",
         }}
       >
         {({ handleSubmit, handleChange, values, touched, errors }) => (
