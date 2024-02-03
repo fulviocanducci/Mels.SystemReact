@@ -4,7 +4,7 @@ import Title from "../../components/Title";
 import { TrainingGroupRecord } from "../../@types";
 import { request } from "../../@requests";
 import { useCpf } from "../../@hooks";
-import { Button } from "react-bootstrap";
+import { Alert, Button } from "react-bootstrap";
 import { formats } from "../../utils";
 import * as Icon from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
@@ -38,35 +38,31 @@ export default function Training() {
         training.length > 0 &&
         training.map((item, index) => {
           return (
-            <div
-              key={index}
-              className="d-flex justify-content-between border border-success bg-light p-2 mt-2 rounded"
-            >
-              <div>
-                <h4 className="mb-0 text-success">Treino {item.dayType}</h4>
-                <small
-                  className="mt-0"
-                  style={{ fontSize: "12px", color: "#828282" }}
-                >
-                  Última vez:{" "}
-                  {item.lastTimeAt
-                    ? formats.date(item.lastTimeAt)
-                    : "Iniciante..."}
-                </small>
+            <Alert key={index} variant="success">
+              <div className="d-flex justify-content-between border p-0 mt-2 rounded">
+                <div>
+                  <h5 className="mb-0 text-success">Treino {item.dayType}</h5>
+                  <small className="mt-0 text-success">
+                    Último:{" "}
+                    {item.lastTimeAt
+                      ? formats.date(item.lastTimeAt)
+                      : "Iniciante..."}
+                  </small>
+                </div>
+                <div>
+                  <Block>
+                    <Button
+                      variant={"success"}
+                      size={"sm"}
+                      className="mt-2"
+                      onClick={() => handleTrainingDetails(item.dayType)}
+                    >
+                      <Icon.BoxArrowInRight /> Começar
+                    </Button>
+                  </Block>
+                </div>
               </div>
-              <div>
-                <Block>
-                  <Button
-                    variant={"success"}
-                    size={"sm"}
-                    className="mt-2"
-                    onClick={() => handleTrainingDetails(item.dayType)}
-                  >
-                    <Icon.BoxArrowInRight /> Começar
-                  </Button>
-                </Block>
-              </div>
-            </div>
+            </Alert>
           );
         })}
     </div>
