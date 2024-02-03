@@ -29,7 +29,7 @@ export const useExpiration = () => {
   return { expiration, setExpiration };
 };
 
-const removeLocalStorage = () => {
+export const removeLocalStorage = () => {
   localStorage.removeItem(LS_NAME_TOKEN);
   localStorage.removeItem(LS_NAME_CPF);
   localStorage.removeItem(LS_NAME_CLIENT);

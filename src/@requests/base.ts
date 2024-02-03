@@ -20,6 +20,7 @@ api.interceptors.request.use(
   },
   async (error) => {
     const originalRequest = error.config;
+    console.log(originalRequest);
     if (error?.response?.status === 401 && !originalRequest?.__isRetryRequest) {
       redirectTo.host();
     }

@@ -11,14 +11,19 @@ import * as Icon from "react-bootstrap-icons";
 import ButtonLoading from "../../components/ButtonLoading";
 import LoadingStatus from "../../components/LoadingStatus";
 import { formats, numbers } from "../../utils";
+import { isErrorToRedirect } from "../../utils/error";
+import VideoPlayer from "../../components/VideoPlayer";
 
 export default function TrainingDetails() {
   const { cpf } = useCpf();
+  const [show, setShow] = useState<boolean>(false);
+  const [url, setUrl] = useState<string | null | undefined>(null);
   const [details, setDetails] = useState<TrainingRecord[] | null>(null);
   const [stateForm, setStateForm] = useState<boolean>(false);
   const [stateIndexLoading, setStateIndexLoading] = useState(-1);
   const { dayType } = useParams();
   const navigate = useNavigate();
+  const toogleShow = () => setShow(() => !show);
   const statusBtn = useCallback(() => {
     if (details != null) {
       return details?.filter((c) => c.execute === false).length > 0;
@@ -35,18 +40,15 @@ export default function TrainingDetails() {
     };
     request
       .trainingUpdateFinishRecord(model)
-      .then(
-        (result) => {
-          if (result.status === 200) {
-            request.exercicesReset(value, dayType).then((result) => {
-              if (result.status === 200) {
-                navigate(`/training`);
-              }
-            });
-          }
-        },
-        (error) => console.log(error)
-      )
+      .then((result) => {
+        if (result.status === 200) {
+          request.exercicesReset(value, dayType).then((result) => {
+            if (result.status === 200) {
+              navigate(`/training`);
+            }
+          }, isErrorToRedirect);
+        }
+      }, isErrorToRedirect)
       .finally(() => setStateForm(false));
   };
   const handleChecked = (
@@ -60,28 +62,29 @@ export default function TrainingDetails() {
       setStateIndexLoading(index);
       request
         .trainingUpdateRecord(modelChange)
-        .then(
-          (result) => {
-            if (result.status === 200) {
-              let detailsNew = details.map((item) => {
-                if (
-                  item.cpf === model.cpf &&
-                  item.dayType === model.dayType &&
-                  item.name === model.name
-                ) {
-                  return { ...item, execute: checked };
-                }
-                return item;
-              });
-              setDetails(detailsNew);
-            }
-          },
-          (error) => console.log(error)
-        )
+        .then((result) => {
+          if (result.status === 200) {
+            let detailsNew = details.map((item) => {
+              if (
+                item.cpf === model.cpf &&
+                item.dayType === model.dayType &&
+                item.name === model.name
+              ) {
+                return { ...item, execute: checked };
+              }
+              return item;
+            });
+            setDetails(detailsNew);
+          }
+        }, isErrorToRedirect)
         .finally(() => {
           setStateIndexLoading(-1);
         });
     }
+  };
+  const handleShowVideo = (e: any, url: string) => {
+    setUrl(() => url);
+    toogleShow();
   };
   useEffect(() => {
     if (cpf && dayType) {
@@ -89,64 +92,86 @@ export default function TrainingDetails() {
         if (result.status === 200) {
           setDetails(result.data);
         }
-      });
+      }, isErrorToRedirect);
     }
   }, [cpf, dayType]);
   if (details === null) {
     return <Loading />;
   }
   return (
-    <div>
-      <Title description={`Treino ${dayType}`} />
-      {details &&
-        details.length > 0 &&
-        details.map((item, index) => (
-          <div
-            className="d-flex justify-content-between border-bottom border-success"
-            key={index}
-          >
-            <div className="p-3 mb-1" key={`key-${item.name}-${index}`}>
-              <Form.Check
-                type="checkbox"
-                id={`id-${item.name}-${index}`}
-                label={item.name}
-                onChange={(e) => handleChecked(e, item, index)}
-                checked={item.execute}
-              />
-            </div>
-            <div className="p-3 mb-1">
-              <div>
-                {item.execute && stateIndexLoading !== index && (
-                  <Icon.Check2Circle className="text-success" />
+    <>
+      <div>
+        <Title description={`Treino ${dayType}`} />
+        {details &&
+          details.length > 0 &&
+          details.map((item, index) => (
+            <div
+              className="d-flex justify-content-between border-bottom border-success"
+              key={index}
+            >
+              <div
+                className="p-2 mb-1 flex-grow-1"
+                key={`key-${item.name}-${index}`}
+              >
+                <Form.Check
+                  type="checkbox"
+                  id={`id-${item.name}-${index}`}
+                  label={item.name}
+                  onChange={(e) => handleChecked(e, item, index)}
+                  checked={item.execute}
+                />
+              </div>
+              <div className="p-2 mb-1">
+                <div>
+                  {item.execute && stateIndexLoading !== index && (
+                    <Icon.Check2Circle className="text-success" />
+                  )}
+                  {!item.execute && stateIndexLoading !== index && (
+                    <Icon.XLg className="text-secondary" />
+                  )}
+                  {stateIndexLoading === index && <LoadingStatus />}
+                </div>
+              </div>
+              <div className="p-2 mb-1">
+                {item.linkOfVideo && (
+                  <Button
+                    onClick={(e) => handleShowVideo(e, item.linkOfVideo)}
+                    variant="success"
+                    size="sm"
+                  >
+                    <Icon.Youtube />
+                  </Button>
                 )}
-                {!item.execute && stateIndexLoading !== index && (
-                  <Icon.XLg className="text-secondary" />
+                {!item.linkOfVideo && (
+                  <Button variant="light" size="sm" disabled={true}>
+                    <Icon.XCircle />
+                  </Button>
                 )}
-                {stateIndexLoading === index && <LoadingStatus />}
               </div>
             </div>
-          </div>
-        ))}
-      <div className="mt-2">
-        <Block>
-          <Button
-            variant="success"
-            size="sm"
-            disabled={statusBtn()}
-            onClick={handleConclude}
-          >
-            {stateForm ? (
-              <>
-                <ButtonLoading /> Concluindo ...
-              </>
-            ) : (
-              <>
-                <Icon.CheckAll /> Concluir
-              </>
-            )}
-          </Button>
-        </Block>
+          ))}
+        <div className="mt-2">
+          <Block>
+            <Button
+              variant="success"
+              size="sm"
+              disabled={statusBtn()}
+              onClick={handleConclude}
+            >
+              {stateForm ? (
+                <>
+                  <ButtonLoading /> Concluindo ...
+                </>
+              ) : (
+                <>
+                  <Icon.CheckAll /> Concluir
+                </>
+              )}
+            </Button>
+          </Block>
+        </div>
       </div>
-    </div>
+      <VideoPlayer show={show} setShow={setShow} url={url} />
+    </>
   );
 }

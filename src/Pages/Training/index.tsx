@@ -9,6 +9,7 @@ import { formats } from "../../utils";
 import * as Icon from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import Block from "../../components/Block";
+import { isErrorToRedirect } from "../../utils/error";
 
 export default function Training() {
   const { cpf } = useCpf();
@@ -25,7 +26,7 @@ export default function Training() {
         if (result.status === 200) {
           setTraining(result.data);
         }
-      });
+      }, isErrorToRedirect);
     }
   }, [cpf]);
   if (training === null) {

@@ -7,6 +7,7 @@ import * as Icon from "react-bootstrap-icons";
 import Title from "../../components/Title";
 import Loading from "../../components/Loading";
 import { useNavigate } from "react-router-dom";
+import { isErrorToRedirect } from "../../utils/error";
 
 export default function Payment() {
   const { cpf } = useCpf();
@@ -16,14 +17,11 @@ export default function Payment() {
   );
   useEffect(() => {
     if (cpf) {
-      request.paymentsGroupByYear(cpf).then(
-        (result) => {
-          if (result.status === 200) {
-            setItems(result.data);
-          }
-        },
-        (error) => console.log(error)
-      );
+      request.paymentsGroupByYear(cpf).then((result) => {
+        if (result.status === 200) {
+          setItems(result.data);
+        }
+      }, isErrorToRedirect);
     }
   }, [cpf]);
 

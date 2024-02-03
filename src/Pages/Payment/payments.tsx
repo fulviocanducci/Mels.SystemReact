@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPix } from "@fortawesome/free-brands-svg-icons/faPix";
 import { faCreditCard } from "@fortawesome/free-solid-svg-icons/faCreditCard";
 import * as Icon from "react-bootstrap-icons";
+import { isErrorToRedirect } from "../../utils/error";
 
 export default function Payments() {
   const { cpf } = useCpf();
@@ -19,14 +20,11 @@ export default function Payments() {
   const [items, setItems] = useState<IMovementReceiptYearRecord[] | null>(null);
   useEffect(() => {
     if (cpf && year) {
-      request.paymentsByYear(cpf, +year).then(
-        (result) => {
-          if (result.status === 200) {
-            setItems(result.data);
-          }
-        },
-        (error) => console.log(error)
-      );
+      request.paymentsByYear(cpf, +year).then((result) => {
+        if (result.status === 200) {
+          setItems(result.data);
+        }
+      }, isErrorToRedirect);
     }
   }, [cpf, year]);
 

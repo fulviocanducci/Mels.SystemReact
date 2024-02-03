@@ -1,3 +1,8 @@
+export interface IVideoPlayer {
+  show: boolean;
+  setShow: React.Dispatch<React.SetStateAction<boolean>>;
+  url: string | null | undefined;
+}
 export interface TrainingGroupRecord {
   count: number;
   dayType: string;
