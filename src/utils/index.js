@@ -3,7 +3,10 @@ import moment from "moment";
 function setMomentLocale() {
   moment.locale("pt-br");
 }
-
+function nowDateTime() {
+  setMomentLocale();
+  return moment().format("YYYY-MM-DDTHH:mm:ss");
+}
 function onlyNumbers(value) {
   if (value) {
     return value.replace(/\D/g, "");
@@ -85,7 +88,12 @@ const formatMoneyPTBR = (value) => {
 const formatDateTimePTBR = (value) => {
   const date = new Date(value);
   if (date) {
-    return date.toLocaleDateString("pt-BR");
+    return (
+      date.toLocaleDateString("pt-BR") +
+      (date.toLocaleTimeString() !== "00:00:00"
+        ? " " + date.toLocaleTimeString()
+        : "")
+    );
   }
   return "";
 };
@@ -125,6 +133,7 @@ const formats = {
   money: formatMoneyPTBR,
   date: formatDateTimePTBR,
   client: formatClient,
+  nowDateTime,
 };
 
 const redirectTo = {

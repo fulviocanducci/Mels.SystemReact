@@ -12,6 +12,12 @@ export interface TrainingRecord {
   execute: boolean;
 }
 
+export interface TrainingFinishedRecord {
+  cpf?: string | null | undefined;
+  dayType?: string;
+  lastTimeAt?: string;
+}
+
 export interface ISelect2 {
   label: string;
   value: number | undefined;

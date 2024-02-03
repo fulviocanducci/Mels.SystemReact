@@ -8,6 +8,7 @@ import { Button } from "react-bootstrap";
 import { formats } from "../../utils";
 import * as Icon from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
+import Block from "../../components/Block";
 
 export default function Training() {
   const { cpf } = useCpf();
@@ -26,7 +27,7 @@ export default function Training() {
         }
       });
     }
-  });
+  }, [cpf]);
   if (training === null) {
     return <Loading />;
   }
@@ -54,14 +55,16 @@ export default function Training() {
                 </small>
               </div>
               <div>
-                <Button
-                  variant={"success"}
-                  size={"sm"}
-                  className="mt-2"
-                  onClick={() => handleTrainingDetails(item.dayType)}
-                >
-                  <Icon.BoxArrowInRight /> Começar
-                </Button>
+                <Block>
+                  <Button
+                    variant={"success"}
+                    size={"sm"}
+                    className="mt-2"
+                    onClick={() => handleTrainingDetails(item.dayType)}
+                  >
+                    <Icon.BoxArrowInRight /> Começar
+                  </Button>
+                </Block>
               </div>
             </div>
           );

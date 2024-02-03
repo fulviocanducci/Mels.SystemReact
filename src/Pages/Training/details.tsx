@@ -1,15 +1,16 @@
 import { useCallback, useEffect, useState } from "react";
-import { TrainingRecord } from "../../@types";
+import { TrainingFinishedRecord, TrainingRecord } from "../../@types";
 import Loading from "../../components/Loading";
 import { request } from "../../@requests";
 import { useCpf } from "../../@hooks";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Title from "../../components/Title";
 import { Button, Form } from "react-bootstrap";
 import Block from "../../components/Block";
 import * as Icon from "react-bootstrap-icons";
 import ButtonLoading from "../../components/ButtonLoading";
 import LoadingStatus from "../../components/LoadingStatus";
+import { formats, numbers } from "../../utils";
 
 export default function TrainingDetails() {
   const { cpf } = useCpf();
@@ -17,12 +18,37 @@ export default function TrainingDetails() {
   const [stateForm, setStateForm] = useState<boolean>(false);
   const [stateIndexLoading, setStateIndexLoading] = useState(-1);
   const { dayType } = useParams();
+  const navigate = useNavigate();
   const statusBtn = useCallback(() => {
     if (details != null) {
       return details?.filter((c) => c.execute === false).length > 0;
     }
     return false;
   }, [details]);
+  const handleConclude = () => {
+    setStateForm(true);
+    const value = numbers.onlyNumbers(cpf);
+    const model: TrainingFinishedRecord = {
+      cpf: value,
+      dayType: dayType,
+      lastTimeAt: formats.nowDateTime(),
+    };
+    request
+      .trainingUpdateFinishRecord(model)
+      .then(
+        (result) => {
+          if (result.status === 200) {
+            request.exercicesReset(value, dayType).then((result) => {
+              if (result.status === 200) {
+                navigate(`/training`);
+              }
+            });
+          }
+        },
+        (error) => console.log(error)
+      )
+      .finally(() => setStateForm(false));
+  };
   const handleChecked = (
     e: React.ChangeEvent<HTMLInputElement>,
     model: TrainingRecord,
@@ -75,10 +101,13 @@ export default function TrainingDetails() {
       {details &&
         details.length > 0 &&
         details.map((item, index) => (
-          <div className="d-flex justify-content-between border-bottom border-success">
+          <div
+            className="d-flex justify-content-between border-bottom border-success"
+            key={index}
+          >
             <div className="p-3 mb-1" key={`key-${item.name}-${index}`}>
               <Form.Check
-                type={"checkbox"}
+                type="checkbox"
                 id={`id-${item.name}-${index}`}
                 label={item.name}
                 onChange={(e) => handleChecked(e, item, index)}
@@ -100,14 +129,19 @@ export default function TrainingDetails() {
         ))}
       <div className="mt-2">
         <Block>
-          <Button variant="success" size="sm" disabled={statusBtn()}>
+          <Button
+            variant="success"
+            size="sm"
+            disabled={statusBtn()}
+            onClick={handleConclude}
+          >
             {stateForm ? (
               <>
                 <ButtonLoading /> Concluindo ...
               </>
             ) : (
               <>
-                <Icon.CheckLg /> Concluir
+                <Icon.CheckAll /> Concluir
               </>
             )}
           </Button>

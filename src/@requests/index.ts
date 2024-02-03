@@ -4,6 +4,7 @@ import {
   IMovementReceiptGroupYearRecord,
   IMovementReceiptYearRecord,
   ISelect2,
+  TrainingFinishedRecord,
   TrainingGroupRecord,
   TrainingRecord,
 } from "../@types";
@@ -58,6 +59,14 @@ const trainingUpdateRecord = (model: TrainingRecord) => {
   return api.post("/api/exercices", model);
 };
 
+const trainingUpdateFinishRecord = (model: TrainingFinishedRecord) => {
+  return api.post("/api/training", model);
+};
+
+const exercicesReset = (cpf: string, dayType: string | undefined) => {
+  return api.post(`/api/exercices/reset/${cpf}/type/${dayType}`);
+};
+
 const request = {
   authentication,
   paymentsGroupByYear,
@@ -67,6 +76,8 @@ const request = {
   trainingGroupRecord,
   trainingByCpfAndDayTypeRecord,
   trainingUpdateRecord,
+  trainingUpdateFinishRecord,
+  exercicesReset,
 };
 
 export { request };
