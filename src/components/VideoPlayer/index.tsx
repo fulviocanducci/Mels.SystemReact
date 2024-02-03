@@ -18,10 +18,9 @@ export default function VideoPlayer({ show, setShow, url }: IVideoPlayer) {
             />
           )}
           <Button
-            className="btn btn-light btn-circle button"
+            className="btn btn-success button btn-sm"
             onClick={() => setShow(false)}
           >
-            {" "}
             <Icon.XLg />
           </Button>
         </Modal.Body>
