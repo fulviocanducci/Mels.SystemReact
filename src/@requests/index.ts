@@ -11,6 +11,10 @@ import {
 import { api } from "./base";
 import { numbers } from "../utils";
 
+const pingRequest = () => {
+  return api.get<string>("/api/ping");
+};
+
 const authentication = (cpf: string) => {
   const value = numbers.onlyNumbers(cpf);
   return api.post<ILoginRecord>("/api/authentication", { cpf: value });
@@ -78,6 +82,7 @@ const request = {
   trainingUpdateRecord,
   trainingUpdateFinishRecord,
   exercicesReset,
+  pingRequest,
 };
 
 export { request };

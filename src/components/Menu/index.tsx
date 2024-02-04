@@ -1,15 +1,16 @@
-import React from "react";
 import { BrowserRouter } from "react-router-dom";
 import { Top } from "./top";
 import { RoutesMenu } from "./routes-menu";
+import { useLoggedIn, useMargin } from "../../@hooks";
 
 function Menu() {
+  const { isLoggedIn } = useLoggedIn();
+  const { margin } = useMargin();
   return (
     <BrowserRouter>
-      <Top />
-      <RoutesMenu />
+      {isLoggedIn() && <Top />}
+      <RoutesMenu marginTop={margin} />
     </BrowserRouter>
   );
 }
-
 export default Menu;

@@ -68,6 +68,8 @@ export interface IFormValues {
 }
 
 export interface IToast {
+  message: string;
+  type: "success" | "error";
   show: boolean;
   change: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -101,12 +103,15 @@ export interface CityRecord {
   name: string;
   uf: string;
 }
-
+export interface IRouteMenu {
+  marginTop: string | null | undefined;
+}
 export interface ILoginContext {
   token?: string | null;
   cpf?: string | null;
   client?: ClientRecord | null;
   expiration?: Date | null | string;
+  margin?: string | null;
   setToken: React.Dispatch<React.SetStateAction<string | null | undefined>>;
   setCpf: React.Dispatch<React.SetStateAction<string | null | undefined>>;
   setClient: React.Dispatch<
@@ -115,6 +120,7 @@ export interface ILoginContext {
   setExpiration: React.Dispatch<
     React.SetStateAction<Date | null | string | undefined>
   >;
+  setMargin: React.Dispatch<React.SetStateAction<string | null | undefined>>;
 }
 
 export interface ILoginProvider {

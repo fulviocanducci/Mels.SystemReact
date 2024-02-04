@@ -1,6 +1,6 @@
+import { Navigate } from "react-router-dom";
 import { LS_NAME_TOKEN } from "../../@const";
 import { IProtectedRouter } from "../../@types";
-import { redirectTo } from "../../utils";
 
 const ProtectedRouter = ({
   children,
@@ -10,8 +10,7 @@ const ProtectedRouter = ({
   if (json && json.length > 0) {
     return children;
   }
-  redirectTo.host();
-  return <></>;
+  return <Navigate to={redirectPath} replace />;
 };
 
 export default ProtectedRouter;

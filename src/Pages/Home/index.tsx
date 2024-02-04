@@ -3,9 +3,18 @@ import { useClient } from "../../@hooks";
 import logo from "../../images/logo-l.png";
 import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
+import { useEffect } from "react";
+import { request } from "../../@requests";
+import { isErrorToRedirect } from "../../utils/error";
 export default function Home() {
   const { client } = useClient();
   const navigate = useNavigate();
+  useEffect(() => {
+    request.pingRequest().then(
+      (result) => {},
+      (error) => isErrorToRedirect(error)
+    );
+  }, []);
   return (
     <div className="fs-6 text-success">
       <Title description="Home" />

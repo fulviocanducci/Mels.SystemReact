@@ -3,6 +3,7 @@ import { Button, FloatingLabel, Image } from "react-bootstrap";
 import * as formik from "formik";
 import * as Icon from "react-bootstrap-icons";
 import * as yup from "yup";
+import { useNavigate } from "react-router-dom";
 
 import FormControlCustom from "../HtmlElements";
 import Block from "../Block";
@@ -21,17 +22,23 @@ import {
   useCpf,
   useExpiration,
   useLoginLocalStorage,
+  useMargin,
   useToken,
 } from "../../@hooks";
+import { AxiosError } from "axios";
+import Toast from "../Toast";
 
 function Login() {
   const { Formik } = formik;
+  const [show, setShow] = useState<boolean>(false);
   const [stateForm, setStateForm] = useState<boolean>(false);
   const { setClient } = useClient();
   const { setToken } = useToken();
   const { cpf: source, setCpf } = useCpf();
+  const { setMargin } = useMargin();
   const { setExpiration } = useExpiration();
   const { setLoginStorage, getLoginStorage } = useLoginLocalStorage();
+  const navigate = useNavigate();
   const schema = yup.object().shape({
     cpf: yup
       .string()
@@ -51,16 +58,23 @@ function Login() {
               setExpiration(result.data.expiration);
               setClient(result.data.clientRecord);
               setCpf(values.cpf);
+              setMargin("65px");
               setLocalStorage(
                 values.cpf,
                 result.data.token,
                 result.data.expiration,
-                result.data.clientRecord
+                result.data.clientRecord,
+                "65px"
               );
               setLoginStorage(values.cpf);
+              navigate("/home");
             }
           },
-          (error) => console.log(error)
+          (error: AxiosError) => {
+            if (error.request.status === 400) {
+              setShow(() => true);
+            }
+          }
         )
         .finally(() => {
           setStateForm(false);
@@ -121,6 +135,7 @@ function Login() {
           </Form>
         )}
       </Formik>
+      <Toast message="CPF inválido" type="error" show={show} change={setShow} />
     </div>
   );
 }

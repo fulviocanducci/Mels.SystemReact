@@ -12,81 +12,93 @@ import Payments from "../../Pages/Payment/payments";
 import UpdateRegistration from "../../Pages/UpdateRegistration";
 import Training from "../../Pages/Training";
 import TrainingDetails from "../../Pages/Training/details";
+import { IRouteMenu } from "../../@types";
 
-export function RoutesMenu() {
+export function RoutesMenu({ marginTop }: IRouteMenu) {
   return (
-    <Container fluid style={{ marginTop: "65px" }}>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <ProtectedRouter>
-              <Home />
-            </ProtectedRouter>
-          }
-        />
-        <Route
-          path="/home"
-          element={
-            <ProtectedRouter>
-              <Home />
-            </ProtectedRouter>
-          }
-        />
-        <Route path="/login" element={<Login />} />
+    <div
+      style={{
+        backgroundColor: (marginTop ?? "0") === "0" ? "#CCF4CC" : "#FFFFFF",
+      }}
+    >
+      <Container
+        fluid
+        style={{
+          marginTop: marginTop ?? "0",
+        }}
+      >
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <ProtectedRouter>
+                <Home />
+              </ProtectedRouter>
+            }
+          />
+          <Route
+            path="/home"
+            element={
+              <ProtectedRouter>
+                <Home />
+              </ProtectedRouter>
+            }
+          />
+          <Route path="/login" element={<Login />} />
 
-        <Route
-          path="/logout"
-          element={
-            <ProtectedRouter>
-              <Logout />
-            </ProtectedRouter>
-          }
-        />
+          <Route
+            path="/logout"
+            element={
+              <ProtectedRouter>
+                <Logout />
+              </ProtectedRouter>
+            }
+          />
 
-        <Route
-          path="/payments"
-          element={
-            <ProtectedRouter>
-              <Payment />
-            </ProtectedRouter>
-          }
-        />
-        <Route
-          path="/payments/by/:year/all"
-          element={
-            <ProtectedRouter>
-              <Payments />
-            </ProtectedRouter>
-          }
-        />
-        <Route
-          path="/training"
-          element={
-            <ProtectedRouter>
-              <Training />
-            </ProtectedRouter>
-          }
-        />
-        <Route
-          path="/training-details/:dayType/all"
-          element={
-            <ProtectedRouter>
-              <TrainingDetails />
-            </ProtectedRouter>
-          }
-        />
-        <Route
-          path="/updateregistration"
-          element={
-            <ProtectedRouter>
-              <UpdateRegistration />
-            </ProtectedRouter>
-          }
-        />
-        <Route path="/nomatch" element={<NoMatch />} />
-        <Route path="*" element={<NoMatch />} />
-      </Routes>
-    </Container>
+          <Route
+            path="/payments"
+            element={
+              <ProtectedRouter>
+                <Payment />
+              </ProtectedRouter>
+            }
+          />
+          <Route
+            path="/payments/by/:year/all"
+            element={
+              <ProtectedRouter>
+                <Payments />
+              </ProtectedRouter>
+            }
+          />
+          <Route
+            path="/training"
+            element={
+              <ProtectedRouter>
+                <Training />
+              </ProtectedRouter>
+            }
+          />
+          <Route
+            path="/training-details/:dayType/all"
+            element={
+              <ProtectedRouter>
+                <TrainingDetails />
+              </ProtectedRouter>
+            }
+          />
+          <Route
+            path="/updateregistration"
+            element={
+              <ProtectedRouter>
+                <UpdateRegistration />
+              </ProtectedRouter>
+            }
+          />
+          <Route path="/nomatch" element={<NoMatch />} />
+          <Route path="*" element={<NoMatch />} />
+        </Routes>
+      </Container>
+    </div>
   );
 }

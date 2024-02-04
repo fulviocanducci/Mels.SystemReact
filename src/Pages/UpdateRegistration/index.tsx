@@ -267,7 +267,12 @@ export default function UpdateRegistration() {
           </>
         )}
       </Formik>
-      <Toast show={show} change={setShow} />
+      <Toast
+        message="Dados alterados com êxito."
+        type="success"
+        show={show}
+        change={setShow}
+      />
     </div>
   );
 }
