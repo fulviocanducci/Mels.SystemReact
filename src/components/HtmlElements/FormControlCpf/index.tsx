@@ -14,6 +14,7 @@ export function FormControlCpf({
     <FormControl
       type="text"
       name={name}
+      inputMode="numeric"
       isInvalid={isInvalid}
       isValid={isValid}
       size="sm"
