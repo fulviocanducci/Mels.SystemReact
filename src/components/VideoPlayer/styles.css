@@ -1,6 +1,6 @@
 .button{
-      right: 40px;
-      top: calc(100vh / 2);
+      right: 25px;
+      top: calc(8vh / 2);
       position:fixed;
       z-index:1;
       background-color: transparent;
