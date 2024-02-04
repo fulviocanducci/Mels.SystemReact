@@ -125,8 +125,13 @@ export interface IBlock {
   children: React.ReactNode;
 }
 
+export interface IButtonGoBack {
+  onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
+  className?: string | undefined;
+}
 export interface ITitle {
   description: string | null | undefined;
+  children?: React.ReactNode | null | undefined;
 }
 
 export interface IMovementReceiptYearRecord {

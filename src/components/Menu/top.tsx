@@ -2,7 +2,7 @@ import { useState } from "react";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import logo from "../../images/logo.png";
+import logo from "../../images/ms-icon-310x310.png";
 import { Link } from "react-router-dom";
 import * as Icon from "react-bootstrap-icons";
 
@@ -23,13 +23,13 @@ export function Top() {
       fixed="top"
     >
       <Container>
-        <Navbar.Brand href="#home">
+        <Navbar.Brand>
           <img
             src={logo}
             width="30"
             height="30"
             className="d-inline-block align-top"
-            alt="Mels Fitness Academias"
+            alt="MELS FITNESS SOFTWARE PRA ACADEMIAS"
           />{" "}
           MELS FITNESS
         </Navbar.Brand>
@@ -44,14 +44,14 @@ export function Top() {
               className="nav-link"
               onClick={setExpandedFalse}
             >
-              <Icon.FolderCheck /> Treinos
+              <Icon.PersonBoundingBox /> Treinos
             </Link>
             <Link
               to="/payments"
               className="nav-link"
               onClick={setExpandedFalse}
             >
-              <Icon.TagFill /> Pagamentos
+              <Icon.Coin /> Pagamentos
             </Link>
             <Link
               to="/updateregistration"

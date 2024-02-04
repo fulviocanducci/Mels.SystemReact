@@ -12,6 +12,7 @@ import { faPix } from "@fortawesome/free-brands-svg-icons/faPix";
 import { faCreditCard } from "@fortawesome/free-solid-svg-icons/faCreditCard";
 import * as Icon from "react-bootstrap-icons";
 import { isErrorToRedirect } from "../../utils/error";
+import ButtonGoBack from "../../components/ButtonGoBack";
 
 export default function Payments() {
   const { cpf } = useCpf();
@@ -38,7 +39,9 @@ export default function Payments() {
 
   return (
     <div>
-      <Title description={`Pagamentos: ${year}`} />
+      <Title description={`Pagamentos: ${year}`}>
+        <ButtonGoBack onClick={handleGoBack} className="me-1" />
+      </Title>
       <div className="row">
         {items &&
           items.length > 0 &&

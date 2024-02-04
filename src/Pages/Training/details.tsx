@@ -13,6 +13,7 @@ import LoadingStatus from "../../components/LoadingStatus";
 import { formats, numbers } from "../../utils";
 import { isErrorToRedirect } from "../../utils/error";
 import VideoPlayer from "../../components/VideoPlayer";
+import ButtonGoBack from "../../components/ButtonGoBack";
 
 export default function TrainingDetails() {
   const { cpf } = useCpf();
@@ -21,6 +22,7 @@ export default function TrainingDetails() {
   const [details, setDetails] = useState<TrainingRecord[] | null>(null);
   const [stateForm, setStateForm] = useState<boolean>(false);
   const [stateIndexLoading, setStateIndexLoading] = useState(-1);
+
   const { dayType } = useParams();
   const navigate = useNavigate();
   const toogleShow = () => setShow(() => !show);
@@ -86,6 +88,9 @@ export default function TrainingDetails() {
     setUrl(() => url);
     toogleShow();
   };
+  const handleGoBack = () => {
+    navigate("/training");
+  };
   useEffect(() => {
     if (cpf && dayType) {
       request.trainingByCpfAndDayTypeRecord(cpf, dayType).then((result) => {
@@ -101,7 +106,9 @@ export default function TrainingDetails() {
   return (
     <>
       <div>
-        <Title description={`Treino ${dayType}`} />
+        <Title description={`Treino ${dayType}`}>
+          <ButtonGoBack onClick={handleGoBack} className="me-2" />
+        </Title>
         {details &&
           details.length > 0 &&
           details.map((item, index) => (
