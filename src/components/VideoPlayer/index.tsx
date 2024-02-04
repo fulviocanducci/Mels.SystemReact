@@ -15,7 +15,6 @@ export default function VideoPlayer({ show, setShow, url }: IVideoPlayer) {
               width="100%"
               height="100%"
               playing={true}
-              light={true}
               controls
             />
           )}
