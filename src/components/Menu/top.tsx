@@ -60,6 +60,13 @@ export function Top() {
             >
               <Icon.PencilFill /> Atualizar cadastro
             </Link>
+            <Link
+              to="/messages"
+              className="nav-link"
+              onClick={setExpandedFalse}
+            >
+              <Icon.BodyText /> Mensagens
+            </Link>
             <Link to="/logout" className="nav-link" onClick={setExpandedFalse}>
               <Icon.DoorClosedFill /> Sair
             </Link>

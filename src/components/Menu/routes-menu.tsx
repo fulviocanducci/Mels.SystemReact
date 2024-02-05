@@ -13,6 +13,7 @@ import UpdateRegistration from "../../Pages/UpdateRegistration";
 import Training from "../../Pages/Training";
 import TrainingDetails from "../../Pages/Training/details";
 import { IRouteMenu } from "../../@types";
+import Messages from "../../Pages/Messages";
 
 export function RoutesMenu({ marginTop }: IRouteMenu) {
   return (
@@ -92,6 +93,14 @@ export function RoutesMenu({ marginTop }: IRouteMenu) {
             element={
               <ProtectedRouter>
                 <UpdateRegistration />
+              </ProtectedRouter>
+            }
+          />
+          <Route
+            path="/messages"
+            element={
+              <ProtectedRouter>
+                <Messages />
               </ProtectedRouter>
             }
           />

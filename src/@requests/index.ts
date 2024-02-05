@@ -1,6 +1,7 @@
 import {
   ClientRecord,
   ILoginRecord,
+  IMessageApp,
   IMovementReceiptGroupYearRecord,
   IMovementReceiptYearRecord,
   ISelect2,
@@ -71,6 +72,17 @@ const exercicesReset = (cpf: string, dayType: string | undefined) => {
   return api.post(`/api/exercices/reset/${cpf}/type/${dayType}`);
 };
 
+const messagesAppReceive = (cpf: string, academyId: number) => {
+  const value = numbers.onlyNumbers(cpf);
+  return api.get<IMessageApp[]>(
+    `api/messageapp/received/${value}/${academyId}/messages`
+  );
+}; ///api/messageapp/received/{cpf}/{academyId}/messages
+
+const messagesAppByIdReceive = (id: number) => {
+  return api.get<IMessageApp>(`api/messageapp/${id}`);
+}; ///api/messageapp/{id}
+
 const request = {
   authentication,
   paymentsGroupByYear,
@@ -83,6 +95,8 @@ const request = {
   trainingUpdateFinishRecord,
   exercicesReset,
   pingRequest,
+  messagesAppReceive,
+  messagesAppByIdReceive,
 };
 
 export { request };

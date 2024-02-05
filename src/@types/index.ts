@@ -1,3 +1,22 @@
+export interface IMessageApp {
+  allowReply: boolean;
+  id: number;
+  academyId: number;
+  cpf: string;
+  title: string;
+  message: string;
+  sendAt: string;
+  readAt: string;
+}
+export interface IMessageAcademy {
+  id: number;
+  academyId: number;
+  cpf: string;
+  title: string;
+  message: string;
+  sendAt: string;
+  readAt: string;
+}
 export interface IVideoPlayer {
   show: boolean;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
@@ -96,6 +115,7 @@ export interface ClientRecord {
   cityRecord: CityRecord;
   phoneOne: string;
   phoneTwo: string;
+  academyId: number;
 }
 
 export interface CityRecord {
