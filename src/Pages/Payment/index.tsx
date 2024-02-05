@@ -12,9 +12,7 @@ import { isErrorToRedirect } from "../../utils/error";
 export default function Payment() {
   const { cpf } = useCpf();
   const navigate = useNavigate();
-  const [items, setItems] = useState<IMovementReceiptGroupYearRecord[] | null>(
-    null
-  );
+  const [items, setItems] = useState<IMovementReceiptGroupYearRecord[] | null>(null);
   useEffect(() => {
     if (cpf) {
       request.paymentsGroupByYear(cpf).then((result) => {
@@ -51,21 +49,13 @@ export default function Payment() {
             return (
               <div className="col-md-6" key={index}>
                 <Alert key={index} variant={"success"}>
-                  <Alert.Heading className="mb-0 text-success">
-                    {data.year}
-                  </Alert.Heading>
+                  <Alert.Heading className="mb-0 text-success">{data.year}</Alert.Heading>
                   <p className="mt-0 mb-0">
-                    <small className="text-success">
-                      Quantidade de pagamentos: {data.count}
-                    </small>
+                    <small className="text-success">Quantidade de pagamentos: {data.count}</small>
                   </p>
                   <hr className="mt-0 mb-2" />
                   <div className="d-grid gap-2 mt-0">
-                    <Button
-                      variant="success"
-                      size="sm"
-                      onClick={() => handleView(data.year)}
-                    >
+                    <Button variant="success" size="sm" onClick={() => handleView(data.year)}>
                       <Icon.Folder2Open /> Visualizar
                     </Button>
                   </div>

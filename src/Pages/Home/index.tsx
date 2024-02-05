@@ -5,7 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { useEffect } from "react";
 import { request } from "../../@requests";
-import { isErrorToRedirect } from "../../utils/error";
+import { isErrorToRedirect, isFirstNameOrEmpty } from "../../utils/error";
+import Block from "../../components/Block";
+import * as Icon from "react-bootstrap-icons";
 export default function Home() {
   const { client } = useClient();
   const navigate = useNavigate();
@@ -18,37 +20,29 @@ export default function Home() {
   return (
     <div className="fs-6 text-success">
       <Title description="Home" />
-      <div>BEM VINDO, {client?.name}</div>
+      <div className="text-center">
+        Bem vindo, <b>{isFirstNameOrEmpty(client?.name)}</b>
+      </div>
       <div className="text-center mb-2">
-        <img
-          src={logo}
-          alt=""
-          className="img-fluid rounded-circle mx-auto d-block shadow"
-        />
+        <img src={logo} alt="" className="img-fluid rounded-circle mx-auto d-block shadow" />
       </div>
       <div style={{ textAlign: "justify" }} className="mb-1 mt-2">
-        Aqui você acompanha os seus{" "}
-        <Button
-          variant="link"
-          className="m-0 p-0"
-          onClick={() => navigate("/training")}
-        >
-          treinos
-        </Button>
-        ,{" "}
-        <Button
-          variant="link"
-          className="m-0 p-0"
-          onClick={() => navigate("/payments")}
-        >
-          pagamentos
-        </Button>{" "}
-        e poderá receber e enviar mensagens para a sua academia. Caso os dados
-        da sua academia ainda não estejam aparecendo, converse com o seu
-        treinador para te cadastrar no Aplicativo.
-      </div>
-      <div style={{ textAlign: "center" }} className="mb-1">
-        Bons treinos !!!.
+        <div className="text-center">Acompanhe</div>
+        <Block className="mt-1">
+          <Button variant="success" onClick={() => navigate("/messages")}>
+            <Icon.BodyText /> Enviar e Receber Mensagens
+          </Button>
+        </Block>
+        <Block className="mt-1">
+          <Button variant="success" onClick={() => navigate("/payments")}>
+            <Icon.Coin /> Pagamentos
+          </Button>
+        </Block>
+        <Block className="mt-1">
+          <Button variant="success" onClick={() => navigate("/training")}>
+            <Icon.PersonBoundingBox /> Treinos
+          </Button>
+        </Block>
       </div>
     </div>
   );

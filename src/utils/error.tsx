@@ -8,3 +8,13 @@ export function isErrorToRedirect(error: AxiosError) {
     redirectTo.host();
   }
 }
+
+export function isFirstNameOrEmpty(name: string | undefined | null) {
+  if (name) {
+    const names = name.split(" ");
+    if (names.length > 0) {
+      return names[0];
+    }
+  }
+  return "";
+}

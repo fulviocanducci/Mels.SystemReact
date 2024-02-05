@@ -1,5 +1,15 @@
 import moment from "moment";
 
+export function compareDateEn(date1, date2) {
+  setMomentLocale();
+  const d1 = moment(date1, "YYYY-MM-DDTHH:mm:ss", true);
+  const d2 = moment(date2, "YYYY-MM-DDTHH:mm:ss", true);
+  if (d1 && d2) {
+    return d2 > d1;
+  }
+  return false;
+}
+
 function setMomentLocale() {
   moment.locale("pt-br");
 }
@@ -88,12 +98,7 @@ const formatMoneyPTBR = (value) => {
 const formatDateTimePTBR = (value) => {
   const date = new Date(value);
   if (date) {
-    return (
-      date.toLocaleDateString("pt-BR") +
-      (date.toLocaleTimeString() !== "00:00:00"
-        ? " " + date.toLocaleTimeString()
-        : "")
-    );
+    return date.toLocaleDateString("pt-BR") + (date.toLocaleTimeString() !== "00:00:00" ? " " + date.toLocaleTimeString() : "");
   }
   return "";
 };
@@ -107,14 +112,13 @@ const formatClient = (client) => {
     cpf: client?.cpf,
     name: client?.name,
     sex: client?.sex,
-    dateBirthday: isDate(client?.dateBirthday)
-      ? formatDateEn(client?.dateBirthday)
-      : null,
+    dateBirthday: isDate(client?.dateBirthday) ? formatDateEn(client?.dateBirthday) : null,
     email: client?.email,
     address: client?.address,
     cityId: client?.cityId,
     phoneOne: onlyNumbers(client?.phoneOne),
     phoneTwo: onlyNumbers(client?.phoneTwo),
+    academyId: client?.academyId,
   };
   return data;
 };
@@ -134,6 +138,7 @@ const formats = {
   date: formatDateTimePTBR,
   client: formatClient,
   nowDateTime,
+  compareDateEn,
 };
 
 const redirectTo = {

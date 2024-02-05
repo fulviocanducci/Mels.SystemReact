@@ -53,11 +53,7 @@ export default function TrainingDetails() {
       }, isErrorToRedirect)
       .finally(() => setStateForm(false));
   };
-  const handleChecked = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    model: TrainingRecord,
-    index: number
-  ) => {
+  const handleChecked = (e: React.ChangeEvent<HTMLInputElement>, model: TrainingRecord, index: number) => {
     const checked = e.target.checked;
     if (details !== null) {
       var modelChange = { ...model, execute: checked };
@@ -67,11 +63,7 @@ export default function TrainingDetails() {
         .then((result) => {
           if (result.status === 200) {
             let detailsNew = details.map((item) => {
-              if (
-                item.cpf === model.cpf &&
-                item.dayType === model.dayType &&
-                item.name === model.name
-              ) {
+              if (item.cpf === model.cpf && item.dayType === model.dayType && item.name === model.name) {
                 return { ...item, execute: checked };
               }
               return item;
@@ -105,21 +97,15 @@ export default function TrainingDetails() {
   }
   return (
     <>
-      <div>
+      <div className="mb-5">
         <Title description={`Treino ${dayType}`}>
           <ButtonGoBack onClick={handleGoBack} className="me-2" />
         </Title>
         {details &&
           details.length > 0 &&
           details.map((item, index) => (
-            <div
-              className="d-flex justify-content-between border-bottom border-success"
-              key={index}
-            >
-              <div
-                className="p-2 mb-1 flex-grow-1"
-                key={`key-${item.name}-${index}`}
-              >
+            <div className="d-flex justify-content-between border-bottom border-success" key={index}>
+              <div className="p-2 mb-1 flex-grow-1" key={`key-${item.name}-${index}`}>
                 <Form.Check
                   type="checkbox"
                   id={`id-${item.name}-${index}`}
@@ -130,22 +116,14 @@ export default function TrainingDetails() {
               </div>
               <div className="p-2 mb-1">
                 <div>
-                  {item.execute && stateIndexLoading !== index && (
-                    <Icon.Check2Circle className="text-success" />
-                  )}
-                  {!item.execute && stateIndexLoading !== index && (
-                    <Icon.XLg className="text-secondary" />
-                  )}
+                  {item.execute && stateIndexLoading !== index && <Icon.Check2Circle className="text-success" />}
+                  {!item.execute && stateIndexLoading !== index && <Icon.XLg className="text-secondary" />}
                   {stateIndexLoading === index && <LoadingStatus />}
                 </div>
               </div>
               <div className="p-2 mb-1">
                 {item.linkOfVideo && (
-                  <Button
-                    onClick={(e) => handleShowVideo(e, item.linkOfVideo)}
-                    variant="success"
-                    size="sm"
-                  >
+                  <Button onClick={(e) => handleShowVideo(e, item.linkOfVideo)} variant="success" size="sm">
                     <Icon.Youtube />
                   </Button>
                 )}
@@ -157,14 +135,9 @@ export default function TrainingDetails() {
               </div>
             </div>
           ))}
-        <div className="mt-2">
+        <div className="mt-2 mb-2">
           <Block>
-            <Button
-              variant="success"
-              size="sm"
-              disabled={statusBtn()}
-              onClick={handleConclude}
-            >
+            <Button variant="success" size="sm" disabled={statusBtn()} onClick={handleConclude}>
               {stateForm ? (
                 <>
                   <ButtonLoading /> Concluindo ...

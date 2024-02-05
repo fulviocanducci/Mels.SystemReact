@@ -149,6 +149,7 @@ export interface ILoginProvider {
 
 export interface IBlock {
   children: React.ReactNode;
+  className?: string | undefined | null;
 }
 
 export interface IButtonGoBack {

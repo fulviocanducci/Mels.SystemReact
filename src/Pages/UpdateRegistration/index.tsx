@@ -88,7 +88,7 @@ export default function UpdateRegistration() {
       };
       setOptionsSelect2(data);
     }
-  }, []);
+  }, [client]);
 
   if (!client) {
     return <Loading />;
@@ -112,6 +112,7 @@ export default function UpdateRegistration() {
           cityRecord: client?.cityRecord,
           phoneOne: client?.phoneOne,
           phoneTwo: client?.phoneTwo,
+          academyId: client?.academyId,
         }}
       >
         {({ handleSubmit, handleChange, values, touched, errors, setFieldValue }) => (
