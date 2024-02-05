@@ -1,3 +1,7 @@
+export interface IMessageSentBase {
+  title: string;
+  message: string;
+}
 export interface IMessageApp {
   allowReply: boolean;
   id: number;
@@ -15,7 +19,7 @@ export interface IMessageAcademy {
   title: string;
   message: string;
   sendAt: string;
-  readAt: string;
+  readAt?: string | null;
 }
 export interface IVideoPlayer {
   show: boolean;
@@ -134,12 +138,8 @@ export interface ILoginContext {
   margin?: string | null;
   setToken: React.Dispatch<React.SetStateAction<string | null | undefined>>;
   setCpf: React.Dispatch<React.SetStateAction<string | null | undefined>>;
-  setClient: React.Dispatch<
-    React.SetStateAction<ClientRecord | null | undefined>
-  >;
-  setExpiration: React.Dispatch<
-    React.SetStateAction<Date | null | string | undefined>
-  >;
+  setClient: React.Dispatch<React.SetStateAction<ClientRecord | null | undefined>>;
+  setExpiration: React.Dispatch<React.SetStateAction<Date | null | string | undefined>>;
   setMargin: React.Dispatch<React.SetStateAction<string | null | undefined>>;
 }
 

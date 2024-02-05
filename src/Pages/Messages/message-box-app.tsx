@@ -13,7 +13,7 @@ interface IMessageBox {
   setMessageReadAt: (message: IMessageApp) => void;
 }
 
-export function MessageBox({ message, setMessageReadAt }: IMessageBox) {
+export function MessageBoxApp({ message, setMessageReadAt }: IMessageBox) {
   const [show, setShow] = useState<boolean>(false);
   const handleSetShow = () => {
     setShow(true);

@@ -3,8 +3,8 @@ import Button from "react-bootstrap/Button";
 import AsyncSelect from "react-select/async";
 
 import * as formik from "formik";
-import * as Icon from "react-bootstrap-icons";
 import * as yup from "yup";
+import * as Icon from "react-bootstrap-icons";
 
 import { formats, validation } from "../../utils";
 import Block from "../../components/Block";
@@ -35,11 +35,9 @@ export default function UpdateRegistration() {
       .test("test-invalid-cpf", "CPF inválido", (cpf) => validation.cpf(cpf)),
     name: yup.string().required(),
     sex: yup.number().required(),
-    dateBirthday: yup
-      .string()
-      .test("test-invalid-date", "Data inválida", (dateBirthday) => {
-        return validation.dateOrEmpty(dateBirthday);
-      }),
+    dateBirthday: yup.string().test("test-invalid-date", "Data inválida", (dateBirthday) => {
+      return validation.dateOrEmpty(dateBirthday);
+    }),
     email: yup.string().email(),
     address: yup.string(),
     cityId: yup.number(),
@@ -52,10 +50,7 @@ export default function UpdateRegistration() {
     callBack("cityId", e.value);
   }
 
-  function loadOptionsCitySelect2(
-    inputValue: string,
-    callback: (options: ISelect2[]) => void
-  ) {
+  function loadOptionsCitySelect2(inputValue: string, callback: (options: ISelect2[]) => void) {
     request.citySelect2(inputValue).then((result) => {
       callback(result);
     });
@@ -86,13 +81,7 @@ export default function UpdateRegistration() {
   }
 
   useEffect(() => {
-    if (
-      client &&
-      client.cityRecord &&
-      client.cityRecord.id &&
-      client.cityRecord.name &&
-      client.cityRecord.uf
-    ) {
+    if (client && client.cityRecord && client.cityRecord.id && client.cityRecord.name && client.cityRecord.uf) {
       const data = {
         value: client.cityRecord.id,
         label: client.cityRecord.name + " - " + client.cityRecord.uf,
@@ -125,14 +114,7 @@ export default function UpdateRegistration() {
           phoneTwo: client?.phoneTwo,
         }}
       >
-        {({
-          handleSubmit,
-          handleChange,
-          values,
-          touched,
-          errors,
-          setFieldValue,
-        }) => (
+        {({ handleSubmit, handleChange, values, touched, errors, setFieldValue }) => (
           <>
             <Form noValidate onSubmit={handleSubmit}>
               <Form.Group className="mb-2" controlId="exampleForm.name">
@@ -242,10 +224,7 @@ export default function UpdateRegistration() {
               </Form.Group>
               <Block>
                 <Button
-                  disabled={
-                    Array.isArray(errors) ||
-                    Object.values(errors).toString() !== ""
-                  }
+                  disabled={Array.isArray(errors) || Object.values(errors).toString() !== ""}
                   variant="success"
                   type="submit"
                   size="sm"
@@ -267,12 +246,7 @@ export default function UpdateRegistration() {
           </>
         )}
       </Formik>
-      <Toast
-        message="Dados alterados com êxito."
-        type="success"
-        show={show}
-        change={setShow}
-      />
+      <Toast message="Dados alterados com êxito." type="success" show={show} change={setShow} />
     </div>
   );
 }

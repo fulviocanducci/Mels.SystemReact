@@ -1,8 +1,8 @@
 import { Modal } from "react-bootstrap";
-import { IMessageApp } from "../../@types";
+import { IMessageAcademy, IMessageApp } from "../../@types";
 
 interface IModalBox {
-  message?: IMessageApp | null | undefined;
+  message?: IMessageApp | IMessageAcademy | null | undefined;
   show: boolean;
   setShow: React.Dispatch<React.SetStateAction<boolean>>;
 }

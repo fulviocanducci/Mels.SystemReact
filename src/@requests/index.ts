@@ -1,6 +1,7 @@
 import {
   ClientRecord,
   ILoginRecord,
+  IMessageAcademy,
   IMessageApp,
   IMovementReceiptGroupYearRecord,
   IMovementReceiptYearRecord,
@@ -23,16 +24,12 @@ const authentication = (cpf: string) => {
 
 const paymentsGroupByYear = (cpf: string) => {
   const value = numbers.onlyNumbers(cpf);
-  return api.get<IMovementReceiptGroupYearRecord[]>(
-    `/api/movementreceipt/${value}/group/by/year`
-  );
+  return api.get<IMovementReceiptGroupYearRecord[]>(`/api/movementreceipt/${value}/group/by/year`);
 };
 
 const paymentsByYear = (cpf: string, year: number) => {
   const value = numbers.onlyNumbers(cpf);
-  return api.get<IMovementReceiptYearRecord[]>(
-    `/api/movementreceipt/${value}/by/${year}/all`
-  );
+  return api.get<IMovementReceiptYearRecord[]>(`/api/movementreceipt/${value}/by/${year}/all`);
 };
 
 const clientUpdate = (clientRecord: ClientRecord) => {
@@ -74,14 +71,25 @@ const exercicesReset = (cpf: string, dayType: string | undefined) => {
 
 const messagesAppReceive = (cpf: string, academyId: number) => {
   const value = numbers.onlyNumbers(cpf);
-  return api.get<IMessageApp[]>(
-    `api/messageapp/received/${value}/${academyId}/messages`
-  );
+  return api.get<IMessageApp[]>(`api/messageapp/received/${value}/${academyId}/messages`);
 }; ///api/messageapp/received/{cpf}/{academyId}/messages
 
 const messagesAppByIdReceive = (id: number) => {
   return api.get<IMessageApp>(`api/messageapp/${id}`);
 }; ///api/messageapp/{id}
+
+const messagesAcademySent = (cpf: string, academyId: number) => {
+  const value = numbers.onlyNumbers(cpf);
+  return api.get<IMessageAcademy[]>(`api/messageacademy/sent/${value}/${academyId}/messages`);
+}; ///api/messageacademy/sent/{cpf}/{academyId}/messages
+
+const messagesAcademyCreate = (value: IMessageAcademy) => {
+  return api.post<IMessageAcademy>("/api/messageacademy", value);
+}; // /api/messageacademy
+
+const messagesAcademyByIdSent = (id: number) => {
+  return api.get<IMessageAcademy>(`api/messageacademy/${id}`);
+}; ///api/messageacademy/{id}
 
 const request = {
   authentication,
@@ -97,6 +105,9 @@ const request = {
   pingRequest,
   messagesAppReceive,
   messagesAppByIdReceive,
+  messagesAcademySent,
+  messagesAcademyCreate,
+  messagesAcademyByIdSent,
 };
 
 export { request };
