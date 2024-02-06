@@ -15,9 +15,11 @@ export default function Training() {
   const [training, setTraining] = React.useState<TrainingGroupRecord[] | null>(null);
   const [trainingLast, setTrainingLast] = React.useState<TrainingGroupRecord | null>(null);
   const navigate = useNavigate();
+
   const handleTrainingDetails = (dayType: string) => {
     navigate(`/training-details/${dayType}/all`);
   };
+
   useEffect(() => {
     if (cpf) {
       request.trainingGroupRecord(cpf).then((result) => {
@@ -27,6 +29,7 @@ export default function Training() {
       }, isErrorToRedirect);
     }
   }, [cpf]);
+
   useEffect(() => {
     let last: TrainingGroupRecord | null = null;
     if (training !== null && training.length > 0) {
@@ -39,9 +42,11 @@ export default function Training() {
       setTrainingLast(last);
     }
   }, [training]);
+
   if (training === null) {
     return <Loading />;
   }
+
   return (
     <div>
       <Title description="Treinos" />
@@ -50,26 +55,30 @@ export default function Training() {
           Último treino: <b>{trainingLast.dayType}</b>, data: {formats.date(trainingLast.lastTimeAt)}
         </div>
       )}
+      {training && training.length === 0 && (
+        <div>
+          <Alert key={"success"} variant={"light"}>
+            <Alert.Heading>Aviso</Alert.Heading>
+            Não existe treino configurado
+          </Alert>
+        </div>
+      )}
       {training &&
         training.length > 0 &&
         training.map((item, index) => {
           return (
-            <>
-              <Alert key={index} variant="success">
-                <Alert.Heading className="mb-0 text-success">Treino {item.dayType}</Alert.Heading>
-                <p className="mt-0 mb-0">
-                  <small className="text-success">
-                    Último: {item.lastTimeAt ? formats.date(item.lastTimeAt) : "Iniciante..."}
-                  </small>
-                </p>
-                <hr className="mt-0 mb-2" />
-                <div className="d-grid gap-2 mt-0">
-                  <Button variant={"success"} size={"sm"} className="mt-1" onClick={() => handleTrainingDetails(item.dayType)}>
-                    <Icon.BoxArrowInRight /> Começar
-                  </Button>
-                </div>
-              </Alert>
-            </>
+            <Alert key={index} variant="success">
+              <Alert.Heading className="mb-0 text-success">Treino {item.dayType}</Alert.Heading>
+              <p className="mt-0 mb-0">
+                <small className="text-success">Último: {item.lastTimeAt ? formats.date(item.lastTimeAt) : "Iniciante..."}</small>
+              </p>
+              <hr className="mt-0 mb-2" />
+              <div className="d-grid gap-2 mt-0">
+                <Button variant={"success"} size={"sm"} className="mt-1" onClick={() => handleTrainingDetails(item.dayType)}>
+                  <Icon.BoxArrowInRight /> Começar
+                </Button>
+              </div>
+            </Alert>
           );
         })}
     </div>
