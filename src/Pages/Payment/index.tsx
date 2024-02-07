@@ -8,6 +8,7 @@ import Title from "../../components/Title";
 import Loading from "../../components/Loading";
 import { useNavigate } from "react-router-dom";
 import { isErrorToRedirect } from "../../utils/error";
+import AlertMessageDefault from "../../components/AlertMessageDefault";
 
 export default function Payment() {
   const { cpf } = useCpf();
@@ -37,10 +38,7 @@ export default function Payment() {
       <div className="row">
         {items && items.length === 0 && (
           <div>
-            <Alert key={"success"} variant={"light"}>
-              <Alert.Heading>Sem pagamentos.</Alert.Heading>
-              Não foi encontrado nenhum pagamento
-            </Alert>
+            <AlertMessageDefault title={"Sem pagamentos."} body={"Não foi encontrado nenhum pagamento"} />
           </div>
         )}
         {items &&

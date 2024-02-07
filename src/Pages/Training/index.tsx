@@ -9,6 +9,7 @@ import { formats } from "../../utils";
 import * as Icon from "react-bootstrap-icons";
 import { useNavigate } from "react-router-dom";
 import { isErrorToRedirect } from "../../utils/error";
+import AlertMessageDefault from "../../components/AlertMessageDefault";
 
 export default function Training() {
   const { cpf } = useCpf();
@@ -57,10 +58,7 @@ export default function Training() {
       )}
       {training && training.length === 0 && (
         <div>
-          <Alert key={"success"} variant={"light"}>
-            <Alert.Heading>Aviso</Alert.Heading>
-            Não existe treino configurado
-          </Alert>
+          <AlertMessageDefault title={"Aviso"} body={"Não existe treino configurado"} />
         </div>
       )}
       {training &&

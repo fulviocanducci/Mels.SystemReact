@@ -14,6 +14,7 @@ import * as formik from "formik";
 import * as yup from "yup";
 import { formats } from "../../utils";
 import Toast from "../../components/Toast";
+import AlertMessageDefault from "../../components/AlertMessageDefault";
 
 export default function Messages() {
   const { Formik } = formik;
@@ -137,10 +138,7 @@ export default function Messages() {
       <>
         <Title description={"Mensagens"}></Title>
         <div>
-          <Alert key={"success"} variant={"light"}>
-            <Alert.Heading>Aviso</Alert.Heading>
-            Cliente sem academia configurada
-          </Alert>
+          <AlertMessageDefault title={"Aviso"} body={"Cliente sem academia configurada"} />
         </div>
       </>
     );
