@@ -113,6 +113,7 @@ export default function UpdateRegistration() {
           phoneOne: client?.phoneOne,
           phoneTwo: client?.phoneTwo,
           academyId: client?.academyId,
+          academyDocument: client?.academyDocument,
         }}
       >
         {({ handleSubmit, handleChange, values, touched, errors, setFieldValue }) => (

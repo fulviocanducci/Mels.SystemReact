@@ -1,5 +1,9 @@
 import moment from "moment";
 
+export function getImageLogoAcademy(cnpj) {
+  return "https://www.mels.com.br/Down/anunciantes/" + cnpj + "/" + cnpj + ".jpg";
+}
+
 export function compareDateEn(date1, date2) {
   setMomentLocale();
   const d1 = moment(date1, "YYYY-MM-DDTHH:mm:ss", true);
