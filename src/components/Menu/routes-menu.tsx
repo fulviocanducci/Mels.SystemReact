@@ -14,6 +14,7 @@ import Training from "../../Pages/Training";
 import TrainingDetails from "../../Pages/Training/details";
 import { IRouteMenu } from "../../@types";
 import Messages from "../../Pages/Messages";
+import Assessments from "../../Pages/Assessments";
 
 export function RoutesMenu({ marginTop }: IRouteMenu) {
   return (
@@ -46,7 +47,14 @@ export function RoutesMenu({ marginTop }: IRouteMenu) {
             }
           />
           <Route path="/login" element={<Login />} />
-
+          <Route
+            path="/assessments"
+            element={
+              <ProtectedRouter>
+                <Assessments />
+              </ProtectedRouter>
+            }
+          />
           <Route
             path="/logout"
             element={

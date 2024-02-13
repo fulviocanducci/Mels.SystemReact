@@ -7,30 +7,16 @@ import { Link } from "react-router-dom";
 import * as Icon from "react-bootstrap-icons";
 
 export function Top() {
-  const [expanded, setExpanded] = useState<string | undefined | boolean | any>(
-    false
-  );
+  const [expanded, setExpanded] = useState<string | undefined | boolean | any>(false);
   const toggle = () => {
     setExpanded(expanded ? false : "lg");
   };
   const setExpandedFalse = () => setExpanded(false);
   return (
-    <Navbar
-      bg="success"
-      data-bs-theme="dark"
-      expand="lg"
-      expanded={expanded}
-      fixed="top"
-    >
+    <Navbar bg="success" data-bs-theme="dark" expand="lg" expanded={expanded} fixed="top">
       <Container>
         <Navbar.Brand>
-          <img
-            src={logo}
-            width="30"
-            height="30"
-            className="d-inline-block align-top"
-            alt="MELS FITNESS SOFTWARE PRA ACADEMIAS"
-          />{" "}
+          <img src={logo} width="30" height="30" className="d-inline-block align-top" alt="MELS FITNESS SOFTWARE PRA ACADEMIAS" />{" "}
           MELS FITNESS
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" onClick={toggle} />
@@ -39,32 +25,19 @@ export function Top() {
             <Link to="/" className="nav-link" onClick={setExpandedFalse}>
               <Icon.WindowDesktop /> Home
             </Link>
-            <Link
-              to="/training"
-              className="nav-link"
-              onClick={setExpandedFalse}
-            >
+            <Link to="/training" className="nav-link" onClick={setExpandedFalse}>
               <Icon.PersonBoundingBox /> Treinos
             </Link>
-            <Link
-              to="/payments"
-              className="nav-link"
-              onClick={setExpandedFalse}
-            >
+            <Link to="/assessments" className="nav-link" onClick={setExpandedFalse}>
+              <Icon.PersonExclamation /> Avaliações
+            </Link>
+            <Link to="/payments" className="nav-link" onClick={setExpandedFalse}>
               <Icon.Coin /> Pagamentos
             </Link>
-            <Link
-              to="/updateregistration"
-              className="nav-link"
-              onClick={setExpandedFalse}
-            >
+            <Link to="/updateregistration" className="nav-link" onClick={setExpandedFalse}>
               <Icon.PencilFill /> Atualizar cadastro
             </Link>
-            <Link
-              to="/messages"
-              className="nav-link"
-              onClick={setExpandedFalse}
-            >
+            <Link to="/messages" className="nav-link" onClick={setExpandedFalse}>
               <Icon.BodyText /> Mensagens
             </Link>
             <Link to="/logout" className="nav-link" onClick={setExpandedFalse}>
