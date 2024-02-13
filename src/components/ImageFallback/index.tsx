@@ -1,8 +1,8 @@
-import ReactImageFallback from "react-image-fallback";
 import { useClient } from "../../@hooks";
 import { getImageLogoAcademy } from "../../utils";
 import logo from "../../images/logo-l.png";
 import { Spinner } from "react-bootstrap";
+import ReactImageFallback from "react-image-fallback";
 
 export default function ImageFallback() {
   const { client } = useClient();

@@ -1,6 +1,5 @@
 import Title from "../../components/Title";
 import { useClient } from "../../@hooks";
-import logo from "../../images/logo-l.png";
 import { useNavigate } from "react-router-dom";
 import { Button } from "react-bootstrap";
 import { useEffect } from "react";
@@ -8,6 +7,7 @@ import { request } from "../../@requests";
 import { isErrorToRedirect, isFirstNameOrEmpty } from "../../utils/error";
 import Block from "../../components/Block";
 import * as Icon from "react-bootstrap-icons";
+import ImageFallback from "../../components/ImageFallback";
 export default function Home() {
   const { client } = useClient();
   const navigate = useNavigate();
@@ -24,7 +24,7 @@ export default function Home() {
         Bem vindo, <b>{isFirstNameOrEmpty(client?.name)}</b>
       </div>
       <div className="text-center mb-2">
-        <img src={logo} alt="" className="img-fluid rounded-circle mx-auto d-block shadow" />
+        <ImageFallback />
       </div>
       <div style={{ textAlign: "justify" }} className="mb-1 mt-2">
         <div className="text-center">Acompanhe</div>
