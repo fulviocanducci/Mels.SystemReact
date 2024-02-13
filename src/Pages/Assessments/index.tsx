@@ -1,5 +1,9 @@
-import PDFView from "../../components/PDFView";
+import Title from "../../components/Title";
 
 export default function Assessments() {
-  return <PDFView path="C:\\temp\\1.pdf" />;
+  return (
+    <div>
+      <Title description={"Avaliações"}></Title>
+    </div>
+  );
 }
