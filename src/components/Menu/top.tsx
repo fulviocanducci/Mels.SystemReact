@@ -25,11 +25,11 @@ export function Top() {
             <Link to="/" className="nav-link" onClick={setExpandedFalse}>
               <Icon.WindowDesktop /> Home
             </Link>
-            <Link to="/training" className="nav-link" onClick={setExpandedFalse}>
-              <Icon.PersonBoundingBox /> Treinos
-            </Link>
             <Link to="/assessments" className="nav-link" onClick={setExpandedFalse}>
               <Icon.PersonExclamation /> Avaliações
+            </Link>
+            <Link to="/training" className="nav-link" onClick={setExpandedFalse}>
+              <Icon.PersonBoundingBox /> Treinos
             </Link>
             <Link to="/payments" className="nav-link" onClick={setExpandedFalse}>
               <Icon.Coin /> Pagamentos

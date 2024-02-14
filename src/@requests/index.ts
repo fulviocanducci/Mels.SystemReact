@@ -1,5 +1,6 @@
 import {
   ClientRecord,
+  IAssessment,
   ILoginRecord,
   IMessageAcademy,
   IMessageApp,
@@ -91,6 +92,11 @@ const messagesAcademyByIdSent = (id: number) => {
   return api.get<IMessageAcademy>(`api/messageacademy/${id}`);
 }; ///api/messageacademy/{id}
 
+const assessmentGetAll = (cpf: string) => {
+  const value = numbers.onlyNumbers(cpf);
+  return api.get<Array<IAssessment>>(`api/assessment/${value}`);
+};
+
 const request = {
   authentication,
   paymentsGroupByYear,
@@ -108,6 +114,7 @@ const request = {
   messagesAcademySent,
   messagesAcademyCreate,
   messagesAcademyByIdSent,
+  assessmentGetAll,
 };
 
 export { request };

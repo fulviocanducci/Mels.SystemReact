@@ -103,6 +103,13 @@ export interface ILoginRecord {
   clientRecord: ClientRecord;
 }
 
+export interface IAssessment {
+  id: number;
+  cpf: string;
+  dateAssessment: string;
+  fileName: string;
+}
+
 export interface IMovementReceiptGroupYearRecord {
   year: number;
   count: number;

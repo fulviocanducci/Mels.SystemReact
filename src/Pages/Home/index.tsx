@@ -29,6 +29,11 @@ export default function Home() {
       <div style={{ textAlign: "justify" }} className="mb-1 mt-2">
         <div className="text-center">Acompanhe</div>
         <Block className="mt-1">
+          <Button variant="success" onClick={() => navigate("/assessments")}>
+            <Icon.PersonExclamation /> Avaliações
+          </Button>
+        </Block>
+        <Block className="mt-1">
           <Button variant="success" onClick={() => navigate("/messages")}>
             <Icon.BodyText /> Enviar e Receber Mensagens
           </Button>
