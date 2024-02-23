@@ -14,19 +14,43 @@ import { request } from "../../@requests";
 import { ClientRecord, ISelect2 } from "../../@types";
 import Title from "../../components/Title";
 import Toast from "../../components/Toast";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ButtonLoading from "../../components/ButtonLoading";
 import Loading from "../../components/Loading";
-
+import { Tab, Tabs } from "react-bootstrap";
+import { Img } from "react-image";
+import uniqid from "uniqid";
+import Camera from "react-html5-camera-photo";
+function messageSaveSuccess(): { message: string; type: "success" | "error" } {
+  return {
+    message: "Dados alterados com êxito",
+    type: "success",
+  };
+}
+function messagePhotoSuccess(): { message: string; type: "success" | "error" } {
+  return {
+    message: "Foto alterado com êxito",
+    type: "success",
+  };
+}
+function messagePhotoError(): { message: string; type: "success" | "error" } {
+  return {
+    message: "Foto inválida",
+    type: "error",
+  };
+}
 export default function UpdateRegistration() {
   const { client, setClient } = useClient();
+  const [photos, setPhotos] = useState<string[] | undefined | null>(null);
   const [stateForm, setStateForm] = useState<boolean>(false);
   const [optionsSelect2, setOptionsSelect2] = useState<ISelect2>({
     value: 1,
     label: "",
   });
+  const formClientPhotoRef = useRef<HTMLFormElement | undefined | any>(null);
   const { Formik } = formik;
   const [show, setShow] = useState<boolean>(false);
+  const [showMessageData, setMessageData] = useState<{ message: string; type: "success" | "error" }>(() => messageSaveSuccess());
 
   const schema = yup.object().shape({
     cpf: yup
@@ -69,6 +93,7 @@ export default function UpdateRegistration() {
               if (clientRecord !== null) {
                 setClient(clientRecord);
                 setClientLocalStorage(clientRecord);
+                setMessageData(() => messageSaveSuccess());
                 setShow(() => true);
               }
             }
@@ -80,6 +105,43 @@ export default function UpdateRegistration() {
     }
   }
 
+  function initPhotosOrUpdate(cpf: string | null): string[] {
+    return [
+      `https://www.mels.com.br/Down/clientes/${cpf}.jpg?id=${uniqid()}`,
+      `https://www.mels.com.br/Down/clientes/photo-default.jpg?id=${uniqid()}`,
+    ];
+  }
+
+  function onSubmitPhoto(e: React.FormEvent) {
+    e.preventDefault();
+    const formData = new FormData(e.target as any);
+    const cpfValid = formData.get("cpf");
+    const photoValid = formData.get("photo") as any;
+    if (cpfValid && photoValid.name && photoValid.name.length > 0) {
+      request.clientPhotoSend(formData).then((result) => {
+        console.log(result);
+        if (result.status === 200) {
+          if (client) {
+            setPhotos(initPhotosOrUpdate(client?.cpf));
+            setMessageData(() => messagePhotoSuccess());
+            setShow(() => true);
+            if (formClientPhotoRef?.current !== null) {
+              formClientPhotoRef?.current.reset();
+            }
+          }
+        }
+      });
+    } else {
+      setMessageData(() => messagePhotoError());
+      setShow(() => true);
+    }
+  }
+
+  function handleTakePhoto(dataUri: string) {
+    // Do stuff with the photo...
+    console.log(dataUri);
+  }
+
   useEffect(() => {
     if (client && client.cityRecord && client.cityRecord.id && client.cityRecord.name && client.cityRecord.uf) {
       const data = {
@@ -87,6 +149,7 @@ export default function UpdateRegistration() {
         label: client.cityRecord.name + " - " + client.cityRecord.uf,
       };
       setOptionsSelect2(data);
+      setPhotos(initPhotosOrUpdate(client.cpf));
     }
   }, [client]);
 
@@ -97,158 +160,197 @@ export default function UpdateRegistration() {
   return (
     <div>
       <Title description="Dados cadastrais" />
-      <Formik
-        validateOnChange={true}
-        validationSchema={schema}
-        onSubmit={formikOnSubmit}
-        initialValues={{
-          cpf: client?.cpf,
-          name: client?.name,
-          sex: client?.sex,
-          dateBirthday: formats.date(client?.dateBirthday),
-          email: client?.email,
-          address: client?.address,
-          cityId: client?.cityId,
-          cityRecord: client?.cityRecord,
-          phoneOne: client?.phoneOne,
-          phoneTwo: client?.phoneTwo,
-          academyId: client?.academyId,
-          academyDocument: client?.academyDocument,
-        }}
-      >
-        {({ handleSubmit, handleChange, values, touched, errors, setFieldValue }) => (
-          <>
-            <Form noValidate onSubmit={handleSubmit}>
-              <Form.Group className="mb-2" controlId="exampleForm.name">
-                <Form.Label className="mb-0">Nome completo:</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="name"
-                  value={values.name}
-                  onChange={handleChange}
-                  isValid={touched.name && !errors.name}
-                  isInvalid={!!errors.name}
-                  placeholder="Nome completo"
-                />
-              </Form.Group>
-              <Form.Group className="mb-2" controlId="exampleForm.sex">
-                <Form.Label className="mb-0">Sexo:</Form.Label>
-                <Form.Select
-                  name="sex"
-                  className="mb-2"
-                  value={values.sex}
-                  onChange={handleChange}
-                  isValid={touched.sex && !errors.sex}
-                  isInvalid={!!errors.sex}
-                  aria-label="Floating label select example"
-                >
-                  <option value="1">Masculino</option>
-                  <option value="2">Feminino</option>
-                </Form.Select>
-              </Form.Group>
-              <Form.Group className="mb-2" controlId="exampleForm.date">
-                <Form.Label className="mb-0">Data de nascimento:</Form.Label>
-                <FormControlCustom.Control.Date
-                  name="dateBirthday"
-                  value={values.dateBirthday ?? ""}
-                  onChange={handleChange}
-                  isValid={touched.dateBirthday && !errors.dateBirthday}
-                  isInvalid={!!errors.dateBirthday}
-                  placeholder="Data de nascimento"
-                />
-              </Form.Group>
-              <Form.Group className="mb-2" controlId="exampleForm.cityId">
-                <Form.Label className="mb-0">Cidade / Uf:</Form.Label>
-                <AsyncSelect
-                  noOptionsMessage={() => "Digite o nome da cidade"}
-                  styles={{
-                    container: (provider, state) => ({
-                      ...provider,
-                      borderColor: errors.cityId ? "#66afe9" : "#66afe9",
-                    }),
-                  }}
-                  cacheOptions
-                  loadOptions={loadOptionsCitySelect2}
-                  defaultOptions={false}
-                  value={optionsSelect2}
-                  onChange={(e) => setOptionsSelect2Handle(e, setFieldValue)}
-                  name="cityId"
-                  id="cityId"
-                  placeholder="Digite o nome da cidade"
-                  isSearchable={true}
-                />
-              </Form.Group>
-              <Form.Group className="mb-2" controlId="exampleForm.email">
-                <Form.Label className="mb-0">E-mail:</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="email"
-                  value={values.email}
-                  onChange={handleChange}
-                  isValid={touched.email && !errors.email}
-                  isInvalid={!!errors.email}
-                  placeholder="E-mail"
-                />
-              </Form.Group>
-              <Form.Group className="mb-2" controlId="exampleForm.address">
-                <Form.Label className="mb-0">Endereço completo:</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="address"
-                  value={values.address}
-                  onChange={handleChange}
-                  isValid={touched.address && !errors.address}
-                  isInvalid={!!errors.address}
-                  placeholder="Endereço completo"
-                />
-              </Form.Group>
-              <Form.Group className="mb-2" controlId="exampleForm.phoneOne">
-                <Form.Label className="mb-0">Telefone:</Form.Label>
-                <FormControlCustom.Control.Phone
-                  name="phoneOne"
-                  value={values.phoneOne ?? ""}
-                  onChange={handleChange}
-                  isValid={touched.phoneOne && !errors.phoneOne}
-                  isInvalid={!!errors.phoneOne}
-                  placeholder="Telefone"
-                />
-              </Form.Group>
-              <Form.Group className="mb-2" controlId="exampleForm.phoneTwo">
-                <Form.Label className="mb-0">Celular:</Form.Label>
-                <FormControlCustom.Control.Phone
-                  name="phoneTwo"
-                  value={values.phoneTwo ?? ""}
-                  onChange={handleChange}
-                  isValid={touched.phoneTwo && !errors.phoneTwo}
-                  isInvalid={!!errors.phoneTwo}
-                  placeholder="Celular"
-                />
-              </Form.Group>
-              <Block>
-                <Button
-                  disabled={Array.isArray(errors) || Object.values(errors).toString() !== ""}
-                  variant="success"
-                  type="submit"
-                  size="sm"
-                  className="mt-2 mb-2"
-                >
-                  {stateForm ? (
-                    <>
-                      <ButtonLoading /> Atualizando ...
-                    </>
-                  ) : (
-                    <>
-                      <Icon.Pencil /> Atualizar
-                    </>
-                  )}
-                </Button>
-              </Block>
-            </Form>
-            {/* <pre>{JSON.stringify(values)}</pre> */}
-          </>
-        )}
-      </Formik>
-      <Toast message="Dados alterados com êxito." type="success" show={show} change={setShow} />
+      <Tabs defaultActiveKey="home" id="uncontrolled-tab-example" className="mb-3" fill>
+        <Tab eventKey="home" title="Dados">
+          <Formik
+            validateOnChange={true}
+            validationSchema={schema}
+            onSubmit={formikOnSubmit}
+            initialValues={{
+              cpf: client?.cpf,
+              name: client?.name,
+              sex: client?.sex,
+              dateBirthday: formats.date(client?.dateBirthday),
+              email: client?.email,
+              address: client?.address,
+              cityId: client?.cityId,
+              cityRecord: client?.cityRecord,
+              phoneOne: client?.phoneOne,
+              phoneTwo: client?.phoneTwo,
+              academyId: client?.academyId,
+              academyDocument: client?.academyDocument,
+            }}
+          >
+            {({ handleSubmit, handleChange, values, touched, errors, setFieldValue }) => (
+              <>
+                <Form noValidate onSubmit={handleSubmit}>
+                  <Form.Group className="mb-2" controlId="exampleForm.name">
+                    <Form.Label className="mb-0">Nome completo:</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="name"
+                      value={values.name}
+                      onChange={handleChange}
+                      isValid={touched.name && !errors.name}
+                      isInvalid={!!errors.name}
+                      placeholder="Nome completo"
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-2" controlId="exampleForm.sex">
+                    <Form.Label className="mb-0">Sexo:</Form.Label>
+                    <Form.Select
+                      name="sex"
+                      className="mb-2"
+                      value={values.sex}
+                      onChange={handleChange}
+                      isValid={touched.sex && !errors.sex}
+                      isInvalid={!!errors.sex}
+                      aria-label="Floating label select example"
+                    >
+                      <option value="1">Masculino</option>
+                      <option value="2">Feminino</option>
+                    </Form.Select>
+                  </Form.Group>
+                  <Form.Group className="mb-2" controlId="exampleForm.date">
+                    <Form.Label className="mb-0">Data de nascimento:</Form.Label>
+                    <FormControlCustom.Control.Date
+                      name="dateBirthday"
+                      value={values.dateBirthday ?? ""}
+                      onChange={handleChange}
+                      isValid={touched.dateBirthday && !errors.dateBirthday}
+                      isInvalid={!!errors.dateBirthday}
+                      placeholder="Data de nascimento"
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-2" controlId="exampleForm.cityId">
+                    <Form.Label className="mb-0">Cidade / Uf:</Form.Label>
+                    <AsyncSelect
+                      noOptionsMessage={() => "Digite o nome da cidade"}
+                      styles={{
+                        container: (provider, state) => ({
+                          ...provider,
+                          borderColor: errors.cityId ? "#66afe9" : "#66afe9",
+                        }),
+                      }}
+                      cacheOptions
+                      loadOptions={loadOptionsCitySelect2}
+                      defaultOptions={false}
+                      value={optionsSelect2}
+                      onChange={(e) => setOptionsSelect2Handle(e, setFieldValue)}
+                      name="cityId"
+                      id="cityId"
+                      placeholder="Digite o nome da cidade"
+                      isSearchable={true}
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-2" controlId="exampleForm.email">
+                    <Form.Label className="mb-0">E-mail:</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="email"
+                      value={values.email}
+                      onChange={handleChange}
+                      isValid={touched.email && !errors.email}
+                      isInvalid={!!errors.email}
+                      placeholder="E-mail"
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-2" controlId="exampleForm.address">
+                    <Form.Label className="mb-0">Endereço completo:</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="address"
+                      value={values.address}
+                      onChange={handleChange}
+                      isValid={touched.address && !errors.address}
+                      isInvalid={!!errors.address}
+                      placeholder="Endereço completo"
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-2" controlId="exampleForm.phoneOne">
+                    <Form.Label className="mb-0">Telefone:</Form.Label>
+                    <FormControlCustom.Control.Phone
+                      name="phoneOne"
+                      value={values.phoneOne ?? ""}
+                      onChange={handleChange}
+                      isValid={touched.phoneOne && !errors.phoneOne}
+                      isInvalid={!!errors.phoneOne}
+                      placeholder="Telefone"
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-2" controlId="exampleForm.phoneTwo">
+                    <Form.Label className="mb-0">Celular:</Form.Label>
+                    <FormControlCustom.Control.Phone
+                      name="phoneTwo"
+                      value={values.phoneTwo ?? ""}
+                      onChange={handleChange}
+                      isValid={touched.phoneTwo && !errors.phoneTwo}
+                      isInvalid={!!errors.phoneTwo}
+                      placeholder="Celular"
+                    />
+                  </Form.Group>
+                  <Block>
+                    <Button
+                      disabled={Array.isArray(errors) || Object.values(errors).toString() !== ""}
+                      variant="success"
+                      type="submit"
+                      size="sm"
+                      className="mt-2 mb-2"
+                    >
+                      {stateForm ? (
+                        <>
+                          <ButtonLoading /> Atualizando ...
+                        </>
+                      ) : (
+                        <>
+                          <Icon.Pencil /> Atualizar
+                        </>
+                      )}
+                    </Button>
+                  </Block>
+                </Form>
+                {/* <pre>{JSON.stringify(values)}</pre> */}
+              </>
+            )}
+          </Formik>
+        </Tab>
+        <Tab eventKey="photo" title="Foto">
+          {client && client.cpf && photos && (
+            <>
+              <div>
+                <Form onSubmit={onSubmitPhoto} ref={formClientPhotoRef}>
+                  <input type="hidden" name="cpf" id="cpf" value={client?.cpf} />
+                  <Form.Group controlId="formFile" className="mb-3">
+                    <Form.Label>Escolha a sua Foto</Form.Label>
+                    <Form.Control type="file" name="photo" accept="image/jpeg" />
+                    <div className="d-grid gap-2 mt-2 mb-2">
+                      <Button variant="success" size="sm" type="submit">
+                        Enviar
+                      </Button>
+                    </div>
+                  </Form.Group>
+                </Form>
+              </div>
+              <div className="text-center" style={{ overflowX: "scroll" }}>
+                <Img className="rounded" src={photos} />
+              </div>
+            </>
+          )}
+        </Tab>
+        <Tab eventKey="cam" title="Camera">
+          <div className="text-center" style={{ overflowX: "scroll" }}>
+            <Camera
+              onTakePhoto={(dataUri) => {
+                handleTakePhoto(dataUri);
+              }}
+              imageType="jpg"
+              idealResolution={{ height: 300, width: 300 }}
+              isFullscreen={true}
+            />
+          </div>
+        </Tab>
+      </Tabs>
+      <Toast message={showMessageData.message} type={showMessageData.type} show={show} change={setShow} />
     </div>
   );
 }

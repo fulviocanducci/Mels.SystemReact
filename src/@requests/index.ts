@@ -97,6 +97,10 @@ const assessmentGetAll = (cpf: string) => {
   return api.get<Array<IAssessment>>(`api/assessment/${value}`);
 };
 
+const clientPhotoSend = (form: FormData) => {
+  return api.postForm("/api/client/photo", form);
+};
+
 const request = {
   authentication,
   paymentsGroupByYear,
@@ -115,6 +119,7 @@ const request = {
   messagesAcademyCreate,
   messagesAcademyByIdSent,
   assessmentGetAll,
+  clientPhotoSend,
 };
 
 export { request };
