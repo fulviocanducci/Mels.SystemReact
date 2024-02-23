@@ -180,7 +180,7 @@ export default function UpdateRegistration() {
   }
 
   return (
-    <div>
+    <div className="mb-5">
       <Title description="Dados cadastrais" />
       <Tabs defaultActiveKey="home" id="uncontrolled-tab-example" className="mb-3" fill>
         <Tab eventKey="home" title="Dados">
@@ -361,10 +361,10 @@ export default function UpdateRegistration() {
                   </Form.Group>
                 </Form>
               </div>
+              <div>
+                <Form.Label className="text-success text-start">Foto atual</Form.Label>
+              </div>
               <div className="text-start" style={{ overflowX: "scroll" }}>
-                <div>
-                  <Form.Label className="text-success text-start">Foto atual</Form.Label>
-                </div>
                 <div>
                   <Img className="rounded" src={photos} />
                 </div>
@@ -373,31 +373,35 @@ export default function UpdateRegistration() {
           )}
         </Tab>
         <Tab eventKey="cam" title="Camera">
-          <div className="text-start" style={{ overflowX: "scroll" }}>
+          <div>
             {photo && (
               <div>
-                <div>
-                  <Form.Label className="mb-1 text-success">Foto</Form.Label>
-                </div>
-                <img src={photo} alt="" title="" className="img-fluid" />
-                <div className="mt-2 mb-2 d-flex justify-content-between">
-                  <Button variant="success" size="sm" onClick={handleSendPhoto} className="m-1" style={{ width: "48%" }}>
-                    {stateForm ? (
-                      <>
-                        <ButtonLoading /> Salvando ...
-                      </>
-                    ) : (
-                      <>
-                        <Icon.Save /> Salvar
-                      </>
-                    )}
-                  </Button>
-                  <Button variant="success" size="sm" onClick={() => setPhoto(null)} className="m-1" style={{ width: "48%" }}>
-                    <Icon.Trash3 /> Cancelar
-                  </Button>
-                </div>
+                <Form.Label className="mb-1 text-success">Foto</Form.Label>
               </div>
             )}
+            <div className="text-start" style={{ overflowX: "scroll" }}>
+              {photo && (
+                <div>
+                  <img src={photo} alt="" title="" className="img-fluid" />
+                  <div className="mt-2 mb-2 d-flex justify-content-between">
+                    <Button variant="success" size="sm" onClick={handleSendPhoto} className="m-1" style={{ width: "48%" }}>
+                      {stateForm ? (
+                        <>
+                          <ButtonLoading /> Salvando ...
+                        </>
+                      ) : (
+                        <>
+                          <Icon.Save /> Salvar
+                        </>
+                      )}
+                    </Button>
+                    <Button variant="success" size="sm" onClick={() => setPhoto(null)} className="m-1" style={{ width: "48%" }}>
+                      <Icon.Trash3 /> Cancelar
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
             {!photo && (
               <div className="text-start text-success">
                 <div>
