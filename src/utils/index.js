@@ -1,7 +1,8 @@
 import moment from "moment";
+import uniqid from "uniqid";
 
 export function getImageLogoAcademy(cnpj) {
-  return "https://www.mels.com.br/Down/anunciantes/" + cnpj + "/" + cnpj + ".jpg";
+  return "https://www.mels.com.br/Down/anunciantes/" + cnpj + "/" + cnpj + ".jpg?id=" + uniqid();
 }
 
 export function getShowPdf(value) {

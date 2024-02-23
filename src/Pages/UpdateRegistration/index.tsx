@@ -40,6 +40,8 @@ function messagePhotoError(): { message: string; type: "success" | "error" } {
   };
 }
 export default function UpdateRegistration() {
+  const [tab, setTab] = useState<string | null | undefined>("home");
+  const [showCam, setShowCam] = useState<boolean>(false);
   const { client, setClient } = useClient();
   const [photos, setPhotos] = useState<string[] | undefined | null>(null);
   const [stateForm, setStateForm] = useState<boolean>(false);
@@ -175,6 +177,28 @@ export default function UpdateRegistration() {
     }
   }, [client]);
 
+  useEffect(() => {
+    if (tab) {
+      switch (tab) {
+        case "home": {
+          setShowCam(() => false);
+          break;
+        }
+        case "photo": {
+          setShowCam(() => false);
+          break;
+        }
+        case "cam": {
+          setShowCam(() => true);
+          break;
+        }
+        default: {
+          setShowCam(() => false);
+        }
+      }
+    }
+  }, [tab]);
+
   if (!client) {
     return <Loading />;
   }
@@ -182,7 +206,7 @@ export default function UpdateRegistration() {
   return (
     <div className="mb-5">
       <Title description="Dados cadastrais" />
-      <Tabs defaultActiveKey="home" id="uncontrolled-tab-example" className="mb-3" fill>
+      <Tabs defaultActiveKey="home" id="uncontrolled-tab-example" onSelect={(tab) => setTab(tab)} className="mb-3" fill>
         <Tab eventKey="home" title="Dados">
           <Formik
             validateOnChange={true}
@@ -379,49 +403,59 @@ export default function UpdateRegistration() {
                 <Form.Label className="mb-1 text-success">Foto</Form.Label>
               </div>
             )}
-            <div className="text-start" style={{ overflowX: "scroll" }}>
-              {photo && (
-                <div>
-                  <img src={photo} alt="" title="" className="img-fluid" />
-                  <div className="mt-2 mb-2 d-flex justify-content-between">
-                    <Button variant="success" size="sm" onClick={handleSendPhoto} className="m-1" style={{ width: "48%" }}>
-                      {stateForm ? (
-                        <>
-                          <ButtonLoading /> Salvando ...
-                        </>
-                      ) : (
-                        <>
-                          <Icon.Save /> Salvar
-                        </>
-                      )}
-                    </Button>
-                    <Button variant="success" size="sm" onClick={() => setPhoto(null)} className="m-1" style={{ width: "48%" }}>
-                      <Icon.Trash3 /> Cancelar
-                    </Button>
+            {showCam && (
+              <>
+                <div className="text-start" style={{ overflowX: "scroll" }}>
+                  {photo && (
+                    <div>
+                      <img src={photo} alt="" title="" className="img-fluid" />
+                      <div className="mt-2 mb-2 d-flex justify-content-between">
+                        <Button variant="success" size="sm" onClick={handleSendPhoto} className="m-1" style={{ width: "48%" }}>
+                          {stateForm ? (
+                            <>
+                              <ButtonLoading /> Salvando ...
+                            </>
+                          ) : (
+                            <>
+                              <Icon.Save /> Salvar
+                            </>
+                          )}
+                        </Button>
+                        <Button
+                          variant="success"
+                          size="sm"
+                          onClick={() => setPhoto(null)}
+                          className="m-1"
+                          style={{ width: "48%" }}
+                        >
+                          <Icon.Trash3 /> Cancelar
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+                {!photo && (
+                  <div className="text-start text-success">
+                    <div>
+                      <Form.Label className="mb-1">Tire sua Foto</Form.Label>
+                    </div>
+                    <Webcam
+                      ref={webCamRef}
+                      screenshotFormat="image/jpeg"
+                      imageSmoothing={true}
+                      audio={false}
+                      width={"100%"}
+                      height={"100%"}
+                      className="border-1"
+                    />
+                    <div className="d-grid gap-2 mt-0 mb-2">
+                      <Button variant="success" size="sm" onClick={capturePhoto}>
+                        <Icon.Camera /> Foto
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
-            {!photo && (
-              <div className="text-start text-success">
-                <div>
-                  <Form.Label className="mb-1">Tire sua Foto</Form.Label>
-                </div>
-                <Webcam
-                  ref={webCamRef}
-                  screenshotFormat="image/jpeg"
-                  imageSmoothing={true}
-                  audio={false}
-                  width={"100%"}
-                  height={"100%"}
-                  className="border-1"
-                />
-                <div className="d-grid gap-2 mt-0 mb-2">
-                  <Button variant="success" size="sm" onClick={capturePhoto}>
-                    <Icon.Camera /> Foto
-                  </Button>
-                </div>
-              </div>
+                )}
+              </>
             )}
           </div>
         </Tab>
