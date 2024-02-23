@@ -14,13 +14,13 @@ import { request } from "../../@requests";
 import { ClientRecord, ISelect2 } from "../../@types";
 import Title from "../../components/Title";
 import Toast from "../../components/Toast";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ButtonLoading from "../../components/ButtonLoading";
 import Loading from "../../components/Loading";
 import { Tab, Tabs } from "react-bootstrap";
 import { Img } from "react-image";
 import uniqid from "uniqid";
-import Camera from "react-html5-camera-photo";
+import Webcam from "react-webcam";
 function messageSaveSuccess(): { message: string; type: "success" | "error" } {
   return {
     message: "Dados alterados com êxito",
@@ -51,6 +51,14 @@ export default function UpdateRegistration() {
   const { Formik } = formik;
   const [show, setShow] = useState<boolean>(false);
   const [showMessageData, setMessageData] = useState<{ message: string; type: "success" | "error" }>(() => messageSaveSuccess());
+  const [photo, setPhoto] = useState(null);
+  const webCamRef = useRef<React.LegacyRef<Webcam> | undefined | any>(null);
+  const capturePhoto = useCallback(() => {
+    if (webCamRef && webCamRef.current) {
+      const imageSrc = webCamRef?.current?.getScreenshot();
+      setPhoto(imageSrc);
+    }
+  }, [webCamRef]);
 
   const schema = yup.object().shape({
     cpf: yup
@@ -112,34 +120,48 @@ export default function UpdateRegistration() {
     ];
   }
 
-  function onSubmitPhoto(e: React.FormEvent) {
-    e.preventDefault();
-    const formData = new FormData(e.target as any);
+  function sendCpfPhoto(formData: FormData) {
     const cpfValid = formData.get("cpf");
     const photoValid = formData.get("photo") as any;
     if (cpfValid && photoValid.name && photoValid.name.length > 0) {
-      request.clientPhotoSend(formData).then((result) => {
-        console.log(result);
-        if (result.status === 200) {
-          if (client) {
-            setPhotos(initPhotosOrUpdate(client?.cpf));
-            setMessageData(() => messagePhotoSuccess());
-            setShow(() => true);
-            if (formClientPhotoRef?.current !== null) {
-              formClientPhotoRef?.current.reset();
+      setStateForm(true);
+      request
+        .clientPhotoSend(formData)
+        .then((result) => {
+          console.log(result);
+          if (result.status === 200) {
+            if (client) {
+              setPhotos(initPhotosOrUpdate(client?.cpf));
+              setMessageData(() => messagePhotoSuccess());
+              setShow(() => true);
+              if (formClientPhotoRef?.current !== null) {
+                formClientPhotoRef?.current.reset();
+              }
             }
           }
-        }
-      });
+        })
+        .finally(() => {
+          setStateForm(false);
+        });
     } else {
       setMessageData(() => messagePhotoError());
       setShow(() => true);
+      setStateForm(false);
     }
   }
+  function onSubmitPhoto(e: React.FormEvent) {
+    e.preventDefault();
+    const formData = new FormData(e.target as any);
+    sendCpfPhoto(formData);
+  }
 
-  function handleTakePhoto(dataUri: string) {
-    // Do stuff with the photo...
-    console.log(dataUri);
+  function handleSendPhoto() {
+    if (client) {
+      const formData = new FormData();
+      formData.append("cpf", client?.cpf);
+      formData.append("photo", formats.dataURIToBlob(photo), `${client?.cpf}.jpg`);
+      sendCpfPhoto(formData);
+    }
   }
 
   useEffect(() => {
@@ -321,32 +343,82 @@ export default function UpdateRegistration() {
                 <Form onSubmit={onSubmitPhoto} ref={formClientPhotoRef}>
                   <input type="hidden" name="cpf" id="cpf" value={client?.cpf} />
                   <Form.Group controlId="formFile" className="mb-3">
-                    <Form.Label>Escolha a sua Foto</Form.Label>
+                    <Form.Label className="text-success">Escolha a sua Foto</Form.Label>
                     <Form.Control type="file" name="photo" accept="image/jpeg" />
                     <div className="d-grid gap-2 mt-2 mb-2">
                       <Button variant="success" size="sm" type="submit">
-                        Enviar
+                        {stateForm ? (
+                          <>
+                            <ButtonLoading /> Enviando ...
+                          </>
+                        ) : (
+                          <>
+                            <Icon.Send /> Enviar
+                          </>
+                        )}
                       </Button>
                     </div>
                   </Form.Group>
                 </Form>
               </div>
-              <div className="text-center" style={{ overflowX: "scroll" }}>
-                <Img className="rounded" src={photos} />
+              <div className="text-start" style={{ overflowX: "scroll" }}>
+                <div>
+                  <Form.Label className="text-success text-start">Foto atual</Form.Label>
+                </div>
+                <div>
+                  <Img className="rounded" src={photos} />
+                </div>
               </div>
             </>
           )}
         </Tab>
         <Tab eventKey="cam" title="Camera">
-          <div className="text-center" style={{ overflowX: "scroll" }}>
-            <Camera
-              onTakePhoto={(dataUri) => {
-                handleTakePhoto(dataUri);
-              }}
-              imageType="jpg"
-              idealResolution={{ height: 300, width: 300 }}
-              isFullscreen={true}
-            />
+          <div className="text-start" style={{ overflowX: "scroll" }}>
+            {photo && (
+              <div>
+                <div>
+                  <Form.Label className="mb-1 text-success">Foto</Form.Label>
+                </div>
+                <img src={photo} alt="" title="" className="img-fluid" />
+                <div className="mt-2 mb-2 d-flex justify-content-between">
+                  <Button variant="success" size="sm" onClick={handleSendPhoto} className="m-1" style={{ width: "48%" }}>
+                    {stateForm ? (
+                      <>
+                        <ButtonLoading /> Salvando ...
+                      </>
+                    ) : (
+                      <>
+                        <Icon.Save /> Salvar
+                      </>
+                    )}
+                  </Button>
+                  <Button variant="success" size="sm" onClick={() => setPhoto(null)} className="m-1" style={{ width: "48%" }}>
+                    <Icon.Trash3 /> Cancelar
+                  </Button>
+                </div>
+              </div>
+            )}
+            {!photo && (
+              <div className="text-start text-success">
+                <div>
+                  <Form.Label className="mb-1">Tire sua Foto</Form.Label>
+                </div>
+                <Webcam
+                  ref={webCamRef}
+                  screenshotFormat="image/jpeg"
+                  imageSmoothing={true}
+                  audio={false}
+                  width={"100%"}
+                  height={"100%"}
+                  className="border-1"
+                />
+                <div className="d-grid gap-2 mt-0 mb-2">
+                  <Button variant="success" size="sm" onClick={capturePhoto}>
+                    <Icon.Camera /> Foto
+                  </Button>
+                </div>
+              </div>
+            )}
           </div>
         </Tab>
       </Tabs>

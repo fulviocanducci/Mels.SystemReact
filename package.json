@@ -35,6 +35,7 @@
     "react-scripts": "5.0.1",
     "react-select": "^5.8.0",
     "react-toastify": "^10.0.4",
+    "react-webcam": "^7.2.0",
     "typescript": "^4.9.5",
     "uniqid": "^5.4.0",
     "use-mask-input": "^3.3.7",
