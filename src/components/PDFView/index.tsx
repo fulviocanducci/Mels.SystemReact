@@ -4,8 +4,10 @@ import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 import "@react-pdf-viewer/core/lib/styles/index.css";
 import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 import { Alert } from "react-bootstrap";
+import pdfjsWorker from "pdfjs-dist/build/pdf.worker.entry";
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.js", import.meta.url).toString();
+//pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/build/pdf.worker.min.js", import.meta.url).toString();
+pdfjs.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
 export default function PDFView({ file }: { file: string | null }) {
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
