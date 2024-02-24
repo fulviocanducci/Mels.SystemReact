@@ -128,6 +128,8 @@ export interface ClientRecord {
   phoneTwo: string;
   academyId: number;
   academyDocument: string;
+  addressNumber: string;
+  district: string;
 }
 
 export interface CityRecord {

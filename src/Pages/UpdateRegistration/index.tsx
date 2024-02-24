@@ -67,16 +67,18 @@ export default function UpdateRegistration() {
       .string()
       .required()
       .test("test-invalid-cpf", "CPF inválido", (cpf) => validation.cpf(cpf)),
-    name: yup.string().required(),
+    name: yup.string().required().max(64),
     sex: yup.number().required(),
     dateBirthday: yup.string().test("test-invalid-date", "Data inválida", (dateBirthday) => {
       return validation.dateOrEmpty(dateBirthday);
     }),
-    email: yup.string().email(),
-    address: yup.string(),
+    email: yup.string().email().max(40),
+    address: yup.string().max(50),
     cityId: yup.number(),
-    phoneOne: yup.string(),
-    phoneTwo: yup.string(),
+    phoneOne: yup.string().max(11),
+    phoneTwo: yup.string().max(11),
+    addressNumber: yup.string().required().max(10),
+    district: yup.string().required().max(30),
   });
 
   function setOptionsSelect2Handle(e: any, callBack: any) {
@@ -225,6 +227,8 @@ export default function UpdateRegistration() {
               phoneTwo: client?.phoneTwo,
               academyId: client?.academyId,
               academyDocument: client?.academyDocument,
+              addressNumber: client?.addressNumber,
+              district: client?.district,
             }}
           >
             {({ handleSubmit, handleChange, values, touched, errors, setFieldValue }) => (
@@ -311,6 +315,30 @@ export default function UpdateRegistration() {
                       isValid={touched.address && !errors.address}
                       isInvalid={!!errors.address}
                       placeholder="Endereço completo"
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-2" controlId="exampleForm.addressNumber">
+                    <Form.Label className="mb-0">Endereço número:</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="addressNumber"
+                      value={values.addressNumber}
+                      onChange={handleChange}
+                      isValid={touched.addressNumber && !errors.addressNumber}
+                      isInvalid={!!errors.addressNumber}
+                      placeholder="Endereço número"
+                    />
+                  </Form.Group>
+                  <Form.Group className="mb-2" controlId="exampleForm.district">
+                    <Form.Label className="mb-0">Bairro:</Form.Label>
+                    <Form.Control
+                      type="text"
+                      name="district"
+                      value={values.district}
+                      onChange={handleChange}
+                      isValid={touched.district && !errors.district}
+                      isInvalid={!!errors.district}
+                      placeholder="Bairro"
                     />
                   </Form.Group>
                   <Form.Group className="mb-2" controlId="exampleForm.phoneOne">
@@ -444,8 +472,8 @@ export default function UpdateRegistration() {
                       screenshotFormat="image/jpeg"
                       imageSmoothing={true}
                       audio={false}
-                      width={"100%"}
-                      height={"100%"}
+                      width={600}
+                      height={600}
                       className="border-1"
                     />
                     <div className="d-grid gap-2 mt-0 mb-2">
