@@ -39,6 +39,18 @@ function messagePhotoError(): { message: string; type: "success" | "error" } {
     type: "error",
   };
 }
+const fileTypes = [
+  "image/jpeg",
+  // "image/apng",
+  // "image/bmp",
+  // "image/gif",
+  // "image/pjpeg",
+  // "image/png",
+  // "image/svg+xml",
+  // "image/tiff",
+  // "image/webp",
+  // "image/x-icon",
+];
 export default function UpdateRegistration() {
   const [tab, setTab] = useState<string | null | undefined>("home");
   const [showCam, setShowCam] = useState<boolean>(false);
@@ -57,7 +69,7 @@ export default function UpdateRegistration() {
   const webCamRef = useRef<React.LegacyRef<Webcam> | undefined | any>(null);
   const capturePhoto = useCallback(() => {
     if (webCamRef && webCamRef.current) {
-      const imageSrc = webCamRef?.current?.getScreenshot();
+      const imageSrc = webCamRef?.current?.getScreenshot({ width: 600, height: 600 });
       setPhoto(imageSrc);
     }
   }, [webCamRef]);
@@ -127,7 +139,7 @@ export default function UpdateRegistration() {
   function sendCpfPhoto(formData: FormData) {
     const cpfValid = formData.get("cpf");
     const photoValid = formData.get("photo") as any;
-    if (cpfValid && photoValid.name && photoValid.name.length > 0) {
+    if (cpfValid && photoValid.name && photoValid.name.length > 0 && fileTypes.includes(photoValid.type)) {
       setStateForm(true);
       request
         .clientPhotoSend(formData)
@@ -306,7 +318,7 @@ export default function UpdateRegistration() {
                     />
                   </Form.Group>
                   <Form.Group className="mb-2" controlId="exampleForm.address">
-                    <Form.Label className="mb-0">Endereço completo:</Form.Label>
+                    <Form.Label className="mb-0">Endereço:</Form.Label>
                     <Form.Control
                       type="text"
                       name="address"
@@ -318,7 +330,7 @@ export default function UpdateRegistration() {
                     />
                   </Form.Group>
                   <Form.Group className="mb-2" controlId="exampleForm.addressNumber">
-                    <Form.Label className="mb-0">Endereço número:</Form.Label>
+                    <Form.Label className="mb-0">Número:</Form.Label>
                     <Form.Control
                       type="text"
                       name="addressNumber"
@@ -395,7 +407,7 @@ export default function UpdateRegistration() {
                 <Form onSubmit={onSubmitPhoto} ref={formClientPhotoRef}>
                   <input type="hidden" name="cpf" id="cpf" value={client?.cpf} />
                   <Form.Group controlId="formFile" className="mb-3">
-                    <Form.Label className="text-success">Escolha a sua Foto</Form.Label>
+                    <Form.Label className="text-success">Escolha a sua Foto (somente jpg)</Form.Label>
                     <Form.Control type="file" name="photo" accept="image/jpeg" />
                     <div className="d-grid gap-2 mt-2 mb-2">
                       <Button variant="success" size="sm" type="submit">
@@ -463,25 +475,28 @@ export default function UpdateRegistration() {
                   )}
                 </div>
                 {!photo && (
-                  <div className="text-start text-success">
+                  <>
                     <div>
                       <Form.Label className="mb-1">Tire sua Foto</Form.Label>
                     </div>
-                    <Webcam
-                      ref={webCamRef}
-                      screenshotFormat="image/jpeg"
-                      imageSmoothing={true}
-                      audio={false}
-                      width={600}
-                      height={600}
-                      className="border-1"
-                    />
-                    <div className="d-grid gap-2 mt-0 mb-2">
-                      <Button variant="success" size="sm" onClick={capturePhoto}>
-                        <Icon.Camera /> Foto
-                      </Button>
+                    <div className="text-start text-success" style={{ overflowX: "scroll" }}>
+                      <Webcam
+                        ref={webCamRef}
+                        screenshotFormat="image/jpeg"
+                        imageSmoothing={true}
+                        audio={false}
+                        width={"100%"}
+                        height={"100%"}
+                        minScreenshotHeight={600}
+                        minScreenshotWidth={600}
+                      />
+                      <div className="d-grid gap-2 mt-0 mb-2">
+                        <Button variant="success" size="sm" onClick={capturePhoto}>
+                          <Icon.Camera /> Foto
+                        </Button>
+                      </div>
                     </div>
-                  </div>
+                  </>
                 )}
               </>
             )}
