@@ -128,6 +128,8 @@ const formatClient = (client) => {
     phoneOne: onlyNumbers(client?.phoneOne),
     phoneTwo: onlyNumbers(client?.phoneTwo),
     academyId: client?.academyId,
+    addressNumber: client?.addressNumber,
+    district: client?.district,
   };
   return data;
 };
