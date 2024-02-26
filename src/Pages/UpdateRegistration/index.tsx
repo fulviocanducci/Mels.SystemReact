@@ -21,10 +21,17 @@ import { Tab, Tabs } from "react-bootstrap";
 import { Img } from "react-image";
 import uniqid from "uniqid";
 import Webcam from "react-webcam";
+import { AxiosError } from "axios";
 function messageSaveSuccess(): { message: string; type: "success" | "error" } {
   return {
     message: "Dados alterados com êxito",
     type: "success",
+  };
+}
+function messageSaveError(): { message: string; type: "success" | "error" } {
+  return {
+    message: "Dados não foram alterados",
+    type: "error",
   };
 }
 function messagePhotoSuccess(): { message: string; type: "success" | "error" } {
@@ -35,7 +42,13 @@ function messagePhotoSuccess(): { message: string; type: "success" | "error" } {
 }
 function messagePhotoError(): { message: string; type: "success" | "error" } {
   return {
-    message: "Foto inválida",
+    message: "Foto inválida, tente novamente",
+    type: "error",
+  };
+}
+function messagePhotoErrorNetwork(): { message: string; type: "success" | "error" } {
+  return {
+    message: "Error de rede ou internet, mande novamente",
     type: "error",
   };
 }
@@ -111,17 +124,23 @@ export default function UpdateRegistration() {
       if (data) {
         request
           .clientUpdate(data)
-          .then((result) => {
-            if (result.status === 200) {
-              const clientRecord: ClientRecord = result.data;
-              if (clientRecord !== null) {
-                setClient(clientRecord);
-                setClientLocalStorage(clientRecord);
-                setMessageData(() => messageSaveSuccess());
-                setShow(() => true);
+          .then(
+            (result) => {
+              if (result.status === 200) {
+                const clientRecord: ClientRecord = result.data;
+                if (clientRecord !== null) {
+                  setClient(clientRecord);
+                  setClientLocalStorage(clientRecord);
+                  setMessageData(() => messageSaveSuccess());
+                  setShow(() => true);
+                }
               }
+            },
+            (error) => {
+              setMessageData(() => messageSaveError());
+              setShow(() => true);
             }
-          })
+          )
           .finally(() => {
             setStateForm(false);
           });
@@ -143,19 +162,32 @@ export default function UpdateRegistration() {
       setStateForm(true);
       request
         .clientPhotoSend(formData)
-        .then((result) => {
-          console.log(result);
-          if (result.status === 200) {
-            if (client) {
-              setPhotos(initPhotosOrUpdate(client?.cpf));
-              setMessageData(() => messagePhotoSuccess());
-              setShow(() => true);
-              if (formClientPhotoRef?.current !== null) {
-                formClientPhotoRef?.current.reset();
+        .then(
+          (result) => {
+            if (result.status === 200) {
+              if (client) {
+                setPhotos(initPhotosOrUpdate(client?.cpf));
+                setMessageData(() => messagePhotoSuccess());
+                setShow(() => true);
+                if (formClientPhotoRef?.current !== null) {
+                  formClientPhotoRef?.current.reset();
+                }
               }
             }
+          },
+          (error: AxiosError) => {
+            console.log(error);
+            if (client && client?.cpf) {
+              setPhotos(initPhotosOrUpdate(client?.cpf));
+            }
+            if (error.code === "ERR_NETWORK") {
+              setMessageData(() => messagePhotoErrorNetwork());
+            } else {
+              setMessageData(() => messagePhotoError());
+            }
+            setShow(() => true);
           }
-        })
+        )
         .finally(() => {
           setStateForm(false);
         });
@@ -256,6 +288,7 @@ export default function UpdateRegistration() {
                       isValid={touched.name && !errors.name}
                       isInvalid={!!errors.name}
                       placeholder="Nome completo"
+                      maxLength={64}
                     />
                   </Form.Group>
                   <Form.Group className="mb-2" controlId="exampleForm.sex">
@@ -315,6 +348,7 @@ export default function UpdateRegistration() {
                       isValid={touched.email && !errors.email}
                       isInvalid={!!errors.email}
                       placeholder="E-mail"
+                      maxLength={40}
                     />
                   </Form.Group>
                   <Form.Group className="mb-2" controlId="exampleForm.address">
@@ -327,6 +361,7 @@ export default function UpdateRegistration() {
                       isValid={touched.address && !errors.address}
                       isInvalid={!!errors.address}
                       placeholder="Endereço completo"
+                      maxLength={50}
                     />
                   </Form.Group>
                   <Form.Group className="mb-2" controlId="exampleForm.addressNumber">
@@ -339,6 +374,7 @@ export default function UpdateRegistration() {
                       isValid={touched.addressNumber && !errors.addressNumber}
                       isInvalid={!!errors.addressNumber}
                       placeholder="Endereço número"
+                      maxLength={10}
                     />
                   </Form.Group>
                   <Form.Group className="mb-2" controlId="exampleForm.district">
@@ -351,10 +387,11 @@ export default function UpdateRegistration() {
                       isValid={touched.district && !errors.district}
                       isInvalid={!!errors.district}
                       placeholder="Bairro"
+                      maxLength={30}
                     />
                   </Form.Group>
                   <Form.Group className="mb-2" controlId="exampleForm.phoneOne">
-                    <Form.Label className="mb-0">Telefone:</Form.Label>
+                    <Form.Label className="mb-0">Telefone 1:</Form.Label>
                     <FormControlCustom.Control.Phone
                       name="phoneOne"
                       value={values.phoneOne ?? ""}
@@ -365,7 +402,7 @@ export default function UpdateRegistration() {
                     />
                   </Form.Group>
                   <Form.Group className="mb-2" controlId="exampleForm.phoneTwo">
-                    <Form.Label className="mb-0">Celular:</Form.Label>
+                    <Form.Label className="mb-0">Telefone 2:</Form.Label>
                     <FormControlCustom.Control.Phone
                       name="phoneTwo"
                       value={values.phoneTwo ?? ""}
