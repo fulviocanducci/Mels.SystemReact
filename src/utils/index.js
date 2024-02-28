@@ -120,8 +120,20 @@ const formatDateTimePTBR = (value) => {
   return "";
 };
 
+const replaceString = (value, p1, p2) => {
+  return value.replace(p1, p2);
+};
+
 const formatDateEn = (value) => {
   return moment(value, "DD/MM/YYYY").format("YYYY-MM-DD");
+};
+
+const calculeLessOneHour = (datetime) => {
+  setMomentLocale();
+  var now = moment(new Date());
+  var end = moment(datetime);
+  var duration = moment.duration(end.diff(now));
+  return duration.asHours();
 };
 
 const formatClient = (client) => {
@@ -161,6 +173,8 @@ const formats = {
   nowTime,
   compareDateEn,
   dataURIToBlob,
+  calculeLessOneHour,
+  replaceString,
 };
 
 const redirectTo = {

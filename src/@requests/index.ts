@@ -117,6 +117,10 @@ const checkInGetById = (id: number | string | undefined | null) => {
   return api.get(`/api/checkin/${id}`);
 };
 
+const checkinclientCancel = (id: number | string | undefined | null) => {
+  return api.put(`/api/checkinclient/renew/${id}`);
+};
+
 const request = {
   authentication,
   paymentsGroupByYear,
@@ -139,7 +143,7 @@ const request = {
   checkInGet,
   checkInClientGet,
   checkInClientPut,
-  checkInGetById,
+  checkInGetById,checkinclientCancel
 };
 
 export { request };
