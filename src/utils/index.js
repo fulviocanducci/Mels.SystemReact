@@ -26,6 +26,14 @@ function nowDateTime() {
   setMomentLocale();
   return moment().format("YYYY-MM-DDTHH:mm:ss");
 }
+function nowDate() {
+  setMomentLocale();
+  return moment().format("YYYY-MM-DD");
+}
+function nowTime() {
+  setMomentLocale();
+  return moment().format("HH:mm:ss");
+}
 function onlyNumbers(value) {
   if (value) {
     return value.replace(/\D/g, "");
@@ -149,6 +157,8 @@ const formats = {
   date: formatDateTimePTBR,
   client: formatClient,
   nowDateTime,
+  nowDate,
+  nowTime,
   compareDateEn,
   dataURIToBlob,
 };

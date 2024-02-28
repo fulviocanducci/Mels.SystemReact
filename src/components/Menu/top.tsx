@@ -28,6 +28,9 @@ export function Top() {
             <Link to="/assessments" className="nav-link" onClick={setExpandedFalse}>
               <Icon.PersonExclamation /> Avaliações
             </Link>
+            <Link to="/checkin" className="nav-link" onClick={setExpandedFalse}>
+              <Icon.CheckCircle /> CheckIn
+            </Link>
             <Link to="/training" className="nav-link" onClick={setExpandedFalse}>
               <Icon.PersonBoundingBox /> Treinos
             </Link>

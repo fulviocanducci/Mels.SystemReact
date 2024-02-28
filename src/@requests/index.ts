@@ -1,6 +1,7 @@
 import {
   ClientRecord,
   IAssessment,
+  ICheckInClient,
   ILoginRecord,
   IMessageAcademy,
   IMessageApp,
@@ -101,6 +102,21 @@ const clientPhotoSend = (form: FormData) => {
   return api.postForm("/api/client/photo", form);
 };
 
+const checkInGet = (id: number | string | undefined | null) => {
+  return api.get(`/api/checkin/actualdatetimeat/${id}`);
+};
+
+const checkInClientGet = (id: number | string | undefined | null) => {
+  return api.get(`/api/checkinclient/classroom/${id}`);
+};
+
+const checkInClientPut = (model: ICheckInClient) => {
+  return api.put(`/api/checkinclient/${model.id}`, model);
+};
+const checkInGetById = (id: number | string | undefined | null) => {
+  return api.get(`/api/checkin/${id}`);
+};
+
 const request = {
   authentication,
   paymentsGroupByYear,
@@ -120,6 +136,10 @@ const request = {
   messagesAcademyByIdSent,
   assessmentGetAll,
   clientPhotoSend,
+  checkInGet,
+  checkInClientGet,
+  checkInClientPut,
+  checkInGetById,
 };
 
 export { request };

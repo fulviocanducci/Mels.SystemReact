@@ -15,6 +15,8 @@ import TrainingDetails from "../../Pages/Training/details";
 import { IRouteMenu } from "../../@types";
 import Messages from "../../Pages/Messages";
 import Assessments from "../../Pages/Assessments";
+import CheckIn from "../../Pages/CheckIn";
+import CheckInClient from "../../Pages/CheckIn/checkinclient";
 
 export function RoutesMenu({ marginTop }: IRouteMenu) {
   return (
@@ -63,7 +65,22 @@ export function RoutesMenu({ marginTop }: IRouteMenu) {
               </ProtectedRouter>
             }
           />
-
+          <Route
+            path="/checkin"
+            element={
+              <ProtectedRouter>
+                <CheckIn />
+              </ProtectedRouter>
+            }
+          />
+          <Route
+            path="/checkin/client/:id"
+            element={
+              <ProtectedRouter>
+                <CheckInClient />
+              </ProtectedRouter>
+            }
+          />
           <Route
             path="/payments"
             element={

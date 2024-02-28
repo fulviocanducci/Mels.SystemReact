@@ -178,3 +178,25 @@ export interface IMovementReceiptYearRecord {
   formOfPayment: string;
   activityPaid: string;
 }
+
+export interface ICheckIn {
+  id: number;
+  dateAt: string;
+  timeAt: string;
+  nameClass: string;
+  academyId: number;
+  classroomId: number;
+  able: boolean;
+}
+
+export interface ICheckInClient {
+  id: number;
+  cpf?: string | null | undefined;
+  classroomId: number;
+  confirmation: boolean;
+  dateConfirmationAt?: string | null | undefined;
+  timeConfirmationAt?: string | null | undefined;
+  dateSchedulingAt?: string | null | undefined;
+  timeSchedulingAt?: string | null | undefined;
+  name?: string | null | undefined;
+}
