@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { MouseEventHandler, useEffect, useMemo, useState } from "react";
 import Loading from "../../components/Loading";
 import { ICheckIn, ICheckInClient } from "../../@types";
 import { useNavigate, useParams } from "react-router-dom";
@@ -25,7 +25,7 @@ function messageSaveError(): { message: string; type: "success" | "error" } {
 }
 export default function CheckInClient() {
   const navigate = useNavigate();
-  const [stateForm, setStateForm] = useState<boolean>(false);
+  const [stateForm, setStateForm] = useState<boolean[] | null | undefined>(null);
   const [show, setShow] = useState<boolean>(false);
   const [showMessageData, setMessageData] = useState<{ message: string; type: "success" | "error" }>(() => messageSaveSuccess());
   const { client } = useClient();
@@ -55,6 +55,15 @@ export default function CheckInClient() {
     request.checkInClientGet(id).then((result) => {
       if (result.status === 200) {
         setItems(result.data);
+        const count = result.data.length;
+        if (count && count > 0) {
+          let items = [];
+          for (let i = 0; i < count; i++) {
+            const item = false;
+            items.push(item);
+          }
+          setStateForm(items);
+        }
       }
     }, isErrorToRedirect);
   }
@@ -83,7 +92,15 @@ export default function CheckInClient() {
     }, isErrorToRedirect);
   }
 
-  function handleAdd(model: ICheckInClient) {
+  function stateFormButton(index: number, state: boolean) {
+    const data = stateForm?.map((item, i) => {
+      if (i === index) return state;
+      return item;
+    });
+    setStateForm(data);
+  }
+
+  function handleAdd(model: ICheckInClient, index: number) {
     var newModel: ICheckInClient = {
       ...model,
       cpf: client?.cpf,
@@ -92,7 +109,7 @@ export default function CheckInClient() {
       dateSchedulingAt: checkIn?.dateAt,
       timeSchedulingAt: checkIn?.timeAt,
     };
-    setStateForm(() => true);
+    stateFormButton(index, true);
     request
       .checkInClientPut(newModel)
       .then((result) => {
@@ -108,7 +125,7 @@ export default function CheckInClient() {
         }
       }, isErrorToRedirect)
       .finally(() => {
-        setStateForm(() => false);
+        stateFormButton(index, false);
       });
   }
 
@@ -197,8 +214,8 @@ export default function CheckInClient() {
             <ListGroup>
               {itemsOpen.map((data, index) => (
                 <Block key={index} className={"mb-3"}>
-                  <Button variant="success" size="sm" type="button" onClick={() => handleAdd(data)} disabled={itemExist}>
-                    {stateForm ? (
+                  <Button variant="success" size="sm" type="button" onClick={() => handleAdd(data, index)} disabled={itemExist}>
+                    {stateForm && stateForm[index] ? (
                       <>
                         <ButtonLoading /> Adicionando ...
                       </>
