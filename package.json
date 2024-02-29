@@ -31,6 +31,7 @@
     "react-html5-camera-photo": "^1.5.11",
     "react-image": "^4.1.0",
     "react-image-fallback": "^8.0.0",
+    "react-measure": "^2.5.2",
     "react-pdf": "^7.7.0",
     "react-player": "^2.14.1",
     "react-router-dom": "^6.21.3",
@@ -38,6 +39,7 @@
     "react-select": "^5.8.0",
     "react-toastify": "^10.0.4",
     "react-webcam": "^7.2.0",
+    "styled-components": "^6.1.8",
     "typescript": "^4.9.5",
     "uniqid": "^5.4.0",
     "use-mask-input": "^3.3.7",
@@ -76,6 +78,7 @@
     "@types/react-image-fallback": "^8.0.6",
     "@types/react-router-dom": "^5.3.3",
     "@types/react-select": "^5.0.1",
+    "@types/styled-components": "^5.1.34",
     "@types/uniqid": "^5.3.4"
   }
 }

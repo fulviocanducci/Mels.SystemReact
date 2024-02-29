@@ -22,6 +22,7 @@ import { Img } from "react-image";
 import uniqid from "uniqid";
 import Webcam from "react-webcam";
 import { AxiosError } from "axios";
+import Cam from "../../components/Cam";
 function messageSaveSuccess(): { message: string; type: "success" | "error" } {
   return {
     message: "Dados alterados com êxito",
