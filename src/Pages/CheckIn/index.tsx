@@ -16,7 +16,6 @@ export default function CheckIn() {
   const navigate = useNavigate();
   const [items, setItems] = useState<ICheckIn[] | null>(null);
   function getCheckIn() {
-    console.log(client);
     if (client && client.academyId) {
       request.checkInGet(client.academyId).then((result) => {
         if (result.status === 200) {

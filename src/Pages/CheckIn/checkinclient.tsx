@@ -1,4 +1,4 @@
-import { MouseEventHandler, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Loading from "../../components/Loading";
 import { ICheckIn, ICheckInClient } from "../../@types";
 import { useNavigate, useParams } from "react-router-dom";
@@ -20,6 +20,9 @@ function messageSaveSuccess(): { message: string; type: "success" | "error" } {
 function messageCancelSuccess(): { message: string; type: "success" | "error" } {
   return { message: "CheckIn cancelado com successo", type: "success" };
 }
+function messageNotCancel(): { message: string; type: "success" | "error" } {
+  return { message: "CheckIn não pode ser cancelado", type: "error" };
+}
 function messageSaveError(): { message: string; type: "success" | "error" } {
   return { message: "Já existe o seu cadastro", type: "error" };
 }
@@ -39,18 +42,21 @@ export default function CheckInClient() {
     }
     return [];
   }, [items]);
+
   const itemsClose = useMemo(() => {
     if (items) {
       return items?.filter((x) => x.cpf && x.cpf !== "" && x.cpf.length > 0);
     }
     return [];
   }, [items]);
+
   const itemExist = useMemo(() => {
     if (items && client) {
       return items?.filter((x) => client && x.cpf && x.cpf === client?.cpf).length === 1;
     }
     return false;
   }, [items]);
+
   function loadCheckInClientGet() {
     request.checkInClientGet(id).then((result) => {
       if (result.status === 200) {
@@ -81,15 +87,25 @@ export default function CheckInClient() {
       loadCheckInGetByIdGet();
     }
   }
+  const isCancelCheck = (data: ICheckInClient) => {
+    return (
+      formats.calculeLessOneHour(formats.replaceString(data.dateSchedulingAt, "T00:00:00", "") + " " + data.timeSchedulingAt) > 1
+    );
+  };
 
-  function cancelCheckInClient(id: number) {
-    request.checkinclientCancel(id).then((result) => {
-      if (result.status === 200) {
-        loadCheckInClientGet();
-        setMessageData(() => messageCancelSuccess());
-        setShow(() => true);
-      }
-    }, isErrorToRedirect);
+  function cancelCheckInClient(data: ICheckInClient) {
+    if (isCancelCheck(data)) {
+      request.checkinclientCancel(data.id).then((result) => {
+        if (result.status === 200) {
+          loadCheckInClientGet();
+          setMessageData(() => messageCancelSuccess());
+          setShow(() => true);
+        }
+      }, isErrorToRedirect);
+    } else {
+      setMessageData(() => messageNotCancel());
+      setShow(() => true);
+    }
   }
 
   function stateFormButton(index: number, state: boolean) {
@@ -178,19 +194,23 @@ export default function CheckInClient() {
               <ListGroup.Item key={index} variant="success">
                 <div className="d-flex justify-content-between">
                   <div>
-                    <div>{data.name}</div>
-                  </div>
-                  {client &&
-                    client.cpf === data.cpf &&
-                    formats.calculeLessOneHour(
-                      formats.replaceString(data.dateSchedulingAt, "T00:00:00", "") + " " + data.timeSchedulingAt
-                    ) > 1 && (
+                    <div>
+                      <div>{data.name}</div>
+                      {/* <hr className="mb-1 mt-0" />
                       <div>
-                        <Button type="button" variant="danger" size="sm" onClick={() => cancelCheckInClient(data.id)}>
-                          <Icon.Trash></Icon.Trash>
-                        </Button>
-                      </div>
-                    )}
+                        <small>
+                          <b>Dia:</b> {formats.date(data.dateSchedulingAt)} {data.timeSchedulingAt}
+                        </small>
+                      </div> */}
+                    </div>
+                  </div>
+                  {client && client.cpf === data.cpf && isCancelCheck(data) && (
+                    <div>
+                      <Button type="button" variant="danger" size="sm" onClick={() => cancelCheckInClient(data)}>
+                        <Icon.Trash></Icon.Trash>
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </ListGroup.Item>
             ))}
