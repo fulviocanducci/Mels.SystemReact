@@ -102,8 +102,8 @@ const clientPhotoSend = (form: FormData) => {
   return api.postForm("/api/client/photo", form);
 };
 
-const checkInGet = (id: number | string | undefined | null) => {
-  return api.get(`/api/checkin/actualdatetimeat/${id}`);
+const checkInGet = (id: number | string | undefined | null, cpf: string | undefined | null) => {
+  return api.get(`/api/checkin/actualdatetimeat/${id}/${cpf}`);
 };
 
 const checkInClientGet = (id: number | string | undefined | null) => {
@@ -143,7 +143,8 @@ const request = {
   checkInGet,
   checkInClientGet,
   checkInClientPut,
-  checkInGetById,checkinclientCancel
+  checkInGetById,
+  checkinclientCancel,
 };
 
 export { request };

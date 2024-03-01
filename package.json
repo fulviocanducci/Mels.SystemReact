@@ -8,6 +8,7 @@
     "@fortawesome/free-regular-svg-icons": "^6.5.1",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@orrisroot/react-html-parser": "^2.1.2",
     "@react-pdf-viewer/default-layout": "^3.12.0",
     "@react-pdf-viewer/scroll-mode": "^3.12.0",
     "@testing-library/jest-dom": "^5.17.0",

@@ -14,6 +14,8 @@ import Toast from "../../components/Toast";
 import ButtonLoading from "../../components/ButtonLoading";
 import ButtonGoBack from "../../components/ButtonGoBack";
 import { formats } from "../../utils";
+import ReactHtmlParser from "@orrisroot/react-html-parser";
+
 function messageSaveSuccess(): { message: string; type: "success" | "error" } {
   return { message: "CheckIn realizado com successo", type: "success" };
 }
@@ -24,7 +26,7 @@ function messageNotCancel(): { message: string; type: "success" | "error" } {
   return { message: "CheckIn não pode ser cancelado", type: "error" };
 }
 function messageSaveError(): { message: string; type: "success" | "error" } {
-  return { message: "Já existe o seu cadastro", type: "error" };
+  return { message: "Já existe o seu cadastro ou vaga preenchida", type: "error" };
 }
 export default function CheckInClient() {
   const navigate = useNavigate();
@@ -41,6 +43,13 @@ export default function CheckInClient() {
       return items?.filter((x) => x.cpf === "");
     }
     return [];
+  }, [items]);
+
+  const itemsOpenFirst = useMemo(() => {
+    if (items && items.length > 0) {
+      return items[0];
+    }
+    return null;
   }, [items]);
 
   const itemsClose = useMemo(() => {
@@ -161,7 +170,7 @@ export default function CheckInClient() {
 
   return (
     <div>
-      <Title description="CheckIn Disponibilidade">
+      <Title description="Check-in Disponibilidade">
         <ButtonGoBack onClick={handleGoBack} className="me-1" />
       </Title>
       <div>
@@ -222,7 +231,7 @@ export default function CheckInClient() {
           <div>Vagas restantes: {itemsOpen.length}</div>
           <div>
             <small>
-              <b>Observação:</b> você já está cadastrado nessa aula.
+              <b>Observação:</b> Sua presença está confirmada.
             </small>
           </div>
         </div>
@@ -230,25 +239,42 @@ export default function CheckInClient() {
       {!itemExist && (
         <div>
           <div className="text-success mt-2 mb-1">Vagas restantes: {itemsOpen.length}</div>
-          {itemsOpen && (
+          {itemsOpenFirst && (
             <ListGroup>
-              {itemsOpen.map((data, index) => (
-                <Block key={index} className={"mb-3"}>
-                  <Button variant="success" size="sm" type="button" onClick={() => handleAdd(data, index)} disabled={itemExist}>
-                    {stateForm && stateForm[index] ? (
-                      <>
-                        <ButtonLoading /> Adicionando ...
-                      </>
-                    ) : (
-                      <>
-                        <Icon.PlusCircle /> Adicionar
-                      </>
-                    )}
-                  </Button>
-                </Block>
-              ))}
+              <Block key={0} className={"mb-3"}>
+                <Button
+                  variant="success"
+                  size="sm"
+                  type="button"
+                  onClick={() => handleAdd(itemsOpenFirst, 0)}
+                  disabled={itemExist}
+                >
+                  {stateForm && stateForm[0] ? (
+                    <>
+                      <ButtonLoading /> Adicionando ...
+                    </>
+                  ) : (
+                    <>
+                      <Icon.PlusCircle /> Adicionar
+                    </>
+                  )}
+                </Button>
+              </Block>
             </ListGroup>
           )}
+        </div>
+      )}
+      {checkIn && (
+        <div className="mt-2">
+          <div className="text-success">
+            <h5>Recomendações</h5>
+          </div>
+          <hr className="mt-0 mb-1" />
+          <div>
+            <ul className="list-group text-success">
+              {ReactHtmlParser(checkIn?.note.replaceAll("*", "<li class='list-group-item list-group-item-success'>"))}
+            </ul>
+          </div>
         </div>
       )}
       <Toast message={showMessageData.message} type={showMessageData.type} show={show} change={setShow} />

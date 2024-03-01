@@ -181,12 +181,17 @@ export interface IMovementReceiptYearRecord {
 
 export interface ICheckIn {
   id: number;
+  count: number;
+  countAccept: number;
   dateAt: string;
   timeAt: string;
   nameClass: string;
   academyId: number;
   classroomId: number;
   able: boolean;
+  note: string;
+  classId: number;
+  cpf: string;
 }
 
 export interface ICheckInClient {
