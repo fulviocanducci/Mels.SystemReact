@@ -29,7 +29,7 @@ export function Top() {
               <Icon.PersonExclamation /> Avaliações
             </Link>
             <Link to="/checkin" className="nav-link" onClick={setExpandedFalse}>
-              <Icon.CheckCircle /> CheckIn
+              <Icon.CheckCircle /> Check-in
             </Link>
             <Link to="/training" className="nav-link" onClick={setExpandedFalse}>
               <Icon.PersonBoundingBox /> Treinos
