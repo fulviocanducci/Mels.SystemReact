@@ -51,7 +51,7 @@ export default function CheckIn() {
           items.length > 0 &&
           items.map((data, index) => {
             return (
-              <div className="col-md-6" key={index}>
+              <div className="col-md-6" key={index} class="text-success">
                 <Alert key={index} variant={"success"}>
                   <Alert.Heading className="mb-1 text-success">{data.nameClass}</Alert.Heading>
                   <hr className="mt-1 mb-2" />
