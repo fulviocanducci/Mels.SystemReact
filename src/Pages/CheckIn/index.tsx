@@ -51,12 +51,12 @@ export default function CheckIn() {
           items.length > 0 &&
           items.map((data, index) => {
             return (
-              <div className="col-md-6" key={index} class="text-success">
+              <div className="col-md-6 text-success" key={index}>
                 <Alert key={index} variant={"success"}>
                   <Alert.Heading className="mb-1 text-success">{data.nameClass}</Alert.Heading>
                   <hr className="mt-1 mb-2" />
                   <div className="mt-0 mb-1">
-                    <div className="d-flex justify-content-between">
+                    <div className="d-flex justify-content-between text-success">
                       <div>
                         <Icon.Calendar />{" "}
                         <small>
@@ -74,7 +74,7 @@ export default function CheckIn() {
                     </div>
                   </div>
                   {data.classId > 0 && (
-                    <div>
+                    <div className="text-success">
                       <Icon.CheckLg />{" "}
                       <small>
                         <b>Sua presença está confirmada.</b>
@@ -82,7 +82,7 @@ export default function CheckIn() {
                     </div>
                   )}
                   {data.classId === 0 && (
-                    <div>
+                    <div className="text-success">
                       <Icon.XCircle />{" "}
                       <small>
                         <b>Quer confirmar sua presença?</b>
