@@ -44,7 +44,7 @@ export default function CheckIn() {
       <div className="row">
         {items && items.length === 0 && (
           <div>
-            <AlertMessageDefault title={"Sem CheckIn"} body={"Não foi encontrado nenhum checkin"} />
+            <AlertMessageDefault title={"Sem Check-in"} body={"Não foi encontrado nenhum Check-in"} />
           </div>
         )}
         {items &&

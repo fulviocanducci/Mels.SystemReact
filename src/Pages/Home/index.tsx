@@ -26,7 +26,7 @@ export default function Home() {
       <div className="text-center mb-2">
         <ImageFallback />
       </div>
-      <div style={{ textAlign: "justify" }} className="mb-1 mt-2">
+      <div style={{ textAlign: "justify" }} className="mb-4 mt-2">
         <div className="text-center">Acompanhe</div>
         <Block className="mt-1">
           <Button variant="success" onClick={() => navigate("/assessments")}>
