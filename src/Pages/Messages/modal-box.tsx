@@ -12,11 +12,11 @@ export function ModalBox({ message, show, setShow }: IModalBox) {
     return <></>;
   }
   return (
-    <Modal show={show} fullscreen={true} onHide={() => setShow(false)}>
-      <Modal.Header closeButton>
+    <Modal show={show} fullscreen={true} onHide={() => setShow(false)} className="text-success">
+      <Modal.Header closeButton className="text-success">
         <Modal.Title>{message?.title}</Modal.Title>
       </Modal.Header>
-      <Modal.Body>{message?.message}</Modal.Body>
+      <Modal.Body className="text-success">{message?.message}</Modal.Body>
     </Modal>
   );
 }

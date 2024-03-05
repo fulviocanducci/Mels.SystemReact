@@ -7,8 +7,10 @@ type AlertMessageDefaultType = {
 
 export default function AlertMessageDefault({ title, body }: AlertMessageDefaultType) {
   return (
-    <Alert key={"success"} variant={"light"} className="border border-success text-success">
-      <Alert.Heading>{title}</Alert.Heading>
+    <Alert key={"success"} variant={"success"} className="text-success">
+      <Alert.Heading>
+        <b>{title}</b>
+      </Alert.Heading>
       {body}
     </Alert>
   );

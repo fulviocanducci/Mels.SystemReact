@@ -16,6 +16,17 @@ import { formats } from "../../utils";
 import Toast from "../../components/Toast";
 import AlertMessageDefault from "../../components/AlertMessageDefault";
 
+export function AlertWithoutMessage() {
+  return (
+    <Alert key={"success"} variant={"success"} className="text-success">
+      <Alert.Heading>
+        <b>Aviso</b>
+      </Alert.Heading>
+      Sem mensagens
+    </Alert>
+  );
+}
+
 export default function Messages() {
   const { Formik } = formik;
   const { client } = useClient();
@@ -230,10 +241,7 @@ export default function Messages() {
                 messageApp.map((item, index) => <MessageBoxApp message={item} key={index} setMessageReadAt={setMessageReadAt} />)}
               {messageApp && messageApp.length === 0 && (
                 <div>
-                  <Alert key={"success"} variant={"light"}>
-                    <Alert.Heading>Aviso</Alert.Heading>
-                    Sem mensagens
-                  </Alert>
+                  <AlertWithoutMessage />
                 </div>
               )}
             </Tab>
@@ -258,10 +266,7 @@ export default function Messages() {
                 messageAcademy.map((item, index) => <MessageBoxAcademy message={item} key={index} />)}
               {messageAcademy && messageAcademy.length === 0 && (
                 <div>
-                  <Alert key={"success"} variant={"light"}>
-                    <Alert.Heading>Aviso</Alert.Heading>
-                    Sem mensagens
-                  </Alert>
+                  <AlertWithoutMessage />
                 </div>
               )}
             </Tab>

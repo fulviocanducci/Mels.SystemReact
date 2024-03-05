@@ -28,6 +28,9 @@ export function Top() {
             <Link to="/assessments" className="nav-link" onClick={setExpandedFalse}>
               <Icon.PersonExclamation /> Avaliações
             </Link>
+            <Link to="/updateregistration" className="nav-link" onClick={setExpandedFalse}>
+              <Icon.PencilFill /> Cadastro
+            </Link>
             <Link to="/checkin" className="nav-link" onClick={setExpandedFalse}>
               <Icon.CheckCircle /> Check-in
             </Link>
@@ -36,9 +39,6 @@ export function Top() {
             </Link>
             <Link to="/payments" className="nav-link" onClick={setExpandedFalse}>
               <Icon.Coin /> Pagamentos
-            </Link>
-            <Link to="/updateregistration" className="nav-link" onClick={setExpandedFalse}>
-              <Icon.PencilFill /> Atualizar cadastro
             </Link>
             <Link to="/messages" className="nav-link" onClick={setExpandedFalse}>
               <Icon.BodyText /> Mensagens

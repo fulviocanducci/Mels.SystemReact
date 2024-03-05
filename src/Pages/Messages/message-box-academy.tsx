@@ -20,7 +20,7 @@ export function MessageBoxAcademy({ message }: IMessageBoxAcademy) {
       <ModalBox show={show} setShow={setShow} message={message} />
       <Alert variant="success">
         <Alert.Heading className="mb-2">{message.title}</Alert.Heading>
-        <div className="d-flex justify-content-between">
+        <div className="d-flex justify-content-between text-success">
           <small>
             <Icon.Calendar2Day /> {formats.date(message.sendAt)}
           </small>

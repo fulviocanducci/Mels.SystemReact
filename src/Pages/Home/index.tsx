@@ -34,8 +34,18 @@ export default function Home() {
           </Button>
         </Block>
         <Block className="mt-1">
-          <Button variant="success" onClick={() => navigate("/messages")}>
-            <Icon.BodyText /> Enviar e Receber Mensagens
+          <Button variant="success" onClick={() => navigate("/updateregistration")}>
+            <Icon.PencilFill /> Cadastro
+          </Button>
+        </Block>
+        <Block className="mt-1">
+          <Button variant="success" onClick={() => navigate("/checkin")}>
+            <Icon.CheckCircle /> Check-in
+          </Button>
+        </Block>
+        <Block className="mt-1">
+          <Button variant="success" onClick={() => navigate("/training")}>
+            <Icon.PersonBoundingBox /> Treinos
           </Button>
         </Block>
         <Block className="mt-1">
@@ -44,8 +54,18 @@ export default function Home() {
           </Button>
         </Block>
         <Block className="mt-1">
+          <Button variant="success" onClick={() => navigate("/messages")}>
+            <Icon.BodyText /> Mensagens
+          </Button>
+        </Block>
+        <Block className="mt-1">
           <Button variant="success" onClick={() => navigate("/training")}>
             <Icon.PersonBoundingBox /> Treinos
+          </Button>
+        </Block>
+        <Block className="mt-1">
+          <Button variant="success" onClick={() => navigate("/logout")}>
+            <Icon.DoorClosedFill /> Sair
           </Button>
         </Block>
       </div>
