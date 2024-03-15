@@ -18,7 +18,7 @@ export default function Home() {
     );
   }, []);
   return (
-    <div className="fs-6 text-success">
+    <div className="fs-6 text-success mb-2">
       <Title description="Home" />
       <div className="text-center">
         Bem vindo, <b>{isFirstNameOrEmpty(client?.name)}</b>
@@ -27,7 +27,7 @@ export default function Home() {
         <ImageFallback />
       </div>
       <div style={{ textAlign: "justify" }} className="mb-4 mt-2">
-        <div className="text-center">Acompanhe</div>
+        <div className="text-center mt-1 mb-1">Acompanhe ...</div>
         <Block className="mt-1">
           <Button variant="success" onClick={() => navigate("/assessments")}>
             <Icon.PersonExclamation /> Avaliações
@@ -41,11 +41,6 @@ export default function Home() {
         <Block className="mt-1">
           <Button variant="success" onClick={() => navigate("/checkin")}>
             <Icon.CheckCircle /> Check-in
-          </Button>
-        </Block>
-        <Block className="mt-1">
-          <Button variant="success" onClick={() => navigate("/training")}>
-            <Icon.PersonBoundingBox /> Treinos
           </Button>
         </Block>
         <Block className="mt-1">

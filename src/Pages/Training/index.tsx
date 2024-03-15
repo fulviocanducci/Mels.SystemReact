@@ -53,7 +53,7 @@ export default function Training() {
       <Title description="Treinos" />
       {trainingLast && (
         <div className="text-success">
-          Último treino: <b>{trainingLast.dayType}</b>, data: {formats.date(trainingLast.lastTimeAt)}
+          <TopLastTimeAt trainingLast={trainingLast} />
         </div>
       )}
       {training && training.length === 0 && (
@@ -68,7 +68,9 @@ export default function Training() {
             <Alert key={index} variant="success">
               <Alert.Heading className="mb-0 text-success">Treino {item.dayType}</Alert.Heading>
               <p className="mt-0 mb-0">
-                <small className="text-success">Último: {item.lastTimeAt ? formats.date(item.lastTimeAt) : "Iniciante..."}</small>
+                <small className="text-success">
+                  <LastTimeAt dateAt={item.lastTimeAt} />
+                </small>
               </p>
               <hr className="mt-0 mb-2" />
               <div className="d-grid gap-2 mt-0">
@@ -81,4 +83,32 @@ export default function Training() {
         })}
     </div>
   );
+}
+
+const dateInitialTraining = "01/01/2024";
+
+function LastTimeAt({ dateAt }: { dateAt: string }) {
+  if (dateAt) {
+    const convertLastTimeAt = formats.date(dateAt);
+    if (convertLastTimeAt === dateInitialTraining) {
+      return <>Não inicio esse treino ...</>;
+    }
+    return <>Último: {convertLastTimeAt}</>;
+  }
+  return <></>;
+}
+
+function TopLastTimeAt({ trainingLast }: { trainingLast: TrainingGroupRecord }) {
+  if (trainingLast && trainingLast.lastTimeAt) {
+    const convertLastTimeAt = formats.date(trainingLast.lastTimeAt);
+    if (convertLastTimeAt === dateInitialTraining) {
+      return <>Aluno iniciante ...</>;
+    }
+    return (
+      <>
+        Último treino: <b>{trainingLast.dayType}</b>, data: {formats.date(trainingLast.lastTimeAt)}
+      </>
+    );
+  }
+  return <></>;
 }
