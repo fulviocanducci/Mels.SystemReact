@@ -91,7 +91,7 @@ function LastTimeAt({ dateAt }: { dateAt: string }) {
   if (dateAt) {
     const convertLastTimeAt = formats.date(dateAt);
     if (convertLastTimeAt === dateInitialTraining) {
-      return <>Não inicio esse treino ...</>;
+      return <>Não iniciou esse treino ...</>;
     }
     return <>Último: {convertLastTimeAt}</>;
   }
