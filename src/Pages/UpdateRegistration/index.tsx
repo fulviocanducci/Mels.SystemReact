@@ -101,8 +101,8 @@ export default function UpdateRegistration() {
     email: yup.string().email().max(40),
     address: yup.string().max(50),
     cityId: yup.number(),
-    phoneOne: yup.string().max(11),
-    phoneTwo: yup.string().max(11),
+    phoneOne: yup.string().max(14),
+    phoneTwo: yup.string().max(14),
     addressNumber: yup.string().required().max(10),
     district: yup.string().required().max(30),
   });
@@ -278,6 +278,8 @@ export default function UpdateRegistration() {
           >
             {({ handleSubmit, handleChange, values, touched, errors, setFieldValue }) => (
               <>
+                <div>{JSON.stringify(errors)}</div>
+                <div>{values.phoneOne}</div>
                 <Form noValidate onSubmit={handleSubmit}>
                   <Form.Group className="mb-2" controlId="exampleForm.name">
                     <Form.Label className="mb-0">Nome completo:</Form.Label>
