@@ -21,6 +21,8 @@ export default function CheckIn() {
       request.checkInGet(client.academyId, client.cpf).then((result) => {
         if (result.status === 200) {
           setItems(result.data);
+        } else {
+          setItems(() => []);
         }
       }, isErrorToRedirect);
     }
