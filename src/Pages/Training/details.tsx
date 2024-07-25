@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { TrainingFinishedRecord, TrainingRecord } from "../../@types";
 import Loading from "../../components/Loading";
 import { request } from "../../@requests";
-import { useCpf } from "../../@hooks";
+import { useClient, useCpf } from "../../@hooks";
 import { useNavigate, useParams } from "react-router-dom";
 import Title from "../../components/Title";
 import { Button, Form } from "react-bootstrap";
@@ -17,6 +17,7 @@ import ButtonGoBack from "../../components/ButtonGoBack";
 
 export default function TrainingDetails() {
   const { cpf } = useCpf();
+  const { setClient } = useClient();
   const [show, setShow] = useState<boolean>(false);
   const [url, setUrl] = useState<string | null | undefined>(null);
   const [details, setDetails] = useState<TrainingRecord[] | null>(null);
@@ -40,18 +41,23 @@ export default function TrainingDetails() {
       dayType: dayType,
       lastTimeAt: formats.nowDateTime(),
     };
-    request
-      .trainingUpdateFinishRecord(model)
-      .then((result) => {
-        if (result.status === 200) {
-          request.exercicesReset(value, dayType).then((result) => {
-            if (result.status === 200) {
-              navigate(`/training`);
-            }
-          }, isErrorToRedirect);
-        }
-      }, isErrorToRedirect)
-      .finally(() => setStateForm(false));
+    request.trainingUpdateFinishRecord(model).then((result) => {
+      if (result.status === 200) {
+        request.exercicesReset(value, dayType).then((result) => {
+          if (result.status === 200) {
+            request
+              .trainingUpdateClientCountActualGetClientRecord(value)
+              .then((result) => {
+                if (result.status === 200) {
+                  setClient(result.data);
+                  navigate(`/training`);
+                }
+              }, isErrorToRedirect)
+              .finally(() => setStateForm(false));
+          }
+        }, isErrorToRedirect);
+      }
+    }, isErrorToRedirect);
   };
   const handleChecked = (e: React.ChangeEvent<HTMLInputElement>, model: TrainingRecord, index: number) => {
     const checked = e.target.checked;

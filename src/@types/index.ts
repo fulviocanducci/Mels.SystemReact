@@ -130,6 +130,8 @@ export interface ClientRecord {
   academyDocument: string;
   addressNumber: string;
   district: string;
+  countTotal: number;
+  countActual: number;
 }
 
 export interface CityRecord {

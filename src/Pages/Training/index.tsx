@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import Loading from "../../components/Loading";
 import Title from "../../components/Title";
-import { TrainingGroupRecord } from "../../@types";
+import { ClientRecord, TrainingGroupRecord } from "../../@types";
 import { request } from "../../@requests";
-import { useCpf } from "../../@hooks";
+import { useClient, useCpf } from "../../@hooks";
 import { Alert, Button } from "react-bootstrap";
 import { formats } from "../../utils";
 import * as Icon from "react-bootstrap-icons";
@@ -13,6 +13,7 @@ import AlertMessageDefault from "../../components/AlertMessageDefault";
 
 export default function Training() {
   const { cpf } = useCpf();
+  const { client } = useClient();
   const [training, setTraining] = React.useState<TrainingGroupRecord[] | null>(null);
   const [trainingLast, setTrainingLast] = React.useState<TrainingGroupRecord | null>(null);
   const navigate = useNavigate();
@@ -81,11 +82,29 @@ export default function Training() {
             </Alert>
           );
         })}
+      {ClientTrainingConfiguration(client)}
     </div>
   );
 }
 
 const dateInitialTraining = "01/01/2024";
+
+function ClientTrainingConfiguration(client: ClientRecord | undefined | null) {
+  if (client === null) {
+    return <></>;
+  }
+  return (
+    <Alert variant="info">
+      <Alert.Heading className="mb-0 text-success">Treinos configurados</Alert.Heading>
+      <hr className="mt-0 mb-2" />
+      <p className="mt-0 mb-0">
+        <small className="text-success">
+          Configurações de treino: {client?.countActual} / {client?.countTotal}
+        </small>
+      </p>
+    </Alert>
+  );
+}
 
 function LastTimeAt({ dateAt }: { dateAt: string }) {
   if (dateAt) {

@@ -67,6 +67,10 @@ const trainingUpdateFinishRecord = (model: TrainingFinishedRecord) => {
   return api.post("/api/training", model);
 };
 
+const trainingUpdateClientCountActualGetClientRecord = (cpf?: string) => {
+  return api.get(`/api/client/count/actual/more/one/${cpf}`);
+};
+
 const exercicesReset = (cpf: string, dayType: string | undefined) => {
   return api.post(`/api/exercices/reset/${cpf}/type/${dayType}`);
 };
@@ -145,6 +149,7 @@ const request = {
   checkInClientPut,
   checkInGetById,
   checkinclientCancel,
+  trainingUpdateClientCountActualGetClientRecord,
 };
 
 export { request };
