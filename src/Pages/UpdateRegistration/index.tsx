@@ -277,7 +277,7 @@ export default function UpdateRegistration() {
             }}
           >
             {({ handleSubmit, handleChange, values, touched, errors, setFieldValue }) => (
-              <>                
+              <>
                 <Form noValidate onSubmit={handleSubmit}>
                   <Form.Group className="mb-2" controlId="exampleForm.name">
                     <Form.Label className="mb-0">Nome completo:</Form.Label>

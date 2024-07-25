@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { TrainingFinishedRecord, TrainingRecord } from "../../@types";
 import Loading from "../../components/Loading";
 import { request } from "../../@requests";
-import { useClient, useCpf } from "../../@hooks";
+import { setClientLocalStorage, useClient, useCpf } from "../../@hooks";
 import { useNavigate, useParams } from "react-router-dom";
 import Title from "../../components/Title";
 import { Button, Form } from "react-bootstrap";
@@ -14,8 +14,15 @@ import { formats, numbers } from "../../utils";
 import { isErrorToRedirect } from "../../utils/error";
 import VideoPlayer from "../../components/VideoPlayer";
 import ButtonGoBack from "../../components/ButtonGoBack";
-
+import Toast from "../../components/Toast";
+function messageSaveSuccess(): { message: string; type: "success" | "error" } {
+  return {
+    message: "Treino terminado com sucesso",
+    type: "success",
+  };
+}
 export default function TrainingDetails() {
+  const [showMessageData, setMessageData] = useState<{ message: string; type: "success" | "error" }>(() => messageSaveSuccess());
   const { cpf } = useCpf();
   const { setClient } = useClient();
   const [show, setShow] = useState<boolean>(false);
@@ -25,6 +32,7 @@ export default function TrainingDetails() {
   const [stateIndexLoading, setStateIndexLoading] = useState(-1);
 
   const { dayType } = useParams();
+  const [showMessage, setShowMessage] = useState(false);
   const navigate = useNavigate();
   const toogleShow = () => setShow(() => !show);
   const statusBtn = useCallback(() => {
@@ -50,7 +58,12 @@ export default function TrainingDetails() {
               .then((result) => {
                 if (result.status === 200) {
                   setClient(result.data);
-                  navigate(`/training`);
+                  setClientLocalStorage(result.data);
+                  setMessageData(() => messageSaveSuccess());
+                  setShowMessage(() => true);
+                  window.setTimeout(() => {
+                    navigate(`/training`);
+                  }, 1500);
                 }
               }, isErrorToRedirect)
               .finally(() => setStateForm(false));
@@ -158,6 +171,7 @@ export default function TrainingDetails() {
         </div>
       </div>
       <VideoPlayer show={show} setShow={setShow} url={url} />
+      <Toast message={showMessageData.message} type={showMessageData.type} show={showMessage} change={setShowMessage} />
     </>
   );
 }
