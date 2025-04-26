@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { TrainingFinishedRecord, TrainingRecord } from "../../@types";
+import { TrainingFinishedRecord, TrainingItemsWithGroupRecord, TrainingRecord } from "../../@types";
 import Loading from "../../components/Loading";
 import { request } from "../../@requests";
 import { setClientLocalStorage, useClient, useCpf } from "../../@hooks";
@@ -28,6 +28,7 @@ export default function TrainingDetails() {
   const [show, setShow] = useState<boolean>(false);
   const [url, setUrl] = useState<string | null | undefined>(null);
   const [details, setDetails] = useState<TrainingRecord[] | null>(null);
+  const [detailsGroup, setDetailsGroup] = useState<TrainingItemsWithGroupRecord[] | null>(null);
   const [stateForm, setStateForm] = useState<boolean>(false);
   const [stateIndexLoading, setStateIndexLoading] = useState(-1);
 
@@ -111,6 +112,26 @@ export default function TrainingDetails() {
       }, isErrorToRedirect);
     }
   }, [cpf, dayType]);
+  useEffect(() => {
+    if (details){
+      let index = 0;
+      // for(const detail of details){
+      //   if (detail.group === null){
+      //     detail.group = ++index;
+      //   }        
+      // }
+      var items = details.reduce((group: any, detail: TrainingRecord) => {
+        const item = detail.group ?? ++index;
+        if (!group[item]){
+          group[item] = [];
+        }
+        group[item].push(detail);
+        return group;
+      });
+      console.log(items);
+    }
+  }, [details]);
+  
   if (details === null) {
     return <Loading />;
   }

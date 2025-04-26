@@ -38,6 +38,12 @@ export interface TrainingRecord {
   dayType: string;
   linkOfVideo: string;
   execute: boolean;
+  group?: number;
+}
+
+export interface TrainingItemsWithGroupRecord {
+  items: TrainingRecord[],
+  group: number
 }
 
 export interface TrainingFinishedRecord {
