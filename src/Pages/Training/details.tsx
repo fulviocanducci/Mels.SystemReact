@@ -159,7 +159,7 @@ export default function TrainingDetails() {
               label={item.name}
               onChange={(e) => handleChecked(e, item, index)}
               checked={item.execute}
-              style={{ fontSize: "8pt", fontStyle: "bold" }}
+              style={{ fontSize: "9pt", fontStyle: "bold" }}
             />
           </div>
         </div>
