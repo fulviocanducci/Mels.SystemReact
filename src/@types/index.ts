@@ -33,12 +33,13 @@ export interface TrainingGroupRecord {
 }
 
 export interface TrainingRecord {
+  id: number;
   cpf: string;
   name: string;
   dayType: string;
   linkOfVideo: string;
   execute: boolean;
-  group?: number;
+  group: number;
 }
 
 export interface TrainingItemsWithGroupRecord {
