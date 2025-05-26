@@ -148,51 +148,77 @@ export default function TrainingDetails() {
     return (detailsGroup?.length ?? 0) > 1;
   }
 
-  function detailsGroupComponent(item: TrainingRecord, index: number | string) {
+  function detailRest(item: TrainingRecord) {
+    if (item == null) {
+      return null;
+    }
+    if (item.rest == null || item.rest.trim().length === 0) {
+      return null;
+    }
     return (
-      <div className="d-flex justify-content-between" key={index}>
-        <div className="flex-grow-1" key={`key-${item.name}-${index}`}>
-          <div className="p-1 mt-1">
-            <Form.Check
-              type="checkbox"
-              id={`id-${item.name}-${index}`}
-              label={item.name}
-              onChange={(e) => handleChecked(e, item, index)}
-              checked={item.execute}
-              style={{ fontSize: "9pt", fontStyle: "bold" }}
-            />
-          </div>
-        </div>
-        <div>
-          <div className="p-1">
-            {item.execute && stateIndexLoading !== index && (
-              <Icon.Check2Circle className="text-success" />
-            )}
-            {!item.execute && stateIndexLoading !== index && (
-              <Icon.XLg className="text-secondary" />
-            )}
-            {stateIndexLoading === index && <LoadingStatus />}
-          </div>
-        </div>
-        <div>
-          <div className="p-1">
-            {item.linkOfVideo && (
-              <Button
-                onClick={(e) => handleShowVideo(e, item.linkOfVideo)}
-                variant="success"
-                size="sm"
-              >
-                <Icon.Youtube />
-              </Button>
-            )}
-            {!item.linkOfVideo && (
-              <Button variant="light" size="sm" disabled={true}>
-                <Icon.XCircle />
-              </Button>
-            )}
-          </div>
+      <div
+        className="text-body-secondary mb-1 mt-0"
+        style={{ fontSize: "0.71rem", verticalAlign: "middle" }}
+      >
+        <div className="ms-1">
+          <Icon.Clock /> {" " + item.rest}
         </div>
       </div>
+    );
+  }
+
+  function detailsGroupComponent(
+    item: TrainingRecord,
+    index: number | string,
+    status: boolean = false
+  ) {
+    return (
+      <>
+        <div className="d-flex justify-content-between" key={index}>
+          <div className="flex-grow-1" key={`key-${item.name}-${index}`}>
+            <div className="p-1 mt-1">
+              <Form.Check
+                type="checkbox"
+                id={`id-${item.name}-${index}`}
+                label={item.name}
+                onChange={(e) => handleChecked(e, item, index)}
+                checked={item.execute}
+                style={{ fontSize: "9pt", fontStyle: "bold" }}
+              />
+            </div>
+          </div>
+          <div>
+            <div className="p-1">
+              {item.execute && stateIndexLoading !== index && (
+                <Icon.Check2Circle className="text-success" />
+              )}
+              {!item.execute && stateIndexLoading !== index && (
+                <Icon.XLg className="text-secondary" />
+              )}
+              {stateIndexLoading === index && <LoadingStatus />}
+            </div>
+          </div>
+          <div>
+            <div className="p-1">
+              {item.linkOfVideo && (
+                <Button
+                  onClick={(e) => handleShowVideo(e, item.linkOfVideo)}
+                  variant="success"
+                  size="sm"
+                >
+                  <Icon.Youtube />
+                </Button>
+              )}
+              {!item.linkOfVideo && (
+                <Button variant="light" size="sm" disabled={true}>
+                  <Icon.XCircle />
+                </Button>
+              )}
+            </div>
+          </div>
+        </div>
+        {status == false && detailRest(item)}
+      </>
     );
   }
 
@@ -208,6 +234,14 @@ export default function TrainingDetails() {
         {c >= 4 && "Giant-set"}
       </div>
     );
+  }
+
+  function isDetailsRestValueOrDefault(items: TrainingRecord[]) {
+    if (items && items.length > 0) {
+      if (items.length === 1) return false;
+      return items.every((element) => element.rest === items[0].rest);
+    }
+    return false;
   }
 
   if (details === null) {
@@ -227,7 +261,7 @@ export default function TrainingDetails() {
             <div className="alert alert-success mb-1 mt-0" key={index}>
               <>
                 {descriptionSerie(1)}
-                {detailsGroupComponent(item, index)}
+                {detailsGroupComponent(item, index, false)}
               </>
             </div>
           ))}
@@ -235,17 +269,25 @@ export default function TrainingDetails() {
           detailsGroup &&
           detailsGroup.length > 0 &&
           detailsGroup.map((item, index) => {
+            const status = isDetailsRestValueOrDefault(item.items);
             return (
               <div className="alert alert-success mb-1 mt-0" key={index}>
                 <>
                   {descriptionSerie(item.items.length)}
                   {item.items.map((element, indexElement) => {
-                    return detailsGroupComponent(
-                      element,
-                      index + "" + indexElement
+                    return (
+                      <>
+                        {detailsGroupComponent(
+                          element,
+                          index + "" + indexElement,
+                          true
+                        )}
+                        {!status && detailRest(element)}
+                      </>
                     );
                   })}
                 </>
+                {status && detailRest(item.items[0])}
               </div>
             );
           })}

@@ -40,11 +40,13 @@ export interface TrainingRecord {
   linkOfVideo: string;
   execute: boolean;
   group: number;
+  rest: string;
+  idExercise: number;
 }
 
 export interface TrainingItemsWithGroupRecord {
-  items: TrainingRecord[],
-  group: number
+  items: TrainingRecord[];
+  group: number;
 }
 
 export interface TrainingFinishedRecord {
@@ -157,8 +159,12 @@ export interface ILoginContext {
   margin?: string | null;
   setToken: React.Dispatch<React.SetStateAction<string | null | undefined>>;
   setCpf: React.Dispatch<React.SetStateAction<string | null | undefined>>;
-  setClient: React.Dispatch<React.SetStateAction<ClientRecord | null | undefined>>;
-  setExpiration: React.Dispatch<React.SetStateAction<Date | null | string | undefined>>;
+  setClient: React.Dispatch<
+    React.SetStateAction<ClientRecord | null | undefined>
+  >;
+  setExpiration: React.Dispatch<
+    React.SetStateAction<Date | null | string | undefined>
+  >;
   setMargin: React.Dispatch<React.SetStateAction<string | null | undefined>>;
 }
 
