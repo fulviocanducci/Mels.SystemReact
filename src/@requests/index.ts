@@ -26,12 +26,16 @@ const authentication = (cpf: string) => {
 
 const paymentsGroupByYear = (cpf: string) => {
   const value = numbers.onlyNumbers(cpf);
-  return api.get<IMovementReceiptGroupYearRecord[]>(`/api/movementreceipt/${value}/group/by/year`);
+  return api.get<IMovementReceiptGroupYearRecord[]>(
+    `/api/movementreceipt/${value}/group/by/year`
+  );
 };
 
 const paymentsByYear = (cpf: string, year: number) => {
   const value = numbers.onlyNumbers(cpf);
-  return api.get<IMovementReceiptYearRecord[]>(`/api/movementreceipt/${value}/by/${year}/all`);
+  return api.get<IMovementReceiptYearRecord[]>(
+    `/api/movementreceipt/${value}/by/${year}/all`
+  );
 };
 
 const clientUpdate = (clientRecord: ClientRecord) => {
@@ -77,7 +81,9 @@ const exercicesReset = (cpf: string, dayType: string | undefined) => {
 
 const messagesAppReceive = (cpf: string, academyId: number) => {
   const value = numbers.onlyNumbers(cpf);
-  return api.get<IMessageApp[]>(`api/messageapp/received/${value}/${academyId}/messages`);
+  return api.get<IMessageApp[]>(
+    `api/messageapp/received/${value}/${academyId}/messages`
+  );
 }; ///api/messageapp/received/{cpf}/{academyId}/messages
 
 const messagesAppByIdReceive = (id: number) => {
@@ -86,7 +92,9 @@ const messagesAppByIdReceive = (id: number) => {
 
 const messagesAcademySent = (cpf: string, academyId: number) => {
   const value = numbers.onlyNumbers(cpf);
-  return api.get<IMessageAcademy[]>(`api/messageacademy/sent/${value}/${academyId}/messages`);
+  return api.get<IMessageAcademy[]>(
+    `api/messageacademy/sent/${value}/${academyId}/messages`
+  );
 }; ///api/messageacademy/sent/{cpf}/{academyId}/messages
 
 const messagesAcademyCreate = (value: IMessageAcademy) => {
@@ -106,7 +114,10 @@ const clientPhotoSend = (form: FormData) => {
   return api.postForm("/api/client/photo", form);
 };
 
-const checkInGet = (id: number | string | undefined | null, cpf: string | undefined | null) => {
+const checkInGet = (
+  id: number | string | undefined | null,
+  cpf: string | undefined | null
+) => {
   return api.get(`/api/checkin/actualdatetimeat/${id}/${cpf}`);
 };
 
@@ -125,7 +136,12 @@ const checkinclientCancel = (id: number | string | undefined | null) => {
   return api.put(`/api/checkinclient/renew/${id}`);
 };
 
+const satisfactionGet = (academyId: number | string | undefined | null) => {
+  return api.get(`/api/satisfaction/${academyId}`);
+};
+
 const request = {
+  satisfactionGet,
   authentication,
   paymentsGroupByYear,
   paymentsByYear,

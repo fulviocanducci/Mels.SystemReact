@@ -220,3 +220,18 @@ export interface ICheckInClient {
   timeSchedulingAt?: string | null | undefined;
   name?: string | null | undefined;
 }
+
+export interface ISatisfaction {
+  id: number;
+  question: string;
+  questionQuantity: number;
+  questionType: string;
+  academyId: number;
+  satisfactionLists: Array<ISatisfactionList>;
+}
+
+export interface ISatisfactionList {
+  id: number;
+  satisfactionId: number;
+  option: string;
+}

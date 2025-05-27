@@ -17,6 +17,7 @@ import Messages from "../../Pages/Messages";
 import Assessments from "../../Pages/Assessments";
 import CheckIn from "../../Pages/CheckIn";
 import CheckInClient from "../../Pages/CheckIn/checkinclient";
+import Satisfaction from "../../Pages/Satisfaction";
 
 export function RoutesMenu({ marginTop }: IRouteMenu) {
   return (
@@ -102,6 +103,14 @@ export function RoutesMenu({ marginTop }: IRouteMenu) {
             element={
               <ProtectedRouter>
                 <Training />
+              </ProtectedRouter>
+            }
+          />
+          <Route
+            path="/satisfaction"
+            element={
+              <ProtectedRouter>
+                <Satisfaction />
               </ProtectedRouter>
             }
           />
