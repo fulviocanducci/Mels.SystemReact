@@ -34,7 +34,10 @@ export default function Home() {
           </Button>
         </Block>
         <Block className="mt-1">
-          <Button variant="success" onClick={() => navigate("/updateregistration")}>
+          <Button
+            variant="success"
+            onClick={() => navigate("/updateregistration")}
+          >
             <Icon.PencilFill /> Cadastro
           </Button>
         </Block>
@@ -46,6 +49,11 @@ export default function Home() {
         <Block className="mt-1">
           <Button variant="success" onClick={() => navigate("/payments")}>
             <Icon.Coin /> Pagamentos
+          </Button>
+        </Block>
+        <Block className="mt-1">
+          <Button variant="success" onClick={() => navigate("/satisfaction")}>
+            <Icon.FilterCircle /> Pesquisas
           </Button>
         </Block>
         <Block className="mt-1">

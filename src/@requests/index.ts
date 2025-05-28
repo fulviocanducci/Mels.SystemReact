@@ -140,8 +140,28 @@ const satisfactionGet = (academyId: number | string | undefined | null) => {
   return api.get(`/api/satisfaction/${academyId}`);
 };
 
+const satisfactionPostItem = (data: any) => {
+  return api.post("/api/satisfaction/satisfactionanswer", data);
+};
+
+const satisfactionPostItemByArray = (datas: Array<any>) => {
+  return datas.map((data) => satisfactionPostItem(data));
+};
+
+const satisfactionListPostItem = (data: any) => {
+  return api.post("/api/satisfaction/satisfactionanswerlist", data);
+};
+
+const satisfactionListPostItemByArray = (datas: Array<any>) => {
+  return datas.map((data) => satisfactionListPostItem(data));
+};
+
 const request = {
   satisfactionGet,
+  satisfactionPostItem,
+  satisfactionPostItemByArray,
+  satisfactionListPostItem,
+  satisfactionListPostItemByArray,
   authentication,
   paymentsGroupByYear,
   paymentsByYear,

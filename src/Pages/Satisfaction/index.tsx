@@ -8,13 +8,15 @@ import * as formik from "formik";
 import * as yup from "yup";
 import * as Icon from "react-bootstrap-icons";
 import Block from "../../components/Block";
-import { Alert, Button, Form, Tab, Tabs } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import ButtonLoading from "../../components/ButtonLoading";
 import { formats } from "../../utils";
+import { useNavigate } from "react-router-dom";
 
 function Satisfaction() {
   const { Formik } = formik;
   const { client } = useClient();
+  const navigate = useNavigate();
   const [satisfaction, setSatisfaction] = useState<Array<ISatisfaction> | null>(
     null
   );
@@ -35,7 +37,7 @@ function Satisfaction() {
                 .number()
                 .oneOf(
                   item.satisfactionLists.map((x) => x.id),
-                  "Selecione um gênero"
+                  "Selecione pelo menos uma opção"
                 )
                 .required("Campo obrigatório");
             } else {
@@ -47,14 +49,17 @@ function Satisfaction() {
                     .oneOf(item.satisfactionLists.map((x) => "" + x.id))
                 )
                 .min(1, "Selecione pelo menos uma opção")
-                .max(item.questionQuantity, "No máximo 3 opções")
-                .required();
+                .max(
+                  item.questionQuantity,
+                  `No máximo ${item.questionQuantity} opções`
+                )
+                .required("Campo obrigatório");
             }
             break;
           }
           default: {
             label = "description" + item.id;
-            shape[label] = yup.string().required();
+            shape[label] = yup.string().required("Campo obrigatório");
           }
         }
       }
@@ -68,24 +73,22 @@ function Satisfaction() {
     if (satisfaction != null) {
       let items = {} as any;
       let label = "";
-      let value = null;
       for (let item of satisfaction) {
         switch (item.questionType) {
           case "L": {
             label =
               (item.questionQuantity <= 1 ? "radio" : "checkbox") +
               item.satisfactionLists[0].satisfactionId;
-            value = item.questionQuantity <= 1 ? 0 : [];
-            items[label] = value;
+            items[label] = item.questionQuantity <= 1 ? 0 : [];
             break;
           }
           default: {
             label = "description" + item.id;
-            items[label] = value;
+            items[label] = "";
           }
         }
+        label = "";
       }
-      console.log(items);
       return items;
     }
     return {};
@@ -99,6 +102,7 @@ function Satisfaction() {
       }
     }
   }
+
   function objectKeysToObject(data: any) {
     return Object.keys(data).map((item) => {
       const match = item.match(/^([a-zA-Z]+)(\d+)$/);
@@ -112,9 +116,13 @@ function Satisfaction() {
       return { text: "", number: 0, name: "" };
     });
   }
+
   function handleFormSubmit(data: any) {
     const keys = Object.keys(data);
+    const satisfactionAnswerListItems = [];
+    const satisfactionAnswerItems = [];
     if (keys.length > 0) {
+      setStateUpdate(() => true);
       const keysItems = objectKeysToObject(data);
       for (let i = 0; i < keysItems.length; i++) {
         if (keysItems[i].text && keysItems[i].text.length == 0) continue;
@@ -126,7 +134,7 @@ function Satisfaction() {
               satisfactionId: keysItems[i]?.number,
               satisfactionListId: parseInt(data[keysItems[i]?.name], 10),
             };
-            console.log(satisfactionAnswerList);
+            satisfactionAnswerListItems.push(satisfactionAnswerList);
             break;
           }
           case "checkbox": {
@@ -137,7 +145,7 @@ function Satisfaction() {
                 satisfactionId: keysItems[i]?.number,
                 satisfactionListId: parseInt(data[keysItems[i]?.name][j], 10),
               };
-              console.log(satisfactionAnswerList);
+              satisfactionAnswerListItems.push(satisfactionAnswerList);
             }
             break;
           }
@@ -150,14 +158,53 @@ function Satisfaction() {
               response: data[keysItems[i]?.name],
               responseDate: formats.nowDateTime(),
             };
-            console.log(satisfactionAnswer);
+            satisfactionAnswerItems.push(satisfactionAnswer);
             break;
           }
         }
       }
+      let sends: Array<any> = [];
+      if (satisfactionAnswerItems.length > 0) {
+        sends = [
+          ...sends,
+          ...request.satisfactionPostItemByArray(satisfactionAnswerItems),
+        ];
+      }
+      if (satisfactionAnswerListItems.length > 0) {
+        sends = [
+          ...sends,
+          ...request.satisfactionListPostItemByArray(
+            satisfactionAnswerListItems
+          ),
+        ];
+      }
+      if (sends.length > 0) {
+        Promise.allSettled(sends)
+          .then((items) => {
+            const status: boolean = items.every(
+              (r) => r.status === "fulfilled"
+            );
+            if (status) {
+              navigate(`/satisfaction-details`);
+            }
+          })
+          .catch((error) => console.log(error))
+          .finally(() => {
+            setStateUpdate(() => false);
+          });
+      }
     } else {
       alert("error of submit");
     }
+  }
+
+  function labelErrorFeedBack(touched: any, error: any) {
+    return (
+      touched &&
+      error && (
+        <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
+      )
+    );
   }
 
   useEffect(() => {
@@ -177,36 +224,42 @@ function Satisfaction() {
         onSubmit={handleFormSubmit}
         initialValues={initialValuesDynamicBySatisfaction()}
       >
-        {({
-          handleSubmit,
-          handleChange,
-          values,
-          touched,
-          errors,
-          setFieldValue,
-        }) => (
+        {({ handleSubmit, handleChange, values, touched, errors }) => (
           <>
             <Form noValidate onSubmit={handleSubmit}>
               {satisfaction &&
                 satisfaction.map((item, index) => (
                   <Form.Group className="mb-2" controlId="exampleForm.title">
-                    <Form.Label className="mb-0">{item.question}</Form.Label>
+                    <Form.Label className="mb-1">
+                      <div className="fw-semibold text-success">
+                        {index + 1}) {item.question}
+                      </div>
+                      <div className="text-secondary">
+                        <small>
+                          {item.questionType == "L" && item.questionQuantity > 1
+                            ? `Escolha até ${item.questionQuantity} resposta`
+                            : ""}
+                        </small>
+                      </div>
+                    </Form.Label>
                     {item.questionType == "D" && (
-                      <Form.Control
-                        as="textarea"
-                        rows={3}
-                        key={index}
-                        type="text"
-                        name={"description" + item.id}
-                        value={values["description" + item.id]}
-                        onChange={handleChange}
-                        isValid={
-                          touched["description" + item.id] &&
-                          !errors["description" + item.id]
-                        }
-                        isInvalid={!!errors["description" + item.id]}
-                        placeholder={item.question}
-                      />
+                      <>
+                        <Form.Control
+                          as="textarea"
+                          rows={3}
+                          key={index}
+                          type="text"
+                          name={"description" + item.id}
+                          value={values["description" + item.id]}
+                          onChange={handleChange}
+                          isValid={
+                            touched["description" + item.id] &&
+                            !errors["description" + item.id]
+                          }
+                          isInvalid={!!errors["description" + item.id]}
+                          placeholder={item.question}
+                        />
+                      </>
                     )}
                     {item.questionType == "L" &&
                       item.questionQuantity <= 1 &&
@@ -231,25 +284,45 @@ function Satisfaction() {
                     {item.questionType == "L" &&
                       item.questionQuantity > 1 &&
                       item.satisfactionLists.map((list, index) => (
-                        <Form.Check
-                          key={index}
-                          type={"checkbox"}
-                          name={"checkbox" + list.satisfactionId}
-                          onChange={handleChange}
-                          id={`default-${list.option}`}
-                          label={list.option}
-                          defaultValue={list.id}
-                          isValid={
-                            touched["checkbox" + list.satisfactionId] &&
-                            !errors["checkbox" + list.satisfactionId]
-                          }
-                          isInvalid={!!errors["checkbox" + list.satisfactionId]}
-                        />
+                        <>
+                          <Form.Check
+                            key={index}
+                            type={"checkbox"}
+                            name={"checkbox" + list.satisfactionId}
+                            onChange={handleChange}
+                            id={`default-${list.option}`}
+                            label={list.option}
+                            defaultValue={list.id}
+                            isValid={
+                              touched["checkbox" + list.satisfactionId] &&
+                              !errors["checkbox" + list.satisfactionId]
+                            }
+                            isInvalid={
+                              !!errors["checkbox" + list.satisfactionId]
+                            }
+                          />
+                        </>
                       ))}
+                    {item.questionType == "D" &&
+                      labelErrorFeedBack(
+                        touched["description" + item.id],
+                        errors["description" + item.id]
+                      )}
+                    {item.questionType == "L" &&
+                      item.questionQuantity <= 1 &&
+                      labelErrorFeedBack(
+                        touched["radio" + item.id],
+                        errors["radio" + item.id]
+                      )}
+                    {item.questionType == "L" &&
+                      item.questionQuantity > 1 &&
+                      labelErrorFeedBack(
+                        touched["checkbox" + item.id],
+                        errors["checkbox" + item.id]
+                      )}
                   </Form.Group>
                 ))}
               <Block>
-                <div>{JSON.stringify(values)}</div>
                 <Button
                   disabled={
                     Array.isArray(errors) ||

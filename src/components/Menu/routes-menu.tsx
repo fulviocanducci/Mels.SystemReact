@@ -18,6 +18,7 @@ import Assessments from "../../Pages/Assessments";
 import CheckIn from "../../Pages/CheckIn";
 import CheckInClient from "../../Pages/CheckIn/checkinclient";
 import Satisfaction from "../../Pages/Satisfaction";
+import SatisfactionDetails from "../../Pages/Satisfaction/satisfaction-details";
 
 export function RoutesMenu({ marginTop }: IRouteMenu) {
   return (
@@ -111,6 +112,14 @@ export function RoutesMenu({ marginTop }: IRouteMenu) {
             element={
               <ProtectedRouter>
                 <Satisfaction />
+              </ProtectedRouter>
+            }
+          />
+          <Route
+            path="/satisfaction-details"
+            element={
+              <ProtectedRouter>
+                <SatisfactionDetails />
               </ProtectedRouter>
             }
           />
