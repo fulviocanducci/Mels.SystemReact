@@ -10,6 +10,7 @@ import * as Icon from "react-bootstrap-icons";
 import Block from "../../components/Block";
 import { Alert, Button, Form, Tab, Tabs } from "react-bootstrap";
 import ButtonLoading from "../../components/ButtonLoading";
+import { formats } from "../../utils";
 
 function Satisfaction() {
   const { Formik } = formik;
@@ -40,9 +41,14 @@ function Satisfaction() {
             } else {
               shape[label] = yup
                 .array()
-                .of(yup.number())
+                .of(
+                  yup
+                    .mixed()
+                    .oneOf(item.satisfactionLists.map((x) => "" + x.id))
+                )
                 .min(1, "Selecione pelo menos uma opção")
-                .max(3, "No máximo 3 opções");
+                .max(item.questionQuantity, "No máximo 3 opções")
+                .required();
             }
             break;
           }
@@ -52,6 +58,7 @@ function Satisfaction() {
           }
         }
       }
+      console.log(shape);
       const schema = yup.object().shape(shape);
       return schema;
     }
@@ -61,21 +68,24 @@ function Satisfaction() {
     if (satisfaction != null) {
       let items = {} as any;
       let label = "";
+      let value = null;
       for (let item of satisfaction) {
         switch (item.questionType) {
           case "L": {
             label =
               (item.questionQuantity <= 1 ? "radio" : "checkbox") +
               item.satisfactionLists[0].satisfactionId;
-            items[label] = 0;
+            value = item.questionQuantity <= 1 ? 0 : [];
+            items[label] = value;
             break;
           }
           default: {
             label = "description" + item.id;
-            items[label] = "";
+            items[label] = value;
           }
         }
       }
+      console.log(items);
       return items;
     }
     return {};
@@ -87,6 +97,66 @@ function Satisfaction() {
       if (response.status === 200) {
         setSatisfaction(response.data as ISatisfaction[]);
       }
+    }
+  }
+  function objectKeysToObject(data: any) {
+    return Object.keys(data).map((item) => {
+      const match = item.match(/^([a-zA-Z]+)(\d+)$/);
+      if (match) {
+        return {
+          text: match[1],
+          number: parseInt(match[2], 10),
+          name: item,
+        };
+      }
+      return { text: "", number: 0, name: "" };
+    });
+  }
+  function handleFormSubmit(data: any) {
+    const keys = Object.keys(data);
+    if (keys.length > 0) {
+      const keysItems = objectKeysToObject(data);
+      for (let i = 0; i < keysItems.length; i++) {
+        if (keysItems[i].text && keysItems[i].text.length == 0) continue;
+        switch (keysItems[i].text) {
+          case "radio": {
+            const satisfactionAnswerList = {
+              id: 0,
+              cpf: client?.cpf,
+              satisfactionId: keysItems[i]?.number,
+              satisfactionListId: parseInt(data[keysItems[i]?.name], 10),
+            };
+            console.log(satisfactionAnswerList);
+            break;
+          }
+          case "checkbox": {
+            for (let j = 0; j < data[keysItems[i]?.name].length; j++) {
+              const satisfactionAnswerList = {
+                id: 0,
+                cpf: client?.cpf,
+                satisfactionId: keysItems[i]?.number,
+                satisfactionListId: parseInt(data[keysItems[i]?.name][j], 10),
+              };
+              console.log(satisfactionAnswerList);
+            }
+            break;
+          }
+          case "description": {
+            const satisfactionAnswer = {
+              id: 0,
+              cpf: client?.cpf,
+              academyId: client?.academyId,
+              satisfactionId: keysItems[i]?.number,
+              response: data[keysItems[i]?.name],
+              responseDate: formats.nowDateTime(),
+            };
+            console.log(satisfactionAnswer);
+            break;
+          }
+        }
+      }
+    } else {
+      alert("error of submit");
     }
   }
 
@@ -104,7 +174,7 @@ function Satisfaction() {
       <Formik
         validateOnChange={true}
         validationSchema={schemaDynamicBySatisfaction()}
-        onSubmit={() => {}}
+        onSubmit={handleFormSubmit}
         initialValues={initialValuesDynamicBySatisfaction()}
       >
         {({
@@ -150,14 +220,12 @@ function Satisfaction() {
                             onChange={handleChange}
                             label={list.option}
                             defaultValue={list.id}
-                            value={values["radio" + satisfaction]}
                             isValid={
                               touched["radio" + list.satisfactionId] &&
                               !errors["radio" + list.satisfactionId]
                             }
                             isInvalid={!!errors["radio" + list.satisfactionId]}
                           />
-                          <div>{JSON.stringify(errors)}</div>
                         </>
                       ))}
                     {item.questionType == "L" &&
@@ -167,14 +235,21 @@ function Satisfaction() {
                           key={index}
                           type={"checkbox"}
                           name={"checkbox" + list.satisfactionId}
+                          onChange={handleChange}
                           id={`default-${list.option}`}
                           label={list.option}
-                          value={list.id}
+                          defaultValue={list.id}
+                          isValid={
+                            touched["checkbox" + list.satisfactionId] &&
+                            !errors["checkbox" + list.satisfactionId]
+                          }
+                          isInvalid={!!errors["checkbox" + list.satisfactionId]}
                         />
                       ))}
                   </Form.Group>
                 ))}
               <Block>
+                <div>{JSON.stringify(values)}</div>
                 <Button
                   disabled={
                     Array.isArray(errors) ||
