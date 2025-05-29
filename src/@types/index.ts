@@ -30,6 +30,7 @@ export interface TrainingGroupRecord {
   count: number;
   dayType: string;
   lastTimeAt: string;
+  lastTimeBackupAt: string;
 }
 
 export interface TrainingRecord {
@@ -53,6 +54,7 @@ export interface TrainingFinishedRecord {
   cpf?: string | null | undefined;
   dayType?: string;
   lastTimeAt?: string;
+  lastTimeBackupAt?: string;
 }
 
 export interface ISelect2 {

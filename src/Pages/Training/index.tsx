@@ -14,8 +14,11 @@ import AlertMessageDefault from "../../components/AlertMessageDefault";
 export default function Training() {
   const { cpf } = useCpf();
   const { client } = useClient();
-  const [training, setTraining] = React.useState<TrainingGroupRecord[] | null>(null);
-  const [trainingLast, setTrainingLast] = React.useState<TrainingGroupRecord | null>(null);
+  const [training, setTraining] = React.useState<TrainingGroupRecord[] | null>(
+    null
+  );
+  const [trainingLast, setTrainingLast] =
+    React.useState<TrainingGroupRecord | null>(null);
   const navigate = useNavigate();
 
   const handleTrainingDetails = (dayType: string) => {
@@ -37,7 +40,12 @@ export default function Training() {
     if (training !== null && training.length > 0) {
       last = training[0];
       for (let i = 1; i < training.length; i++) {
-        if (formats.compareDateEn(last.lastTimeAt, training[i].lastTimeAt)) {
+        if (
+          formats.compareDateEn(
+            last.lastTimeBackupAt,
+            training[i].lastTimeBackupAt
+          )
+        ) {
           last = training[i];
         }
       }
@@ -59,7 +67,10 @@ export default function Training() {
       )}
       {training && training.length === 0 && (
         <div>
-          <AlertMessageDefault title={"Aviso"} body={"Não existe treino configurado"} />
+          <AlertMessageDefault
+            title={"Aviso"}
+            body={"Não existe treino configurado"}
+          />
         </div>
       )}
       {training &&
@@ -67,15 +78,22 @@ export default function Training() {
         training.map((item, index) => {
           return (
             <Alert key={index} variant="success">
-              <Alert.Heading className="mb-0 text-success">Treino {item.dayType}</Alert.Heading>
+              <Alert.Heading className="mb-0 text-success">
+                Treino {item.dayType}
+              </Alert.Heading>
               <p className="mt-0 mb-0">
                 <small className="text-success">
-                  <LastTimeAt dateAt={item.lastTimeAt} />
+                  <LastTimeAt dateAt={item.lastTimeBackupAt} />
                 </small>
               </p>
               <hr className="mt-0 mb-2" />
               <div className="d-grid gap-2 mt-0">
-                <Button variant={"success"} size={"sm"} className="mt-1" onClick={() => handleTrainingDetails(item.dayType)}>
+                <Button
+                  variant={"success"}
+                  size={"sm"}
+                  className="mt-1"
+                  onClick={() => handleTrainingDetails(item.dayType)}
+                >
                   <Icon.BoxArrowInRight /> Começar
                 </Button>
               </div>
@@ -95,7 +113,9 @@ function ClientTrainingConfiguration(client: ClientRecord | undefined | null) {
   }
   return (
     <Alert variant="info">
-      <Alert.Heading className="mb-0 text-success">Treinos configurados</Alert.Heading>
+      <Alert.Heading className="mb-0 text-success">
+        Treinos configurados
+      </Alert.Heading>
       <hr className="mt-0 mb-2" />
       <p className="mt-0 mb-0">
         <small className="text-success">
@@ -117,15 +137,20 @@ function LastTimeAt({ dateAt }: { dateAt: string }) {
   return <></>;
 }
 
-function TopLastTimeAt({ trainingLast }: { trainingLast: TrainingGroupRecord }) {
-  if (trainingLast && trainingLast.lastTimeAt) {
-    const convertLastTimeAt = formats.date(trainingLast.lastTimeAt);
+function TopLastTimeAt({
+  trainingLast,
+}: {
+  trainingLast: TrainingGroupRecord;
+}) {
+  if (trainingLast && trainingLast.lastTimeBackupAt) {
+    const convertLastTimeAt = formats.date(trainingLast.lastTimeBackupAt);
     if (convertLastTimeAt === dateInitialTraining) {
       return <>Aluno iniciante ...</>;
     }
     return (
       <>
-        Último treino: <b>{trainingLast.dayType}</b>, data: {formats.date(trainingLast.lastTimeAt)}
+        Último treino: <b>{trainingLast.dayType}</b>, data:{" "}
+        {formats.date(trainingLast.lastTimeBackupAt)}
       </>
     );
   }

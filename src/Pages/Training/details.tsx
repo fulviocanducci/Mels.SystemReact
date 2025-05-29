@@ -56,10 +56,12 @@ export default function TrainingDetails() {
   const handleConclude = () => {
     setStateForm(true);
     const value = numbers.onlyNumbers(cpf);
+    const nowDateTime = formats.nowDateTime();
     const model: TrainingFinishedRecord = {
       cpf: value,
       dayType: dayType,
-      lastTimeAt: formats.nowDateTime(),
+      lastTimeAt: nowDateTime,
+      lastTimeBackupAt: nowDateTime,
     };
     request.trainingUpdateFinishRecord(model).then((result) => {
       if (result.status === 200) {
