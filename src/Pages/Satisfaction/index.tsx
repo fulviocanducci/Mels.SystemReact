@@ -3,12 +3,12 @@ import Title from "../../components/Title";
 import Loading from "../../components/Loading";
 import { request } from "../../@requests";
 import { useClient } from "../../@hooks";
-import { ISatisfaction } from "../../@types";
+import { ISatisfaction, ISatisfactionGroupCpfCount } from "../../@types";
 import * as formik from "formik";
 import * as yup from "yup";
 import * as Icon from "react-bootstrap-icons";
 import Block from "../../components/Block";
-import { Button, Form } from "react-bootstrap";
+import { Alert, Button, Form } from "react-bootstrap";
 import ButtonLoading from "../../components/ButtonLoading";
 import { formats } from "../../utils";
 import { useNavigate } from "react-router-dom";
@@ -20,6 +20,8 @@ function Satisfaction() {
   const [satisfaction, setSatisfaction] = useState<Array<ISatisfaction> | null>(
     null
   );
+  const [satisfactionGroupCpfCount, setSatisfactionGroupCpfCount] =
+    useState<ISatisfactionGroupCpfCount | null>(null);
   const [stateUpdate, setStateUpdate] = useState<boolean>(false);
 
   function schemaDynamicBySatisfaction() {
@@ -63,12 +65,11 @@ function Satisfaction() {
           }
         }
       }
-      console.log(shape);
-      const schema = yup.object().shape(shape);
-      return schema;
+      return yup.object().shape(shape);
     }
     return {};
   }
+
   function initialValuesDynamicBySatisfaction() {
     if (satisfaction != null) {
       let items = {} as any;
@@ -95,10 +96,23 @@ function Satisfaction() {
   }
 
   async function loadAllAsync() {
-    if (client && client.academyId) {
-      const response = await request.satisfactionGet(client.academyId);
-      if (response.status === 200) {
-        setSatisfaction(response.data as ISatisfaction[]);
+    if (client) {
+      if (client.academyId <= 0) {
+        setSatisfaction([]);
+      } else {
+        const response = await request.satisfactionGet(client.academyId);
+        if (response.status === 200) {
+          setSatisfaction(response.data as ISatisfaction[]);
+        }
+        const responseGroup = await request.satisfactionGroupCpfCount(
+          client.cpf,
+          client.academyId
+        );
+        if (responseGroup.status === 200) {
+          setSatisfactionGroupCpfCount(
+            responseGroup.data as ISatisfactionGroupCpfCount
+          );
+        }
       }
     }
   }
@@ -125,7 +139,7 @@ function Satisfaction() {
       setStateUpdate(() => true);
       const keysItems = objectKeysToObject(data);
       for (let i = 0; i < keysItems.length; i++) {
-        if (keysItems[i].text && keysItems[i].text.length == 0) continue;
+        if (keysItems[i].text && keysItems[i].text.length === 0) continue;
         switch (keysItems[i].text) {
           case "radio": {
             const satisfactionAnswerList = {
@@ -209,7 +223,7 @@ function Satisfaction() {
 
   useEffect(() => {
     loadAllAsync();
-  }, [client]);
+  }, []);
 
   if (satisfaction === null) {
     return <Loading />;
@@ -218,136 +232,155 @@ function Satisfaction() {
   return (
     <div>
       <Title description="Pesquisa" />
-      <Formik
-        validateOnChange={true}
-        validationSchema={schemaDynamicBySatisfaction()}
-        onSubmit={handleFormSubmit}
-        initialValues={initialValuesDynamicBySatisfaction()}
-      >
-        {({ handleSubmit, handleChange, values, touched, errors }) => (
-          <>
-            <Form noValidate onSubmit={handleSubmit}>
-              {satisfaction &&
-                satisfaction.map((item, index) => (
-                  <Form.Group className="mb-2" controlId="exampleForm.title">
-                    <Form.Label className="mb-1">
-                      <div className="fw-semibold text-success">
-                        {index + 1}) {item.question}
-                      </div>
-                      <div className="text-secondary">
-                        <small>
-                          {item.questionType == "L" && item.questionQuantity > 1
-                            ? `Escolha até ${item.questionQuantity} resposta`
-                            : ""}
-                        </small>
-                      </div>
-                    </Form.Label>
-                    {item.questionType == "D" && (
+      {satisfaction !== null && satisfaction.length === 0 && (
+        <Alert key={"success"} variant={"success"} className="text-success">
+          <Alert.Heading>
+            <b>Aviso</b>
+          </Alert.Heading>
+          Sem pesquisas.
+        </Alert>
+      )}
+      {satisfactionGroupCpfCount !== null &&
+        satisfactionGroupCpfCount.count > 0 && (
+          <Alert key={"success"} variant={"success"} className="text-success">
+            Você já respondeu essa pesquisa.
+          </Alert>
+        )}
+      {satisfaction && satisfaction.length > 0 && (
+        <Formik
+          validateOnChange={true}
+          validationSchema={schemaDynamicBySatisfaction()}
+          onSubmit={handleFormSubmit}
+          initialValues={initialValuesDynamicBySatisfaction()}
+        >
+          {({ handleSubmit, handleChange, values, touched, errors }) => (
+            <>
+              <Form noValidate onSubmit={handleSubmit}>
+                {satisfaction &&
+                  satisfaction.map((item, index) => (
+                    <Form.Group className="mb-2" controlId="exampleForm.title">
+                      <Form.Label className="mb-1">
+                        <div className="fw-semibold text-success">
+                          {index + 1}) {item.question}
+                        </div>
+                        <div className="text-secondary">
+                          <small>
+                            {item.questionType == "L" &&
+                            item.questionQuantity > 1
+                              ? `Escolha até ${item.questionQuantity} resposta`
+                              : ""}
+                          </small>
+                        </div>
+                      </Form.Label>
+                      {item.questionType == "D" && (
+                        <>
+                          <Form.Control
+                            as="textarea"
+                            rows={3}
+                            key={index}
+                            type="text"
+                            name={"description" + item.id}
+                            value={values["description" + item.id]}
+                            onChange={handleChange}
+                            isValid={
+                              touched["description" + item.id] &&
+                              !errors["description" + item.id]
+                            }
+                            isInvalid={!!errors["description" + item.id]}
+                            placeholder={item.question}
+                          />
+                        </>
+                      )}
+                      {item.questionType == "L" &&
+                        item.questionQuantity <= 1 &&
+                        item.satisfactionLists.map((list, index) => (
+                          <>
+                            <Form.Check
+                              key={index}
+                              type={"radio"}
+                              name={"radio" + list.satisfactionId}
+                              id={`default-${list.option}`}
+                              onChange={handleChange}
+                              label={list.option}
+                              defaultValue={list.id}
+                              isValid={
+                                touched["radio" + list.satisfactionId] &&
+                                !errors["radio" + list.satisfactionId]
+                              }
+                              isInvalid={
+                                !!errors["radio" + list.satisfactionId]
+                              }
+                            />
+                          </>
+                        ))}
+                      {item.questionType == "L" &&
+                        item.questionQuantity > 1 &&
+                        item.satisfactionLists.map((list, index) => (
+                          <>
+                            <Form.Check
+                              key={index}
+                              type={"checkbox"}
+                              name={"checkbox" + list.satisfactionId}
+                              onChange={handleChange}
+                              id={`default-${list.option}`}
+                              label={list.option}
+                              defaultValue={list.id}
+                              isValid={
+                                touched["checkbox" + list.satisfactionId] &&
+                                !errors["checkbox" + list.satisfactionId]
+                              }
+                              isInvalid={
+                                !!errors["checkbox" + list.satisfactionId]
+                              }
+                            />
+                          </>
+                        ))}
+                      {item.questionType == "D" &&
+                        labelErrorFeedBack(
+                          touched["description" + item.id],
+                          errors["description" + item.id]
+                        )}
+                      {item.questionType == "L" &&
+                        item.questionQuantity <= 1 &&
+                        labelErrorFeedBack(
+                          touched["radio" + item.id],
+                          errors["radio" + item.id]
+                        )}
+                      {item.questionType == "L" &&
+                        item.questionQuantity > 1 &&
+                        labelErrorFeedBack(
+                          touched["checkbox" + item.id],
+                          errors["checkbox" + item.id]
+                        )}
+                    </Form.Group>
+                  ))}
+                <Block>
+                  <Button
+                    disabled={
+                      Array.isArray(errors) ||
+                      Object.values(errors).toString() !== ""
+                    }
+                    variant="success"
+                    type="submit"
+                    size="sm"
+                    className="mt-2 mb-2"
+                  >
+                    {stateUpdate ? (
                       <>
-                        <Form.Control
-                          as="textarea"
-                          rows={3}
-                          key={index}
-                          type="text"
-                          name={"description" + item.id}
-                          value={values["description" + item.id]}
-                          onChange={handleChange}
-                          isValid={
-                            touched["description" + item.id] &&
-                            !errors["description" + item.id]
-                          }
-                          isInvalid={!!errors["description" + item.id]}
-                          placeholder={item.question}
-                        />
+                        <ButtonLoading /> Enviando ...
+                      </>
+                    ) : (
+                      <>
+                        <Icon.Save /> Enviar
                       </>
                     )}
-                    {item.questionType == "L" &&
-                      item.questionQuantity <= 1 &&
-                      item.satisfactionLists.map((list, index) => (
-                        <>
-                          <Form.Check
-                            key={index}
-                            type={"radio"}
-                            name={"radio" + list.satisfactionId}
-                            id={`default-${list.option}`}
-                            onChange={handleChange}
-                            label={list.option}
-                            defaultValue={list.id}
-                            isValid={
-                              touched["radio" + list.satisfactionId] &&
-                              !errors["radio" + list.satisfactionId]
-                            }
-                            isInvalid={!!errors["radio" + list.satisfactionId]}
-                          />
-                        </>
-                      ))}
-                    {item.questionType == "L" &&
-                      item.questionQuantity > 1 &&
-                      item.satisfactionLists.map((list, index) => (
-                        <>
-                          <Form.Check
-                            key={index}
-                            type={"checkbox"}
-                            name={"checkbox" + list.satisfactionId}
-                            onChange={handleChange}
-                            id={`default-${list.option}`}
-                            label={list.option}
-                            defaultValue={list.id}
-                            isValid={
-                              touched["checkbox" + list.satisfactionId] &&
-                              !errors["checkbox" + list.satisfactionId]
-                            }
-                            isInvalid={
-                              !!errors["checkbox" + list.satisfactionId]
-                            }
-                          />
-                        </>
-                      ))}
-                    {item.questionType == "D" &&
-                      labelErrorFeedBack(
-                        touched["description" + item.id],
-                        errors["description" + item.id]
-                      )}
-                    {item.questionType == "L" &&
-                      item.questionQuantity <= 1 &&
-                      labelErrorFeedBack(
-                        touched["radio" + item.id],
-                        errors["radio" + item.id]
-                      )}
-                    {item.questionType == "L" &&
-                      item.questionQuantity > 1 &&
-                      labelErrorFeedBack(
-                        touched["checkbox" + item.id],
-                        errors["checkbox" + item.id]
-                      )}
-                  </Form.Group>
-                ))}
-              <Block>
-                <Button
-                  disabled={
-                    Array.isArray(errors) ||
-                    Object.values(errors).toString() !== ""
-                  }
-                  variant="success"
-                  type="submit"
-                  size="sm"
-                  className="mt-2 mb-2"
-                >
-                  {stateUpdate ? (
-                    <>
-                      <ButtonLoading /> Enviando ...
-                    </>
-                  ) : (
-                    <>
-                      <Icon.Save /> Enviar
-                    </>
-                  )}
-                </Button>
-              </Block>
-            </Form>
-          </>
-        )}
-      </Formik>
+                  </Button>
+                </Block>
+              </Form>
+            </>
+          )}
+        </Formik>
+      )}
     </div>
   );
 }

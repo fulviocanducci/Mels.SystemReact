@@ -156,12 +156,17 @@ const satisfactionListPostItemByArray = (datas: Array<any>) => {
   return datas.map((data) => satisfactionListPostItem(data));
 };
 
+const satisfactionGroupCpfCount = (cpf: string, academyId: number) => {
+  return api.get(`/api/satisfaction/${cpf}/${academyId}`);
+};
+
 const request = {
   satisfactionGet,
   satisfactionPostItem,
   satisfactionPostItemByArray,
   satisfactionListPostItem,
   satisfactionListPostItemByArray,
+  satisfactionGroupCpfCount,
   authentication,
   paymentsGroupByYear,
   paymentsByYear,

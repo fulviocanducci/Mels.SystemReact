@@ -232,6 +232,11 @@ export interface ISatisfaction {
   satisfactionLists: Array<ISatisfactionList>;
 }
 
+export interface ISatisfactionGroupCpfCount {
+  cpf: string;
+  count: number;
+}
+
 export interface ISatisfactionList {
   id: number;
   satisfactionId: number;
