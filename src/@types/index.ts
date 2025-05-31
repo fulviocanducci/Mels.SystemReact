@@ -242,3 +242,8 @@ export interface ISatisfactionList {
   satisfactionId: number;
   option: string;
 }
+
+export interface ISatisfactionAnswerList {
+  description: string;
+  response: string;
+}

@@ -12,7 +12,7 @@ export default function SatisfactionDetails() {
   useEffect(() => {
     setTimeout(() => {
       setStatus(true);
-    }, 1250);
+    }, 250);
   }, []);
 
   if (status === false) {
@@ -22,23 +22,14 @@ export default function SatisfactionDetails() {
   return (
     <div>
       <Title description="Pesquisa" />
-      <div
-        className="alert alert-primary d-flex align-items-center mb-2"
-        role="alert"
-      >
+      <div className="alert alert-success d-flex align-items-center mb-2" role="alert">
         <div>
           <Icon.Check2Circle className="me-2"></Icon.Check2Circle>
         </div>
         <div> Pesquisa enviada com sucesso!</div>
       </div>
       <div>
-        <Button
-          variant="success"
-          type="submit"
-          size="sm"
-          className="mt-0 mb-0 w-100"
-          onClick={() => navigate("/satisfaction")}
-        >
+        <Button variant="success" type="submit" size="sm" className="mt-0 mb-0 w-100" onClick={() => navigate("/satisfaction")}>
           <Icon.Backspace /> Voltar
         </Button>
       </div>

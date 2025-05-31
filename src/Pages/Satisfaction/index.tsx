@@ -3,7 +3,7 @@ import Title from "../../components/Title";
 import Loading from "../../components/Loading";
 import { request } from "../../@requests";
 import { useClient } from "../../@hooks";
-import { ISatisfaction, ISatisfactionGroupCpfCount } from "../../@types";
+import { ISatisfaction, ISatisfactionAnswerList, ISatisfactionGroupCpfCount } from "../../@types";
 import * as formik from "formik";
 import * as yup from "yup";
 import * as Icon from "react-bootstrap-icons";
@@ -17,11 +17,10 @@ function Satisfaction() {
   const { Formik } = formik;
   const { client } = useClient();
   const navigate = useNavigate();
-  const [satisfaction, setSatisfaction] = useState<Array<ISatisfaction> | null>(
-    null
-  );
-  const [satisfactionGroupCpfCount, setSatisfactionGroupCpfCount] =
-    useState<ISatisfactionGroupCpfCount | null>(null);
+  const [satisfaction, setSatisfaction] = useState<Array<ISatisfaction> | null>(null);
+  const [satisfactionGroupCpfCount, setSatisfactionGroupCpfCount] = useState<ISatisfactionGroupCpfCount | null>(null);
+  const [satisfactionAnswerList, setSatisfactionAnswerList] = useState<ISatisfactionAnswerList[] | null>(null);
+
   const [stateUpdate, setStateUpdate] = useState<boolean>(false);
 
   function schemaDynamicBySatisfaction() {
@@ -31,9 +30,7 @@ function Satisfaction() {
       for (let item of satisfaction) {
         switch (item.questionType) {
           case "L": {
-            label =
-              (item.questionQuantity <= 1 ? "radio" : "checkbox") +
-              item.satisfactionLists[0].satisfactionId;
+            label = (item.questionQuantity <= 1 ? "radio" : "checkbox") + item.satisfactionLists[0].satisfactionId;
             if (item.questionQuantity <= 1) {
               shape[label] = yup
                 .number()
@@ -45,16 +42,9 @@ function Satisfaction() {
             } else {
               shape[label] = yup
                 .array()
-                .of(
-                  yup
-                    .mixed()
-                    .oneOf(item.satisfactionLists.map((x) => "" + x.id))
-                )
+                .of(yup.mixed().oneOf(item.satisfactionLists.map((x) => "" + x.id)))
                 .min(1, "Selecione pelo menos uma opção")
-                .max(
-                  item.questionQuantity,
-                  `No máximo ${item.questionQuantity} opções`
-                )
+                .max(item.questionQuantity, `No máximo ${item.questionQuantity} opções`)
                 .required("Campo obrigatório");
             }
             break;
@@ -77,9 +67,7 @@ function Satisfaction() {
       for (let item of satisfaction) {
         switch (item.questionType) {
           case "L": {
-            label =
-              (item.questionQuantity <= 1 ? "radio" : "checkbox") +
-              item.satisfactionLists[0].satisfactionId;
+            label = (item.questionQuantity <= 1 ? "radio" : "checkbox") + item.satisfactionLists[0].satisfactionId;
             items[label] = item.questionQuantity <= 1 ? 0 : [];
             break;
           }
@@ -99,19 +87,25 @@ function Satisfaction() {
     if (client) {
       if (client.academyId <= 0) {
         setSatisfaction([]);
+        setSatisfactionAnswerList([]);
+        setSatisfactionGroupCpfCount(null);
       } else {
-        const response = await request.satisfactionGet(client.academyId);
-        if (response.status === 200) {
-          setSatisfaction(response.data as ISatisfaction[]);
-        }
-        const responseGroup = await request.satisfactionGroupCpfCount(
-          client.cpf,
-          client.academyId
-        );
+        const responseGroup = await request.satisfactionGroupCpfCount(client.cpf, client.academyId);
         if (responseGroup.status === 200) {
-          setSatisfactionGroupCpfCount(
-            responseGroup.data as ISatisfactionGroupCpfCount
-          );
+          setSatisfactionGroupCpfCount(responseGroup.data as ISatisfactionGroupCpfCount);
+          if (responseGroup.data.count === 0) {
+            const responseSatisfaction = await request.satisfactionGet(client.academyId);
+            if (responseSatisfaction.status === 200) {
+              setSatisfaction(responseSatisfaction.data as ISatisfaction[]);
+              setSatisfactionAnswerList([]);
+            }
+          } else if (responseGroup.data.count > 0) {
+            const responseSatisfactionAnswerList = await request.satisfactionAnswerListCpfAcademy(client.cpf, client.academyId);
+            if (responseSatisfactionAnswerList.status === 200) {
+              setSatisfaction([]);
+              setSatisfactionAnswerList(responseSatisfactionAnswerList.data as ISatisfactionAnswerList[]);
+            }
+          }
         }
       }
     }
@@ -179,25 +173,15 @@ function Satisfaction() {
       }
       let sends: Array<any> = [];
       if (satisfactionAnswerItems.length > 0) {
-        sends = [
-          ...sends,
-          ...request.satisfactionPostItemByArray(satisfactionAnswerItems),
-        ];
+        sends = [...sends, ...request.satisfactionPostItemByArray(satisfactionAnswerItems)];
       }
       if (satisfactionAnswerListItems.length > 0) {
-        sends = [
-          ...sends,
-          ...request.satisfactionListPostItemByArray(
-            satisfactionAnswerListItems
-          ),
-        ];
+        sends = [...sends, ...request.satisfactionListPostItemByArray(satisfactionAnswerListItems)];
       }
       if (sends.length > 0) {
         Promise.allSettled(sends)
           .then((items) => {
-            const status: boolean = items.every(
-              (r) => r.status === "fulfilled"
-            );
+            const status: boolean = items.every((r) => r.status === "fulfilled");
             if (status) {
               navigate(`/satisfaction-details`);
             }
@@ -213,12 +197,7 @@ function Satisfaction() {
   }
 
   function labelErrorFeedBack(touched: any, error: any) {
-    return (
-      touched &&
-      error && (
-        <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>
-      )
-    );
+    return touched && error && <Form.Control.Feedback type="invalid">{error}</Form.Control.Feedback>;
   }
 
   useEffect(() => {
@@ -232,7 +211,7 @@ function Satisfaction() {
   return (
     <div>
       <Title description="Pesquisa" />
-      {satisfaction !== null && satisfaction.length === 0 && (
+      {satisfaction !== null && satisfaction.length === 0 && satisfactionAnswerList && satisfactionAnswerList.length === 0 && (
         <Alert key={"success"} variant={"success"} className="text-success">
           <Alert.Heading>
             <b>Aviso</b>
@@ -240,19 +219,35 @@ function Satisfaction() {
           Sem pesquisas.
         </Alert>
       )}
-      {satisfactionGroupCpfCount !== null &&
-        satisfactionGroupCpfCount.count > 0 && (
-          <Alert key={"success"} variant={"success"} className="text-success">
-            Você já respondeu essa pesquisa.
+      {satisfaction && satisfaction.length === 0 && satisfactionAnswerList && satisfactionAnswerList.length > 0 && (
+        <>
+          <Alert key={"success"} variant={"success"} className="d-flex align-items-center mb-2">
+            <div>
+              <Icon.Check2Circle className="me-2"></Icon.Check2Circle>
+            </div>
+            <div> Você já respondeu essa pesquisa!</div>
           </Alert>
-        )}
-      {satisfaction && satisfaction.length > 0 && (
-        <Formik
-          validateOnChange={true}
-          validationSchema={schemaDynamicBySatisfaction()}
-          onSubmit={handleFormSubmit}
-          initialValues={initialValuesDynamicBySatisfaction()}
-        >
+          <Title description="Perguntas e Respostas" />
+          {satisfactionAnswerList.map((item, index) => (
+            <>
+              <h6 className="text-success">
+                {index + 1}) {item.description}
+              </h6>
+              <div className="mt-0 mb-3 text-success">
+                <b>
+                  <small>
+                    <i>Resposta:</i>
+                  </small>
+                </b>{" "}
+                {item.response}
+              </div>
+              <hr />
+            </>
+          ))}
+        </>
+      )}
+      {satisfaction && satisfaction.length > 0 && satisfactionGroupCpfCount !== null && satisfactionGroupCpfCount.count === 0 && (
+        <Formik validateOnChange={true} validationSchema={schemaDynamicBySatisfaction()} onSubmit={handleFormSubmit} initialValues={initialValuesDynamicBySatisfaction()}>
           {({ handleSubmit, handleChange, values, touched, errors }) => (
             <>
               <Form noValidate onSubmit={handleSubmit}>
@@ -264,12 +259,7 @@ function Satisfaction() {
                           {index + 1}) {item.question}
                         </div>
                         <div className="text-secondary">
-                          <small>
-                            {item.questionType == "L" &&
-                            item.questionQuantity > 1
-                              ? `Escolha até ${item.questionQuantity} resposta`
-                              : ""}
-                          </small>
+                          <small>{item.questionType == "L" && item.questionQuantity > 1 ? `Escolha até ${item.questionQuantity} resposta` : ""}</small>
                         </div>
                       </Form.Label>
                       {item.questionType == "D" && (
@@ -282,10 +272,7 @@ function Satisfaction() {
                             name={"description" + item.id}
                             value={values["description" + item.id]}
                             onChange={handleChange}
-                            isValid={
-                              touched["description" + item.id] &&
-                              !errors["description" + item.id]
-                            }
+                            isValid={touched["description" + item.id] && !errors["description" + item.id]}
                             isInvalid={!!errors["description" + item.id]}
                             placeholder={item.question}
                           />
@@ -303,13 +290,8 @@ function Satisfaction() {
                               onChange={handleChange}
                               label={list.option}
                               defaultValue={list.id}
-                              isValid={
-                                touched["radio" + list.satisfactionId] &&
-                                !errors["radio" + list.satisfactionId]
-                              }
-                              isInvalid={
-                                !!errors["radio" + list.satisfactionId]
-                              }
+                              isValid={touched["radio" + list.satisfactionId] && !errors["radio" + list.satisfactionId]}
+                              isInvalid={!!errors["radio" + list.satisfactionId]}
                             />
                           </>
                         ))}
@@ -325,46 +307,18 @@ function Satisfaction() {
                               id={`default-${list.option}`}
                               label={list.option}
                               defaultValue={list.id}
-                              isValid={
-                                touched["checkbox" + list.satisfactionId] &&
-                                !errors["checkbox" + list.satisfactionId]
-                              }
-                              isInvalid={
-                                !!errors["checkbox" + list.satisfactionId]
-                              }
+                              isValid={touched["checkbox" + list.satisfactionId] && !errors["checkbox" + list.satisfactionId]}
+                              isInvalid={!!errors["checkbox" + list.satisfactionId]}
                             />
                           </>
                         ))}
-                      {item.questionType == "D" &&
-                        labelErrorFeedBack(
-                          touched["description" + item.id],
-                          errors["description" + item.id]
-                        )}
-                      {item.questionType == "L" &&
-                        item.questionQuantity <= 1 &&
-                        labelErrorFeedBack(
-                          touched["radio" + item.id],
-                          errors["radio" + item.id]
-                        )}
-                      {item.questionType == "L" &&
-                        item.questionQuantity > 1 &&
-                        labelErrorFeedBack(
-                          touched["checkbox" + item.id],
-                          errors["checkbox" + item.id]
-                        )}
+                      {item.questionType == "D" && labelErrorFeedBack(touched["description" + item.id], errors["description" + item.id])}
+                      {item.questionType == "L" && item.questionQuantity <= 1 && labelErrorFeedBack(touched["radio" + item.id], errors["radio" + item.id])}
+                      {item.questionType == "L" && item.questionQuantity > 1 && labelErrorFeedBack(touched["checkbox" + item.id], errors["checkbox" + item.id])}
                     </Form.Group>
                   ))}
                 <Block>
-                  <Button
-                    disabled={
-                      Array.isArray(errors) ||
-                      Object.values(errors).toString() !== ""
-                    }
-                    variant="success"
-                    type="submit"
-                    size="sm"
-                    className="mt-2 mb-2"
-                  >
+                  <Button disabled={Array.isArray(errors) || Object.values(errors).toString() !== ""} variant="success" type="submit" size="sm" className="mt-2 mb-2">
                     {stateUpdate ? (
                       <>
                         <ButtonLoading /> Enviando ...
