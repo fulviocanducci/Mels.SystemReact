@@ -268,6 +268,7 @@ function Satisfaction() {
                             as="textarea"
                             rows={3}
                             key={index}
+                            id={"description" + item.id}
                             type="text"
                             name={"description" + item.id}
                             value={values["description" + item.id]}
@@ -286,7 +287,7 @@ function Satisfaction() {
                               key={index}
                               type={"radio"}
                               name={"radio" + list.satisfactionId}
-                              id={`default-${list.option}`}
+                              id={`default-radio-${list.satisfactionId}-${list.id}`}
                               onChange={handleChange}
                               label={list.option}
                               defaultValue={list.id}
@@ -304,7 +305,7 @@ function Satisfaction() {
                               type={"checkbox"}
                               name={"checkbox" + list.satisfactionId}
                               onChange={handleChange}
-                              id={`default-${list.option}`}
+                              id={`default-checkbox-${list.satisfactionId}-${list.id}`}
                               label={list.option}
                               defaultValue={list.id}
                               isValid={touched["checkbox" + list.satisfactionId] && !errors["checkbox" + list.satisfactionId]}
